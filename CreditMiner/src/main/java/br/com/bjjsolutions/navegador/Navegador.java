@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +23,16 @@ public class Navegador {
 
 	private final DefaultHttpClient client = new DefaultHttpClient();
 
+	/**
+	 * Faz o login no site desejado
+	 * 
+	 * @param url
+	 * @param user
+	 * @param password
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public boolean login(String url, String user, String password)
 			throws ClientProtocolException, IOException {
 
@@ -58,27 +67,28 @@ public class Navegador {
 		 */
 		System.out.println("Login form get: " + response.getStatusLine());
 
-		/* 
-         * Consome o conteúdo retornado pelo servidor
-         * Necessário esvaziar o response antes de usar o httpClient novamente
-         */
+		/*
+		 * Consome o conteúdo retornado pelo servidor Necessário esvaziar o
+		 * response antes de usar o httpClient novamente
+		 */
 		EntityUtils.consume(response.getEntity());
 
-		/* 
-         * Testar se o login funcionou.
-         * 
-         * Estratégia: acessar uma página que só está disponível quando se está logado
-         * Em caso de erro, o servidor irá redirecionar para a página de login
-         * A pagina de login contem uma string: "Login DevMedia"
-         * Se esta String estiver presente, significa que o login não foi efetuado com sucesso
-         * 
-         */
+		/*
+		 * Testar se o login funcionou.
+		 * 
+		 * Estratégia: acessar uma página que só está disponível quando se está
+		 * logado Em caso de erro, o servidor irá redirecionar para a página de
+		 * login A pagina de login contem uma string: "Login DevMedia" Se esta
+		 * String estiver presente, significa que o login não foi efetuado com
+		 * sucesso
+		 */
 		final HttpGet get = new HttpGet(
 				"http://www.devmedia.com.br/include/mynotes.asp");
 		response = client.execute(get);
 
 		/*
-		 * Verifica se a String: "Login" está presente
+		 * Verifica se a String: "Login" está presente, caso esteja sginifica
+		 * que está deslogado
 		 */
 		if (checkSuccess(response)) {
 			System.out.println("Login não-efetuado!");
@@ -92,10 +102,12 @@ public class Navegador {
 	}
 
 	/**
-     * Abre página
-     * @param url - Página a acessar
-     * @throws IOException 
-     */
+	 * Abre página
+	 * 
+	 * @param url
+	 *            - Página a acessar
+	 * @throws IOException
+	 */
 	public void openPage(final String url) throws IOException {
 		final HttpGet get = new HttpGet(url);
 		final HttpResponse response = client.execute(get);
@@ -113,7 +125,7 @@ public class Navegador {
 	 * Busca por String que indica se o usuário está logado ou não
 	 * 
 	 * @param response
-	 * @return true - Não achou String | false - Achou String
+	 * @return false - Não achou String | true - Achou String
 	 * @throws IOException
 	 */
 	private boolean checkSuccess(final HttpResponse response)
