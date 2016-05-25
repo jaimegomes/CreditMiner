@@ -1,28 +1,59 @@
 package br.com.bjjsolutions.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Cliente {
 
+	@Id
+	@Column(name = "id", nullable = false, unique = true)
+	private Long id;
+
+	@Column(name = "cpf")
 	private String cpf;
+	
+	@Column(name = "colaborador")
 	private String colaborador;
+	
+	@Column(name = "matricula")
 	private String matricula;
+	
+	@Column(name = "secretaria")
 	private String secretaria;
+	
+	@Column(name = "nascimento")
 	private String nascimento;
+	
+	@Column(name = "margem")
 	private String margem;
+	
+	@Column(name = "banco")
 	private String banco;
+	
+	@Column(name = "valorAutorizado")
 	private String valorAutorizado;
+	
+	@Column(name = "parcelas")
 	private String parcelas;
+	
+	@Column(name = "pagas")
 	private String pagas;
+	
+	@Column(name = "pesquisado")
 	private String pesquisado;
 
 	public Cliente() {
 		super();
 	}
 
-	public Cliente(String cpf, String colaborador, String matricula,
+	public Cliente(Long id, String cpf, String colaborador, String matricula,
 			String secretaria, String nascimento, String margem, String banco,
 			String valorAutorizado, String parcelas, String pagas,
 			String pesquisado) {
 		super();
+		this.id = id;
 		this.cpf = cpf;
 		this.colaborador = colaborador;
 		this.matricula = matricula;
@@ -34,6 +65,21 @@ public class Cliente {
 		this.parcelas = parcelas;
 		this.pagas = pagas;
 		this.pesquisado = pesquisado;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	/**

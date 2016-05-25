@@ -5,7 +5,7 @@ import java.io.UnsupportedEncodingException;
 
 import br.com.bjjsolutions.navegador.Navegador;
 
-public class Main {
+public class MainNavegador {
 
 	/**
 	 * Roda aplicação
@@ -22,7 +22,7 @@ public class Main {
 					"http://www.devmedia.com.br/login/login.asp",
 					"wagmattei@gmail.com", "01780219");
 			if (ok) {
-				// Acessa pÃ¡gina restrita
+				// Acessa página restrita
 				navegador.openPage("http://www.devmedia.com.br/guias/");
 			}
 			navegador.close();

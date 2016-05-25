@@ -10,7 +10,7 @@
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 
 		<!-- entidade mapeada -->
-		<class>com.devmedia.model.Usuario</class>
+		<class>br.com.bjjsolutions.model.Cliente</class>
 
 		<properties>
 
