@@ -17,6 +17,12 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+/**
+ * Classe de navegação utilizando Selenium + PhantomJS
+ * 
+ * @author Jaime Gomes
+ *
+ */
 public class NavegadorSeleniumPhantomJs {
 
 	private DesiredCapabilities desiredCapabilities;
