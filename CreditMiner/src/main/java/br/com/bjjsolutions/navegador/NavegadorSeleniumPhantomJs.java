@@ -56,19 +56,14 @@ public class NavegadorSeleniumPhantomJs {
 			// Clica no link encontrado acima
 			element.click();
 
-			// executa pausa para dar tempo de carregar a página de login
-			pause(1000);
+			// Executa pausa para dar tempo de carregar a o widget de login
+			pause(2000);
 
-			// Navega pelo navegador até a imagem
-			WebElement imgElement = this.webDriver.findElement(By.tagName("table").id("recaptcha_table")
-					.tagName("tbody").tagName("tr").tagName("td").className("recaptcha_image_cell").tagName("center")
-					.tagName("div").id("recaptcha_image").tagName("img").id("recaptcha_challenge_image"));
-
+			// Obtém o elemento img do recaptcha
+			WebElement imgElement = this.webDriver.findElement(By.tagName("img").id("recaptcha_challenge_image"));
 			// // Obtém o link da imagem.
 			linkImagem.append(imgElement.getAttribute("src"));
 
-			// faz download da imagem e salva no local indicado
-			// downloadImage(linkImagem, PATH_DOWNLOAD_IMG + NAME_IMG);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
