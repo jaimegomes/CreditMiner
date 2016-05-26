@@ -15,7 +15,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTableBody;
 public class NavegadorHTMLUnit {
 
 	public void gotToLoginPage() {
-		// Obtém a página de login.
+		// ObtÃ©m a pÃ¡gina de login.
 		HtmlPage firstPage;
 		WebClient webClient = new WebClient(BrowserVersion.BEST_SUPPORTED);
 		try {
@@ -36,7 +36,7 @@ public class NavegadorHTMLUnit {
 			
 			HtmlPage loginPage = anchor.click();
 
-			// Mostra o código html da página
+			// Mostra o cï¿½digo html da pÃ¡gina
 			System.out.println(loginPage.asXml());
 
 			// HtmlTextInput inputNomeDeUsuario = paginaDeLogin
@@ -50,7 +50,7 @@ public class NavegadorHTMLUnit {
 			// inputNomeDeUsuario.setValueAttribute("joao");
 			// inputSenha.setValueAttribute("joao1234");
 
-			// Simula o "click" no botão de submit e aguarda retorno
+			// Simula o "click" no botÃ£o de submit e aguarda retorno
 			// HtmlPage paginaAposOLogin = botaoEnviar.click();
 		} catch (FailingHttpStatusCodeException e) {
 			e.printStackTrace();
