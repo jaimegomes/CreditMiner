@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>Login Consignum</title>
+</h:head>
+<h:body>
+	<h:form>
+		<h:panelGrid columns="3">
+			<h:outputLabel>Login: </h:outputLabel>
+			<h:inputText id="login" style="width: 174px; height: 10px; ">
+			</h:inputText>
+			<br></br>
+			<h:outputLabel>Senha: </h:outputLabel>
+			<h:inputText id="passwd" style="width: 174px; height: 10px;" />
+			<br></br>
+			<h:outputLabel id="captcha">CAPTCHA: </h:outputLabel>
+			<br></br>
+			<h:graphicImage
+				value="#{navegadorSeleniumPhantomJsBean.getLinkImagemCaptcha()}" style="width:210px; height:57px;" align="left"/>
+			
+		</h:panelGrid>
+	</h:form>
+
+</h:body>
+</html>

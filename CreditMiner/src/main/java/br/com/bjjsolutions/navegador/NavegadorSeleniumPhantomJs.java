@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.faces.bean.ManagedBean;
 import javax.imageio.ImageIO;
 
 import org.openqa.selenium.By;
@@ -23,12 +24,13 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  * @author Jaime Gomes
  *
  */
+@ManagedBean(name="navegadorSeleniumPhantomJsBean")
 public class NavegadorSeleniumPhantomJs {
 
 	private DesiredCapabilities desiredCapabilities;
 	private WebDriver webDriver;
 	private static String URL_INICIAL_CONSIGNUM = "https://sc.consignum.com.br/wmc-sc/pages/";
-	private final static String PATH_DOWNLOAD_IMG = "src/main/java/resources/captcha";
+	private final static String PATH_DOWNLOAD_IMG = "src/main/java/resources/captcha/";
 	private final static String NAME_IMG = "captcha.png";
 	private final static String PATH_ARQUIVO_HTML = "src/main/java/resources/htmls";
 	private final static String PATH_DRIVER_PHANTOMJS = "D:/Jaime/phantomjs-2.1.1-windows/bin/phantomjs.exe";
