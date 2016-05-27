@@ -18,13 +18,15 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import br.com.bjjsolutions.model.Login;
+
 /**
  * Classe de navegação utilizando Selenium + PhantomJS
  * 
  * @author Jaime Gomes
  *
  */
-@ManagedBean(name="navegadorSeleniumPhantomJsBean")
+@ManagedBean(name = "navegadorSeleniumPhantomJsBean")
 public class NavegadorSeleniumPhantomJs {
 
 	private DesiredCapabilities desiredCapabilities;
@@ -34,6 +36,9 @@ public class NavegadorSeleniumPhantomJs {
 	private final static String NAME_IMG = "captcha.png";
 	private final static String PATH_ARQUIVO_HTML = "src/main/java/resources/htmls";
 	private final static String PATH_DRIVER_PHANTOMJS = "D:/Jaime/phantomjs-2.1.1-windows/bin/phantomjs.exe";
+	private String login;
+	private String password;
+	private String captcha;
 
 	/**
 	 * Construtor
@@ -137,6 +142,13 @@ public class NavegadorSeleniumPhantomJs {
 
 	}
 
+	public void executeLogin() {
+
+		System.out.println("login: " + new Login().getLOGIN_PAN());
+		System.out.println("password: " + new Login().getSENHA_PAN());
+		System.out.println("captcha: " + captcha);
+	}
+
 	/**
 	 * @return the desiredCapabilities
 	 */
@@ -218,6 +230,51 @@ public class NavegadorSeleniumPhantomJs {
 	 */
 	public static String getPathDriverPhantomjs() {
 		return PATH_DRIVER_PHANTOMJS;
+	}
+
+	/**
+	 * @return the login
+	 */
+	public String getLogin() {
+		return login;
+	}
+
+	/**
+	 * @param login
+	 *            the login to set
+	 */
+	public void setLogin(String login) {
+		this.login = login;
+	}
+
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * @param password
+	 *            the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	/**
+	 * @return the captcha
+	 */
+	public String getCaptcha() {
+		return captcha;
+	}
+
+	/**
+	 * @param captcha
+	 *            the captcha to set
+	 */
+	public void setCaptcha(String captcha) {
+		this.captcha = captcha;
 	}
 
 }
