@@ -1,0 +1,12 @@
+@CHARSET "ISO-8859-1";
+
+/* Utilizado no menu para que este não fique por trás do conteúdo no template  */
+.ui-layout-north {
+	z-index: 20 !important;
+	overflow: visible !important;
+}
+
+/* Utilizado no menu para que este não fique por trás do conteúdo no template  */
+.ui-layout-north .ui-layout-unit.content {
+	overflow: visible !important;
+}	

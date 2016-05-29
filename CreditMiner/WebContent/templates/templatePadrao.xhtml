@@ -8,6 +8,10 @@
 <h:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 	<title>Credit Miner Robot</title>
+	<!-- 	<h:outputStylesheet library="/resources/css" name="estilos.css"  /> -->
+	<link
+		href="${facesContext.externalContext.requestContextPath}/resources/css/estilos.css"
+		rel="stylesheet" type="text/css" media="screen" />
 </h:head>
 <h:body>
 	<p:layout fullPage="true" />
@@ -18,7 +22,7 @@
 
 	<!-- Conteúdo -->
 	<p:layoutUnit position="center">
-	<ui:insert name="conteudo" />
+		<ui:insert name="conteudo" />
 	</p:layoutUnit>
 
 </h:body>
