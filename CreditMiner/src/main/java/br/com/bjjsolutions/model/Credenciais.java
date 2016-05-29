@@ -1,14 +1,14 @@
 package br.com.bjjsolutions.model;
 
 /**
- * Classe que contem os parâmetros para login.
+ * Classe que contem as credênciais para login.
  * 
  * OBS: Colocar as credenciais em properties
  * 
  * @author Jaime Gomes
  *
  */
-public class Login {
+public class Credenciais {
 
 	/*
 	 * Paraná Banco
@@ -37,7 +37,7 @@ public class Login {
 	/**
 	 * Construtor
 	 */
-	public Login() {
+	public Credenciais() {
 
 	}
 

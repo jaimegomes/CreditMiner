@@ -18,7 +18,7 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import br.com.bjjsolutions.model.Login;
+import br.com.bjjsolutions.model.LoginMB;
 
 /**
  * Classe de navegação utilizando Selenium + PhantomJS
@@ -36,14 +36,16 @@ public class NavegadorSeleniumPhantomJs {
 	private final static String NAME_IMG = "captcha.png";
 	private final static String PATH_ARQUIVO_HTML = "src/main/java/resources/htmls";
 	private final static String PATH_DRIVER_PHANTOMJS = "D:/Jaime/phantomjs-2.1.1-windows/bin/phantomjs.exe";
-	private String login;
-	private String password;
-	private String captcha;
+	private LoginMB loginMB;
 
 	/**
 	 * Construtor
 	 */
 	public NavegadorSeleniumPhantomJs() {
+
+		this.desiredCapabilities = getDesiredCapabilities();
+		this.webDriver = getWebDriver();
+		loginMB = new LoginMB();
 
 	}
 
@@ -55,32 +57,41 @@ public class NavegadorSeleniumPhantomJs {
 	@SuppressWarnings("static-access")
 	public String getLinkImagemCaptcha() {
 
-		this.desiredCapabilities = getDesiredCapabilities();
-		this.webDriver = getWebDriver();
+		System.out.println("Iniciou getLinkImagemCaptcha");
+		long start = System.currentTimeMillis();
 
 		StringBuilder linkImagem = new StringBuilder();
 
 		try {
 			this.webDriver.get(URL_INICIAL_CONSIGNUM);
-
+			System.out.println("Iniciou element");
+			long getElement = System.currentTimeMillis();
 			// Busca link Governo Estadual de Santa Catarina
 			WebElement element = this.webDriver.findElement(By.tagName("a").className("loginInicio"));
 
+			System.out.println("getElemento: " + (System.currentTimeMillis() - getElement));
 			// Clica no link encontrado acima
+			System.out.println("Iniciou click");
+			long click = System.currentTimeMillis();
 			element.click();
+			System.out.println("click: " + (System.currentTimeMillis() - click));
 
 			// Executa pausa para dar tempo de carregar a o widget de login
 			pause(2000);
-
+			
+			System.out.println("Iniciou click");
+			long getElementoCaptcha = System.currentTimeMillis();
 			// Obtém o elemento img do recaptcha
 			WebElement imgElement = this.webDriver.findElement(By.tagName("img").id("recaptcha_challenge_image"));
 			// // Obtém o link da imagem.
 			linkImagem.append(imgElement.getAttribute("src"));
+			System.out.println("getElementoCaptcha: " + (System.currentTimeMillis() - getElementoCaptcha));
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		long elapsed = System.currentTimeMillis() - start;
+		System.out.println("time em mili: " + elapsed);
 		return linkImagem.toString();
 
 	}
@@ -144,9 +155,10 @@ public class NavegadorSeleniumPhantomJs {
 
 	public void executeLogin() {
 
-		System.out.println("login: " + new Login().getLOGIN_PAN());
-		System.out.println("password: " + new Login().getSENHA_PAN());
-		System.out.println("captcha: " + captcha);
+		System.out.println("entrou executeLogin");
+		System.out.println("login: " + loginMB.getLogin());
+		System.out.println("password: " + loginMB.getSenha());
+		System.out.println("captcha: " + loginMB.getCaptcha());
 	}
 
 	/**
@@ -233,48 +245,18 @@ public class NavegadorSeleniumPhantomJs {
 	}
 
 	/**
-	 * @return the login
+	 * @return the loginMB
 	 */
-	public String getLogin() {
-		return login;
+	public LoginMB getLoginMB() {
+		return loginMB;
 	}
 
 	/**
-	 * @param login
-	 *            the login to set
+	 * @param loginMB
+	 *            the loginMB to set
 	 */
-	public void setLogin(String login) {
-		this.login = login;
-	}
-
-	/**
-	 * @return the password
-	 */
-	public String getPassword() {
-		return password;
-	}
-
-	/**
-	 * @param password
-	 *            the password to set
-	 */
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	/**
-	 * @return the captcha
-	 */
-	public String getCaptcha() {
-		return captcha;
-	}
-
-	/**
-	 * @param captcha
-	 *            the captcha to set
-	 */
-	public void setCaptcha(String captcha) {
-		this.captcha = captcha;
+	public void setLoginMB(LoginMB loginMB) {
+		this.loginMB = loginMB;
 	}
 
 }
