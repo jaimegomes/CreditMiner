@@ -166,6 +166,9 @@ public class NavegadorSeleniumPhantomJs {
 	 * Este método injeta as credenciais digitadas em nossa tela de login na
 	 * tela de login do consignum e se loga no sistema.
 	 * 
+	 * TO-DO: método deve ser refatorando para receber um caminho do arquivo csv e fazer a
+	 * leitura do mesmo e buscar pelos cpfs
+	 * 
 	 */
 	@SuppressWarnings("static-access")
 	public void executeLogin() throws IOException {
