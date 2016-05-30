@@ -1,7 +1,5 @@
 package br.com.bjjsolutions.navegador;
 
-import javax.annotation.PostConstruct;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
@@ -21,7 +19,7 @@ public class SetupSelenium {
 	 * @return instance
 	 */
 	public static synchronized SetupSelenium getInstance() {
-		
+
 		if (instance == null) {
 			instance = new SetupSelenium();
 			getWebDriverSetup();
@@ -31,7 +29,6 @@ public class SetupSelenium {
 
 	}
 
-	@PostConstruct
 	private static void getWebDriverSetup() {
 
 		desiredCapabilities = new DesiredCapabilities();
@@ -42,6 +39,7 @@ public class SetupSelenium {
 		// Colocar o caminho do driver em uma propertie
 		// desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
 		// PATH_DRIVER_PHANTOMJS_WINDOWS);
+
 		desiredCapabilities.setCapability(
 				PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
 				System.getProperty("phantomjs.binary.path",

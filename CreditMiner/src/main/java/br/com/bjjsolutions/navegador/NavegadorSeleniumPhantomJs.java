@@ -7,6 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -32,6 +34,7 @@ public class NavegadorSeleniumPhantomJs {
 	private final static String PATH_DOWNLOAD_IMG = "src/main/java/resources/captcha/";
 	private final static String NAME_IMG = "captcha.png";
 	private final static String PATH_ARQUIVO_HTML = "src/main/java/resources/htmls";
+	private SetupSelenium setupSelenium = SetupSelenium.getInstance();
 	private LoginMB loginMB;
 
 	/**
@@ -60,51 +63,40 @@ public class NavegadorSeleniumPhantomJs {
 		StringBuilder linkImagem = new StringBuilder();
 
 		try {
-			/*
-			 * Acessa a página do consignum
-			 */
-			SetupSelenium.getInstance().getWebDriver()
-					.get(URL_INICIAL_CONSIGNUM);
+			// Acessa a página do consignum
+			setupSelenium.getWebDriver().get(URL_INICIAL_CONSIGNUM);
 		} catch (Exception e) {
 			System.out.println("Erro ao entrar na página do consignum.\n"
 					+ e.getMessage());
 		}
 
 		try {
-			/*
-			 * Busca link Governo Estadual de Santa Catarina
-			 */
-			WebElement element = SetupSelenium.getInstance().getWebDriver()
-					.findElement(By.tagName("a").className("loginInicio"));
+			// Busca link Governo Estadual de Santa Catarina
+			WebElement element = setupSelenium.getWebDriver().findElement(
+					By.tagName("a").className("loginInicio"));
 
 			/*
 			 * Clica no link encontrado acima
 			 */
 			element.click();
+
 		} catch (Exception e) {
 			System.out
 					.println("Erro ao pegar elemento que representa o link para página de login.\n"
 							+ e.getMessage());
 		}
 
-		/*
-		 * Executa pausa para dar tempo de carregar a o widget de login
-		 */
-		// pause(2000);
+		// Executa pausa para dar tempo de carregar a o widget de login
+		pause(500);
 
 		try {
-			/*
-			 * Obtém o elemento img do recaptcha
-			 */
-			WebElement imgElement = SetupSelenium
-					.getInstance()
-					.getWebDriver()
-					.findElement(
-							By.tagName("img").id("recaptcha_challenge_image"));
-			/*
-			 * Obtém o link da imagem.
-			 */
+
+			// Obtém o elemento img do recaptcha
+			WebElement imgElement = setupSelenium.getWebDriver().findElement(
+					By.tagName("img").id("recaptcha_challenge_image"));
+			// Obtém o link da imagem.
 			linkImagem.append(imgElement.getAttribute("src"));
+
 		} catch (Exception e) {
 			new Exception(
 					"Erro ao pegar elemento que representa o link do captcha.\n"
@@ -201,8 +193,8 @@ public class NavegadorSeleniumPhantomJs {
 		 * Pega os elementos que representam os campos de
 		 * Usuário/Senha/Captcha/Botão de Entrar
 		 */
-		WebElement inputUsuario = SetupSelenium.getInstance().getWebDriver()
-				.findElement(By.tagName("input").id("j_id_jsp_1179747809_21"));
+		WebElement inputUsuario = setupSelenium.getWebDriver().findElement(
+				By.tagName("input").id("j_id_jsp_1179747809_21"));
 		WebElement inputPassword = SetupSelenium
 				.getInstance()
 				.getWebDriver()
@@ -211,8 +203,8 @@ public class NavegadorSeleniumPhantomJs {
 				.getInstance()
 				.getWebDriver()
 				.findElement(By.tagName("input").id("recaptcha_response_field"));
-		WebElement btnEntrar = SetupSelenium.getInstance().getWebDriver()
-				.findElement(By.tagName("button").id("j_id_jsp_1179747809_27"));
+		WebElement btnEntrar = setupSelenium.getWebDriver().findElement(
+				By.tagName("button").id("j_id_jsp_1179747809_27"));
 
 		/*
 		 * Seta valores aos campos Usuário/Senha/CAPTCHA
@@ -221,88 +213,98 @@ public class NavegadorSeleniumPhantomJs {
 		inputPassword.sendKeys(loginMB.getSenha());
 		inputCaptcha.sendKeys(loginMB.getCaptcha());
 
-		/*
-		 * Clica no botão entrar
-		 */
+		// Clica no botão entrar
 		btnEntrar.click();
 
-		/*
-		 * pausa para o navegador carregar o html da página principal após login
-		 */
+		// pausa para o navegador carregar o html da página principal após login
 		// pause(500);
 
-		/*
-		 * Redireciona para a página de disponibilidade de margem
-		 */
-		SetupSelenium.getInstance().getWebDriver()
-				.get(URL_DISPONIBILIDADE_MARGEM);
+		List<String> listCpf = new ArrayList<String>();
+		listCpf.add("51202158900");
+		listCpf.add("51112426949");
+		listCpf.add("41533135991");
+		listCpf.add("67326501904");
+		listCpf.add("89874102934");
+		listCpf.add("53457838968");
+		listCpf.add("54884020987");
+		listCpf.add("75147653953");
+		listCpf.add("67942385949");
+		listCpf.add("63809885991");
+
+		getHtmlClientes(listCpf);
+
+	}
+
+	@SuppressWarnings("static-access")
+	private void getHtmlClientes(List<String> listCpf) {
 
 		long start = System.currentTimeMillis();
 
-		/*
-		 * Pega os elementos que representam o campo CPF e o botão pesquisar
-		 */
-		WebElement inputCpf = SetupSelenium
-				.getInstance()
-				.getWebDriver()
-				.findElement(
-						By.tagName("input").id(
-								"j_id_jsp_248910084_1:j_id_jsp_248910084_14"));
-		WebElement btnPesquisar = SetupSelenium
-				.getInstance()
-				.getWebDriver()
-				.findElement(
-						By.tagName("button").id(
-								"j_id_jsp_248910084_1:j_id_jsp_248910084_15"));
+		if (!listCpf.isEmpty()) {
 
-		/*
-		 * Seta o valor do cpf
-		 * 
-		 * TO-DO: fazer lógica para ler o arquivo, adicionar os cpfs em uma
-		 * lista e inserir todos no campo
-		 */
-		inputCpf.sendKeys("29072654900");
+			for (String cpf : listCpf) {
 
-		/*
-		 * Clica no botão pesquisar
-		 */
-		btnPesquisar.click();
+				// Redireciona para a página de disponibilidade de margem
+				setupSelenium.getWebDriver().get(URL_DISPONIBILIDADE_MARGEM);
 
-		/*
-		 * pausa para carregar a página
-		 */
-		pause(1000);
+				// pausa para carregar a página
+				pause(1000);
 
-		/*
-		 * Pega o elemento que contém o link para exibir o histórico do cliente
-		 */
-		WebElement linkNome = SetupSelenium
-				.getInstance()
-				.getWebDriver()
-				.findElement(
-						By.id("j_id_jsp_248910084_1:tabelaListaCol:0:j_id_jsp_248910084_23"));
+				// Pega os elementos que representam o campo CPF e o botão
+				// pesquisar
+				WebElement inputCpf = SetupSelenium
+						.getInstance()
+						.getWebDriver()
+						.findElement(
+								By.tagName("input")
+										.id("j_id_jsp_248910084_1:j_id_jsp_248910084_14"));
+				WebElement btnPesquisar = SetupSelenium
+						.getInstance()
+						.getWebDriver()
+						.findElement(
+								By.tagName("button")
+										.id("j_id_jsp_248910084_1:j_id_jsp_248910084_15"));
 
-		/*
-		 * Clica no elemento para exibir o histórico
-		 */
-		linkNome.click();
+				// limpa o input caso tenha algum cpf
+				inputCpf.clear();
+				// Seta o valor do cpf
+				inputCpf.sendKeys(cpf);
 
-		/*
-		 * Redireciona para a página do ByPass
-		 */
-		SetupSelenium.getInstance().getWebDriver().get(URL_BYPASS);
+				// Clica no botão pesquisar
+				btnPesquisar.click();
 
-		/*
-		 * Salva o código fonte da página
-		 */
-		salvaHtml(SetupSelenium.getInstance().getWebDriver().getPageSource(),
-				"margem.html");
+				// salvaHtml(setupSelenium.getWebDriver().getPageSource(),
+				// "pagina.html");
+
+				// pausa para carregar a página
+				pause(500);
+
+				// Pega o elemento que contém o link para exibir o histórico do
+				// cliente
+				WebElement linkNome = SetupSelenium
+						.getInstance()
+						.getWebDriver()
+						.findElement(  
+								By.id("j_id_jsp_248910084_1:tabelaListaCol:0:j_id_jsp_248910084_23"));
+
+				// Clica no elemento para exibir o histórico
+				linkNome.click();
+
+				// Redireciona para a página do ByPass
+				setupSelenium.getWebDriver().get(URL_BYPASS);
+
+				// Salva o código fonte da página
+				salvaHtml(setupSelenium.getWebDriver().getPageSource(), cpf
+						+ ".html");
+
+			}
+
+		}
 
 		long end = System.currentTimeMillis();
 
-		System.out.println("tempo execução método executaLogin(): "
+		System.out.println("tempo execução método getHtmlClientes(): "
 				+ calculaTempoExecucao(start, end));
-
 	}
 
 	/**
@@ -346,6 +348,27 @@ public class NavegadorSeleniumPhantomJs {
 	 */
 	public void setLoginMB(LoginMB loginMB) {
 		this.loginMB = loginMB;
+	}
+
+	/**
+	 * @return the urlInicialConsignum
+	 */
+	public static String getUrlInicialConsignum() {
+		return URL_INICIAL_CONSIGNUM;
+	}
+
+	/**
+	 * @return the urlDisponibilidadeMargem
+	 */
+	public static String getUrlDisponibilidadeMargem() {
+		return URL_DISPONIBILIDADE_MARGEM;
+	}
+
+	/**
+	 * @return the urlBypass
+	 */
+	public static String getUrlBypass() {
+		return URL_BYPASS;
 	}
 
 }
