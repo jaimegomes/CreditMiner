@@ -235,6 +235,15 @@ public class NavegadorSeleniumPhantomJs {
 
 	}
 
+	/**
+	 * TO-DO: Fazer lógica para verificar se existe mais de um link para clicar
+	 * após a pesquisa pelo cpf, caso exista, não deve trocar de cpf para saber
+	 * se existe mais de um registro tem como verificar pelo id que tem a
+	 * quantidade, no caso o primeiro registro fica como tabelaListaCol:0: e o
+	 * segundo como tabelaListaCol:1:
+	 * 
+	 * @param listCpf
+	 */
 	@SuppressWarnings("static-access")
 	private void getHtmlClientes(List<String> listCpf) {
 
@@ -284,7 +293,7 @@ public class NavegadorSeleniumPhantomJs {
 				WebElement linkNome = SetupSelenium
 						.getInstance()
 						.getWebDriver()
-						.findElement(  
+						.findElement(
 								By.id("j_id_jsp_248910084_1:tabelaListaCol:0:j_id_jsp_248910084_23"));
 
 				// Clica no elemento para exibir o histórico
