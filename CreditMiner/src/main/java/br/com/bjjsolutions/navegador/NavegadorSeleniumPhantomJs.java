@@ -12,11 +12,7 @@ import javax.faces.bean.ManagedBean;
 import javax.imageio.ImageIO;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriverService;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import br.com.bjjsolutions.model.LoginMB;
 
@@ -29,23 +25,19 @@ import br.com.bjjsolutions.model.LoginMB;
 @ManagedBean(name = "navegadorSeleniumPhantomJsBean")
 public class NavegadorSeleniumPhantomJs {
 
-	private DesiredCapabilities desiredCapabilities;
-	private WebDriver webDriver;
-	private static String URL_INICIAL_CONSIGNUM = "https://sc.consignum.com.br/wmc-sc/pages/";
+	private final static String URL_INICIAL_CONSIGNUM = "https://sc.consignum.com.br/wmc-sc/login/selecao_parceiro.faces";
+	private final static String URL_DISPONIBILIDADE_MARGEM = "http://sc.consignum.com.br/wmc-sc/pages/consultas/disponibilidade_margem/pesquisa_colaborador.faces";
 	private final static String PATH_DOWNLOAD_IMG = "src/main/java/resources/captcha/";
 	private final static String NAME_IMG = "captcha.png";
 	private final static String PATH_ARQUIVO_HTML = "src/main/java/resources/htmls";
-	private final static String PATH_DRIVER_PHANTOMJS = "D:/Jaime/phantomjs-2.1.1-windows/bin/phantomjs.exe";
+	private SetupSelenium setupSelenium = SetupSelenium.getInstance();
 	private LoginMB loginMB;
 
 	/**
 	 * Construtor
 	 */
 	public NavegadorSeleniumPhantomJs() {
-
-		this.desiredCapabilities = getDesiredCapabilities();
-		this.webDriver = getWebDriver();
-		loginMB = new LoginMB();
+		this.loginMB = new LoginMB();
 
 	}
 
@@ -57,41 +49,51 @@ public class NavegadorSeleniumPhantomJs {
 	@SuppressWarnings("static-access")
 	public String getLinkImagemCaptcha() {
 
-		System.out.println("Iniciou getLinkImagemCaptcha");
 		long start = System.currentTimeMillis();
 
 		StringBuilder linkImagem = new StringBuilder();
+		/*
+		 * Acessa a página do consignum
+		 */
+		setupSelenium.getWebDriver().get(URL_INICIAL_CONSIGNUM);
 
 		try {
-			this.webDriver.get(URL_INICIAL_CONSIGNUM);
-			System.out.println("Iniciou element");
-			long getElement = System.currentTimeMillis();
-			// Busca link Governo Estadual de Santa Catarina
-			WebElement element = this.webDriver.findElement(By.tagName("a").className("loginInicio"));
+			/*
+			 * Busca link Governo Estadual de Santa Catarina
+			 */
+			WebElement element = setupSelenium.getWebDriver().findElement(By.tagName("a").className("loginInicio"));
 
-			System.out.println("getElemento: " + (System.currentTimeMillis() - getElement));
-			// Clica no link encontrado acima
-			System.out.println("Iniciou click");
-			long click = System.currentTimeMillis();
+			/*
+			 * Clica no link encontrado acima
+			 */
 			element.click();
-			System.out.println("click: " + (System.currentTimeMillis() - click));
-
-			// Executa pausa para dar tempo de carregar a o widget de login
-			pause(2000);
-			
-			System.out.println("Iniciou click");
-			long getElementoCaptcha = System.currentTimeMillis();
-			// Obtém o elemento img do recaptcha
-			WebElement imgElement = this.webDriver.findElement(By.tagName("img").id("recaptcha_challenge_image"));
-			// // Obtém o link da imagem.
-			linkImagem.append(imgElement.getAttribute("src"));
-			System.out.println("getElementoCaptcha: " + (System.currentTimeMillis() - getElementoCaptcha));
-
 		} catch (Exception e) {
-			e.printStackTrace();
+			new Exception("Erro ao pegar elemento que representa o link para página de login.\n" + e.getMessage());
 		}
-		long elapsed = System.currentTimeMillis() - start;
-		System.out.println("time em mili: " + elapsed);
+
+		/*
+		 * Executa pausa para dar tempo de carregar a o widget de login
+		 */
+		pause(2000);
+
+		try {
+			/*
+			 * Obtém o elemento img do recaptcha
+			 */
+			WebElement imgElement = setupSelenium.getWebDriver()
+					.findElement(By.tagName("img").id("recaptcha_challenge_image"));
+			/*
+			 * Obtém o link da imagem.
+			 */
+			linkImagem.append(imgElement.getAttribute("src"));
+		} catch (Exception e) {
+			new Exception("Erro ao pegar elemento que representa o link do captcha.\n" + e.getMessage());
+		}
+
+		long end = System.currentTimeMillis();
+
+		System.out.println("tempo execução método getLinkImagemCaptcha: " + calculaTempoExecucao(start, end));
+
 		return linkImagem.toString();
 
 	}
@@ -112,17 +114,22 @@ public class NavegadorSeleniumPhantomJs {
 		}
 	}
 
+	private long calculaTempoExecucao(long start, long end) {
+
+		return (end - start);
+	}
+
 	/**
 	 * Método que salva o HTML da página que está sendo navegada, no caminho
 	 * indicado pela variável
 	 * 
 	 * @param html
 	 */
-	private void salvaHtml(String html) {
+	private void salvaHtml(String html, String nomeArquivo) {
 
 		FileWriter arquivo;
 		try {
-			arquivo = new FileWriter(new File(PATH_ARQUIVO_HTML));
+			arquivo = new FileWriter(new File("D:/Jaime/" + nomeArquivo));
 			arquivo.write(html);
 			arquivo.close();
 
@@ -153,52 +160,85 @@ public class NavegadorSeleniumPhantomJs {
 
 	}
 
-	public void executeLogin() {
-
-		System.out.println("entrou executeLogin");
-		System.out.println("login: " + loginMB.getLogin());
-		System.out.println("password: " + loginMB.getSenha());
-		System.out.println("captcha: " + loginMB.getCaptcha());
-	}
-
 	/**
-	 * @return the desiredCapabilities
+	 * Método que representa o action do botão entrar da nossa tela de login.
+	 * 
+	 * Este método injeta as credenciais digitadas em nossa tela de login na
+	 * tela de login do consignum e se loga no sistema.
+	 * 
 	 */
-	public DesiredCapabilities getDesiredCapabilities() {
+	@SuppressWarnings("static-access")
+	public void executeLogin() throws IOException {
 
-		if (this.desiredCapabilities == null) {
-			this.desiredCapabilities = new DesiredCapabilities();
+		/*
+		 * Pega os elementos que representam os campos de
+		 * Usuário/Senha/Captcha/Botão de Entrar
+		 */
+		WebElement inputUsuario = setupSelenium.getWebDriver()
+				.findElement(By.tagName("input").id("j_id_jsp_1179747809_21"));
+		WebElement inputPassword = setupSelenium.getWebDriver()
+				.findElement(By.tagName("input").name("j_id_jsp_1179747809_23"));
+		WebElement inputCaptcha = setupSelenium.getWebDriver()
+				.findElement(By.tagName("input").id("recaptcha_response_field"));
+		WebElement btnEntrar = setupSelenium.getWebDriver()
+				.findElement(By.tagName("button").id("j_id_jsp_1179747809_27"));
 
-			// ativa o javascript
-			this.desiredCapabilities.setJavascriptEnabled(true);
+		/*
+		 * Seta valores aos campos Usuário/Senha/CAPTCHA
+		 */
+		inputUsuario.sendKeys(loginMB.getLogin());
+		inputPassword.sendKeys(loginMB.getSenha());
+		inputCaptcha.sendKeys(loginMB.getCaptcha());
 
-			// Colocar o caminho do driver em uma propertie
-			this.desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-					PATH_DRIVER_PHANTOMJS);
+		/*
+		 * Clica no botão entrar
+		 */
+		btnEntrar.click();
 
-		}
+		/*
+		 * pausa para o navegador carregar o html da página principal após login
+		 */
+		// pause(500);
 
-		return this.desiredCapabilities;
-	}
+		/*
+		 * Redireciona para a página de disponibilidade de margem
+		 */
+		setupSelenium.getWebDriver().get(URL_DISPONIBILIDADE_MARGEM);
 
-	public void setDesiredCapabilities(DesiredCapabilities desiredCapabilities) {
-		this.desiredCapabilities = desiredCapabilities;
-	}
+		long start = System.currentTimeMillis();
 
-	/**
-	 * @return the webDriver
-	 */
-	public WebDriver getWebDriver() {
+		/*
+		 * Pega os elementos que representam o campo CPF e o bontão pesquisar
+		 */
+		WebElement inputCpf = setupSelenium.getWebDriver()
+				.findElement(By.tagName("input").id("j_id_jsp_1326380073_14"));
+		WebElement btnPesquisar = setupSelenium.getWebDriver()
+				.findElement(By.tagName("button").id("j_id_jsp_1326380073_16"));
 
-		if (this.webDriver == null) {
-			this.webDriver = new PhantomJSDriver(this.desiredCapabilities);
-		}
-		return this.webDriver;
+		/*
+		 * Seta o valor do cpf
+		 * 
+		 * TO-DO: fazer lógica para ler o arquivo, adicionar os cpfs em uma
+		 * lista e inserir todos no campo
+		 */
+		inputCpf.sendKeys("29072654900");
 
-	}
+		/*
+		 * Clica no botão pesquisar
+		 */
+		btnPesquisar.click();
 
-	public void setWebDriver(WebDriver webDriver) {
-		this.webDriver = webDriver;
+		/*
+		 * pausa para carregar a página
+		 */
+		pause(1500);
+
+		salvaHtml(setupSelenium.getWebDriver().getPageSource(), "saida3.html");
+
+		long end = System.currentTimeMillis();
+
+		System.out.println("tempo execução método executaLogin(): " + calculaTempoExecucao(start, end));
+
 	}
 
 	/**
@@ -223,25 +263,10 @@ public class NavegadorSeleniumPhantomJs {
 	}
 
 	/**
-	 * @param uRL_INICIAL_CONSIGNUM
-	 *            the uRL_INICIAL_CONSIGNUM to set
-	 */
-	public static void setURL_INICIAL_CONSIGNUM(String uRL_INICIAL_CONSIGNUM) {
-		URL_INICIAL_CONSIGNUM = uRL_INICIAL_CONSIGNUM;
-	}
-
-	/**
 	 * @return the pathArquivoHtml
 	 */
 	public static String getPathArquivoHtml() {
 		return PATH_ARQUIVO_HTML;
-	}
-
-	/**
-	 * @return the pathDriverPhantomjs
-	 */
-	public static String getPathDriverPhantomjs() {
-		return PATH_DRIVER_PHANTOMJS;
 	}
 
 	/**
