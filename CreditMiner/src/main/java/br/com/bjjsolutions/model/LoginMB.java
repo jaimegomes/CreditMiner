@@ -1,7 +1,5 @@
 package br.com.bjjsolutions.model;
 
-import javax.faces.bean.ManagedBean;
-
 public class LoginMB {
 
 	private String login;
