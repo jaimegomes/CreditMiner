@@ -1,5 +1,7 @@
 package br.com.bjjsolutions.enumerator;
 
+import br.com.bjjsolutions.util.Util;
+
 /**
  * Enum de definição do S.O que executará o bot
  * 
@@ -10,8 +12,9 @@ package br.com.bjjsolutions.enumerator;
  */
 public enum SystemEnum {
 
-	WINDOWS("WINDOWS"), LINUX("LINUX");
-
+	WINDOWS(Util.getInstanceProperties().getProperty("prop.name.windows")), 
+	LINUX(Util.getInstanceProperties().getProperty("prop.name.linux"));
+	
 	private String system;
 
 	SystemEnum(String system) {

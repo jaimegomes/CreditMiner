@@ -1,5 +1,7 @@
 package br.com.bjjsolutions.enumerator;
 
+import br.com.bjjsolutions.util.Util;
+
 /**
  * Enum de definição dos caminhos absolutos do Driver PhantomJS
  * 
@@ -10,8 +12,8 @@ package br.com.bjjsolutions.enumerator;
  */
 public enum DriverPhantomJSEnum {
 
-	PATH_DRIVER_PHANTOMJS_WINDOWS("D:/Jaime/phantomjs-2.1.1-windows/bin/phantomjs.exe"), 
-	PATH_DRIVER_PHANTOMJS_LINUX("/usr/local/bin/phantomjs");
+	PATH_DRIVER_PHANTOMJS_WINDOWS(Util.getInstanceProperties().getProperty("prop.path.driver.phantomjs.windows")), 
+	PATH_DRIVER_PHANTOMJS_LINUX(Util.getInstanceProperties().getProperty("prop.path.driver.phantomjs.linux"));
 
 	private String path;
 
