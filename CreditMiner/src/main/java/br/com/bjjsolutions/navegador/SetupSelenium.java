@@ -5,13 +5,14 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import br.com.bjjsolutions.enumerator.DriverPhantomJSEnum;
+import br.com.bjjsolutions.enumerator.SystemEnum;
+
 public class SetupSelenium {
 
 	private static SetupSelenium instance = null;
 	private static DesiredCapabilities desiredCapabilities;
 	private static WebDriver webDriver;
-	private final static String PATH_DRIVER_PHANTOMJS_WINDOWS = "D:/Jaime/phantomjs-2.1.1-windows/bin/phantomjs.exe";
-	private final static String PATH_DRIVER_PHANTOMJS_UBUNTU = "/usr/local/bin/phantomjs";
 
 	/**
 	 * Singleton
@@ -36,14 +37,13 @@ public class SetupSelenium {
 		// ativa o javascript
 		desiredCapabilities.setJavascriptEnabled(true);
 
-		// Colocar o caminho do driver em uma propertie
-		// desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-		// PATH_DRIVER_PHANTOMJS_WINDOWS);
-
-		desiredCapabilities.setCapability(
-				PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-				System.getProperty("phantomjs.binary.path",
-						PATH_DRIVER_PHANTOMJS_UBUNTU));
+		if (System.getProperty("os.name").toUpperCase().equals(SystemEnum.LINUX)) {
+			desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+					DriverPhantomJSEnum.PATH_DRIVER_PHANTOMJS_WINDOWS.getPath());
+		} else {
+			desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+					System.getProperty("phantomjs.binary.path", DriverPhantomJSEnum.PATH_DRIVER_PHANTOMJS_LINUX.getPath()));
+		}
 
 		webDriver = new PhantomJSDriver(desiredCapabilities);
 
@@ -60,8 +60,7 @@ public class SetupSelenium {
 	 * @param desiredCapabilities
 	 *            the desiredCapabilities to set
 	 */
-	public static void setDesiredCapabilities(
-			DesiredCapabilities desiredCapabilities) {
+	public static void setDesiredCapabilities(DesiredCapabilities desiredCapabilities) {
 		SetupSelenium.desiredCapabilities = desiredCapabilities;
 	}
 
@@ -79,19 +78,4 @@ public class SetupSelenium {
 	public static void setWebDriver(WebDriver webDriver) {
 		SetupSelenium.webDriver = webDriver;
 	}
-
-	/**
-	 * @return the pathDriverPhantomjsWindows
-	 */
-	public static String getPathDriverPhantomjsWindows() {
-		return PATH_DRIVER_PHANTOMJS_WINDOWS;
-	}
-
-	/**
-	 * @return the pathDriverPhantomjsUbuntu
-	 */
-	public static String getPathDriverPhantomjsUbuntu() {
-		return PATH_DRIVER_PHANTOMJS_UBUNTU;
-	}
-
 }
