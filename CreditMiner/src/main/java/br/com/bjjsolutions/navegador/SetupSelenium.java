@@ -1,12 +1,15 @@
 package br.com.bjjsolutions.navegador;
 
+import java.io.Serializable;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-public class SetupSelenium {
+public class SetupSelenium implements Serializable {
 
+	private static final long serialVersionUID = 2089282789630132989L;
 	private static SetupSelenium instance = null;
 	private static DesiredCapabilities desiredCapabilities;
 	private static WebDriver webDriver;
@@ -37,13 +40,13 @@ public class SetupSelenium {
 		desiredCapabilities.setJavascriptEnabled(true);
 
 		// Colocar o caminho do driver em uma propertie
-		// desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-		// PATH_DRIVER_PHANTOMJS_WINDOWS);
+		desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+				PATH_DRIVER_PHANTOMJS_WINDOWS);
 
-		desiredCapabilities.setCapability(
-				PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-				System.getProperty("phantomjs.binary.path",
-						PATH_DRIVER_PHANTOMJS_UBUNTU));
+		// desiredCapabilities.setCapability(
+		// PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+		// System.getProperty("phantomjs.binary.path",
+		// PATH_DRIVER_PHANTOMJS_UBUNTU));
 
 		webDriver = new PhantomJSDriver(desiredCapabilities);
 
@@ -60,8 +63,7 @@ public class SetupSelenium {
 	 * @param desiredCapabilities
 	 *            the desiredCapabilities to set
 	 */
-	public static void setDesiredCapabilities(
-			DesiredCapabilities desiredCapabilities) {
+	public static void setDesiredCapabilities(DesiredCapabilities desiredCapabilities) {
 		SetupSelenium.desiredCapabilities = desiredCapabilities;
 	}
 

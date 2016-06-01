@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.imageio.ImageIO;
 
 import org.openqa.selenium.By;
@@ -26,8 +28,9 @@ import br.com.bjjsolutions.model.LoginMB;
  * 
  */
 @ManagedBean(name = "navegadorSeleniumPhantomJsBean")
-public class NavegadorSeleniumPhantomJs {
+public class NavegadorSeleniumPhantomJs  implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	private final static String URL_INICIAL_CONSIGNUM = "http://sc.consignum.com.br/wmc-sc/login/selecao_parceiro.faces";
 	private final static String URL_DISPONIBILIDADE_MARGEM = "http://sc.consignum.com.br/wmc-sc/pages/consultas/historico/pesquisa_colaborador.faces";
 	private final static String URL_BYPASS = "http://sc.consignum.com.br/wmc-sc/pages/consultas/disponibilidade_margem/visualiza_margem_colaborador.faces";
@@ -57,7 +60,7 @@ public class NavegadorSeleniumPhantomJs {
 	 */
 	@SuppressWarnings("static-access")
 	public String getLinkImagemCaptcha() {
-
+		
 		long start = System.currentTimeMillis();
 
 		StringBuilder linkImagem = new StringBuilder();
