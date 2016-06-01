@@ -37,7 +37,7 @@ public class SetupSelenium {
 		// ativa o javascript
 		desiredCapabilities.setJavascriptEnabled(true);
 
-		if (System.getProperty("os.name").toUpperCase().equals(SystemEnum.LINUX)) {
+		if (System.getProperty("os.name").toUpperCase().equals(SystemEnum.WINDOWS)) {
 			desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
 					DriverPhantomJSEnum.PATH_DRIVER_PHANTOMJS_WINDOWS.getPath());
 		} else {

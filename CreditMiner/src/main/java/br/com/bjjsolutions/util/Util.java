@@ -29,7 +29,7 @@ public class Util {
 		}
 		FileInputStream file;
 		try {
-			file = new FileInputStream("./properties/config.properties");
+			file = new FileInputStream("./WebContent/resources/properties/config.properties");
 			properties.load(file);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
