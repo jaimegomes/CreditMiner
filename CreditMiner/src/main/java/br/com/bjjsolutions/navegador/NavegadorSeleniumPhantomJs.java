@@ -18,6 +18,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import br.com.bjjsolutions.model.LoginMB;
+import br.com.bjjsolutions.util.Util;
+import br.com.bjjsolutions.xml.Cache;
+import br.com.bjjsolutions.xml.HTMLJsoup;
+import br.com.bjjsolutions.xml.WriteFileXML;
 
 /**
  * Classe de navegação utilizando Selenium + PhantomJS
@@ -189,6 +193,10 @@ public class NavegadorSeleniumPhantomJs {
 		listCpf.add("63809885991");
 
 		getHtmlClientes(listCpf);
+		
+        //if (Cache.clientesCache != null) {
+        //	WriteFileXML.gravaXMLListaProdutos(Cache.clientesCache, Util.getInstanceProperties().getProperty("prop.diretorio.cache"));
+        //}
 
 	}
 
@@ -245,6 +253,7 @@ public class NavegadorSeleniumPhantomJs {
 				// Redireciona para a página do ByPass
 				setupSelenium.getWebDriver().get(URL_BYPASS);
 
+				//new HTMLJsoup(setupSelenium.getWebDriver().getPageSource());
 				// Salva o código fonte da página
 				salvaHtml(setupSelenium.getWebDriver().getPageSource(), cpf + ".html");
 
