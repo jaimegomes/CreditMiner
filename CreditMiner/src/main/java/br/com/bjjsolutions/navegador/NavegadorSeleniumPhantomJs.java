@@ -29,7 +29,6 @@ import br.com.bjjsolutions.util.Util;
  * @author Jaime Gomes
  * 
  */
-@SuppressWarnings("restriction")
 @ManagedBean(name = "navegadorSeleniumPhantomJsBean")
 public class NavegadorSeleniumPhantomJs {
 
@@ -68,15 +67,16 @@ public class NavegadorSeleniumPhantomJs {
 
 		try {
 			setupSelenium.getWebDriver().get(URL_INICIAL_CONSIGNUM);
-			
+
 			WebElement element = setupSelenium.getWebDriver().findElement(By.tagName("a").className("loginInicio"));
 			element.click();
-			
-			pause(500);
-			
-			WebElement imgElement = setupSelenium.getWebDriver().findElement(By.tagName("img").id("recaptcha_challenge_image"));
+
+			pause(1000);
+
+			WebElement imgElement = setupSelenium.getWebDriver()
+					.findElement(By.tagName("img").id("recaptcha_challenge_image"));
 			linkImagem.append(imgElement.getAttribute("src"));
-			
+
 		} catch (Exception e) {
 			System.err.println("Erro ao capturar link do captcha.\n" + e.getMessage());
 			e.printStackTrace();
@@ -89,9 +89,6 @@ public class NavegadorSeleniumPhantomJs {
 
 	/**
 	 * Método que recebe como parâmetro o tempo de pausa em mili segundos.
-	 * 
-	 * Pausa utilizada para que dê tempo de executar o javascript do link da
-	 * página de login.
 	 * 
 	 * @param timeMiliSec
 	 */
@@ -116,8 +113,9 @@ public class NavegadorSeleniumPhantomJs {
 	private void salvaHtml(String html, String nomeArquivo) {
 		FileWriter arquivo;
 		try {
-			// arquivo = new FileWriter(new File("D:/Jaime/" + nomeArquivo));
-			arquivo = new FileWriter(new File("/home/marcelo/Documents" + nomeArquivo));
+			arquivo = new FileWriter(new File("D:/" + nomeArquivo));
+			// arquivo = new FileWriter(new File("/home/marcelo/Documents" +
+			// nomeArquivo));
 			arquivo.write(html);
 			arquivo.close();
 
@@ -139,7 +137,8 @@ public class NavegadorSeleniumPhantomJs {
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
-	public static void downloadImage(StringBuilder linkImagem, String targetDirectory) throws MalformedURLException, IOException, FileNotFoundException {
+	public static void downloadImage(StringBuilder linkImagem, String targetDirectory)
+			throws MalformedURLException, IOException, FileNotFoundException {
 		URL url = new URL(linkImagem.toString());
 		BufferedImage bufImgOne = ImageIO.read(url);
 		ImageIO.write(bufImgOne, "png", new File(targetDirectory));
@@ -162,10 +161,14 @@ public class NavegadorSeleniumPhantomJs {
 		 * Pega os elementos que representam os campos de
 		 * Usuário/Senha/Captcha/Botão de Entrar
 		 */
-		WebElement inputUsuario = setupSelenium.getWebDriver().findElement(By.tagName("input").id("j_id_jsp_1179747809_21"));
-		WebElement inputPassword = setupSelenium.getWebDriver().findElement(By.tagName("input").name("j_id_jsp_1179747809_23"));
-		WebElement inputCaptcha = setupSelenium.getWebDriver().findElement(By.tagName("input").id("recaptcha_response_field"));
-		WebElement btnEntrar = setupSelenium.getWebDriver().findElement(By.tagName("button").id("j_id_jsp_1179747809_27"));
+		WebElement inputUsuario = setupSelenium.getWebDriver()
+				.findElement(By.tagName("input").id("j_id_jsp_1179747809_21"));
+		WebElement inputPassword = setupSelenium.getWebDriver()
+				.findElement(By.tagName("input").name("j_id_jsp_1179747809_23"));
+		WebElement inputCaptcha = setupSelenium.getWebDriver()
+				.findElement(By.tagName("input").id("recaptcha_response_field"));
+		WebElement btnEntrar = setupSelenium.getWebDriver()
+				.findElement(By.tagName("button").id("j_id_jsp_1179747809_27"));
 
 		/*
 		 * Seta valores aos campos Usuário/Senha/CAPTCHA
@@ -193,10 +196,11 @@ public class NavegadorSeleniumPhantomJs {
 		listCpf.add("63809885991");
 
 		getHtmlClientes(listCpf);
-		
-        //if (Cache.clientesCache != null) {
-        //	WriteFileXML.gravaXMLListaProdutos(Cache.clientesCache, Util.getInstanceProperties().getProperty("prop.diretorio.cache"));
-        //}
+
+		// if (Cache.clientesCache != null) {
+		// WriteFileXML.gravaXMLListaProdutos(Cache.clientesCache,
+		// Util.getInstanceProperties().getProperty("prop.diretorio.cache"));
+		// }
 
 	}
 
@@ -222,12 +226,14 @@ public class NavegadorSeleniumPhantomJs {
 				setupSelenium.getWebDriver().get(URL_DISPONIBILIDADE_MARGEM);
 
 				// pausa para carregar a página
-				pause(1000);
+				 pause(500);
 
 				// Pega os elementos que representam o campo CPF e o botão
 				// pesquisar
-				WebElement inputCpf = SetupSelenium.getInstance().getWebDriver().findElement(By.tagName("input").id("j_id_jsp_248910084_1:j_id_jsp_248910084_14"));
-				WebElement btnPesquisar = SetupSelenium.getInstance().getWebDriver().findElement(By.tagName("button").id("j_id_jsp_248910084_1:j_id_jsp_248910084_15"));
+				WebElement inputCpf = SetupSelenium.getInstance().getWebDriver()
+						.findElement(By.tagName("input").id("j_id_jsp_248910084_1:j_id_jsp_248910084_14"));
+				WebElement btnPesquisar = SetupSelenium.getInstance().getWebDriver()
+						.findElement(By.tagName("button").id("j_id_jsp_248910084_1:j_id_jsp_248910084_15"));
 
 				// limpa o input caso tenha algum cpf
 				inputCpf.clear();
@@ -245,7 +251,8 @@ public class NavegadorSeleniumPhantomJs {
 
 				// Pega o elemento que contém o link para exibir o histórico do
 				// cliente
-				WebElement linkNome = SetupSelenium.getInstance().getWebDriver().findElement(By.id("j_id_jsp_248910084_1:tabelaListaCol:0:j_id_jsp_248910084_23"));
+				WebElement linkNome = SetupSelenium.getInstance().getWebDriver()
+						.findElement(By.id("j_id_jsp_248910084_1:tabelaListaCol:0:j_id_jsp_248910084_23"));
 
 				// Clica no elemento para exibir o histórico
 				linkNome.click();
@@ -253,9 +260,11 @@ public class NavegadorSeleniumPhantomJs {
 				// Redireciona para a página do ByPass
 				setupSelenium.getWebDriver().get(URL_BYPASS);
 
-				//new HTMLJsoup(setupSelenium.getWebDriver().getPageSource());
+				// new HTMLJsoup(setupSelenium.getWebDriver().getPageSource());
 				// Salva o código fonte da página
 				salvaHtml(setupSelenium.getWebDriver().getPageSource(), cpf + ".html");
+
+//				setupSelenium.getWebDriver().quit();
 
 			}
 
