@@ -22,7 +22,7 @@
 		<param-value>resources.application</param-value>
 	</context-param>
 	<welcome-file-list>
-		<welcome-file>/pages/index.xhtml</welcome-file>
+		<welcome-file>/pages/login.jsf</welcome-file>
 	</welcome-file-list>
 	<error-page>
 		<exception-type>javax.faces.application.ViewExpiredException</exception-type>

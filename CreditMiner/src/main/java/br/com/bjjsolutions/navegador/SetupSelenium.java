@@ -36,16 +36,14 @@ public class SetupSelenium {
 
 		// ativa o javascript
 		desiredCapabilities.setJavascriptEnabled(true);
-		String[] phantomJsArgs = { "--load-images=no", "--disk-cache=yes", "--web-security=false",
-				"--ignore-ssl-errors=true" };
+		String[] phantomJsArgs = { "--load-images=no", "--disk-cache=yes", "--web-security=false", "--ignore-ssl-errors=true" };
 		desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_GHOSTDRIVER_CLI_ARGS, phantomJsArgs);
 
 		if (System.getProperty("os.name").toUpperCase().equals(SystemEnum.LINUX.getSystem())) {
-			desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-					DriverPhantomJSEnum.PATH_DRIVER_PHANTOMJS_LINUX.getPath());
+			desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, DriverPhantomJSEnum.PATH_DRIVER_PHANTOMJS_LINUX.getPath());
 		} else {
-			desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, System
-					.getProperty("phantomjs.binary.path", DriverPhantomJSEnum.PATH_DRIVER_PHANTOMJS_WINDOWS.getPath()));
+			desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+					System.getProperty("phantomjs.binary.path", DriverPhantomJSEnum.PATH_DRIVER_PHANTOMJS_WINDOWS.getPath()));
 		}
 
 		webDriver = new PhantomJSDriver(desiredCapabilities);
