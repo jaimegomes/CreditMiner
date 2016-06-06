@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -13,13 +12,16 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.imageio.ImageIO;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import br.com.bjjsolutions.model.LoginMB;
+import br.com.bjjsolutions.util.Util;
+//import br.com.bjjsolutions.xml.Cache;
+//import br.com.bjjsolutions.xml.HTMLJsoup;
+//import br.com.bjjsolutions.xml.WriteFileXML;
 
 /**
  * Classe de navegação utilizando Selenium + PhantomJS
@@ -27,10 +29,10 @@ import br.com.bjjsolutions.model.LoginMB;
  * @author Jaime Gomes
  * 
  */
+@SuppressWarnings("restriction")
 @ManagedBean(name = "navegadorSeleniumPhantomJsBean")
-public class NavegadorSeleniumPhantomJs  implements Serializable{
+public class NavegadorSeleniumPhantomJs {
 
-	private static final long serialVersionUID = 1L;
 	private final static String URL_INICIAL_CONSIGNUM = "http://sc.consignum.com.br/wmc-sc/login/selecao_parceiro.faces";
 	private final static String URL_DISPONIBILIDADE_MARGEM = "http://sc.consignum.com.br/wmc-sc/pages/consultas/historico/pesquisa_colaborador.faces";
 	private final static String URL_BYPASS = "http://sc.consignum.com.br/wmc-sc/pages/consultas/disponibilidade_margem/visualiza_margem_colaborador.faces";
@@ -60,59 +62,29 @@ public class NavegadorSeleniumPhantomJs  implements Serializable{
 	 */
 	@SuppressWarnings("static-access")
 	public String getLinkImagemCaptcha() {
-		
-		long start = System.currentTimeMillis();
 
+		long start = System.currentTimeMillis();
 		StringBuilder linkImagem = new StringBuilder();
 
 		try {
-			// Acessa a página do consignum
 			setupSelenium.getWebDriver().get(URL_INICIAL_CONSIGNUM);
-		} catch (Exception e) {
-			System.out.println("Erro ao entrar na página do consignum.\n"
-					+ e.getMessage());
-		}
-
-		try {
-			// Busca link Governo Estadual de Santa Catarina
-			WebElement element = setupSelenium.getWebDriver().findElement(
-					By.tagName("a").className("loginInicio"));
-
-			/*
-			 * Clica no link encontrado acima
-			 */
+			
+			WebElement element = setupSelenium.getWebDriver().findElement(By.tagName("a").className("loginInicio"));
 			element.click();
-
-		} catch (Exception e) {
-			System.out
-					.println("Erro ao pegar elemento que representa o link para página de login.\n"
-							+ e.getMessage());
-		}
-
-		// Executa pausa para dar tempo de carregar a o widget de login
-		pause(500);
-
-		try {
-
-			// Obtém o elemento img do recaptcha
-			WebElement imgElement = setupSelenium.getWebDriver().findElement(
-					By.tagName("img").id("recaptcha_challenge_image"));
-			// Obtém o link da imagem.
+			
+			pause(500);
+			
+			WebElement imgElement = setupSelenium.getWebDriver().findElement(By.tagName("img").id("recaptcha_challenge_image"));
 			linkImagem.append(imgElement.getAttribute("src"));
-
+			
 		} catch (Exception e) {
-			new Exception(
-					"Erro ao pegar elemento que representa o link do captcha.\n"
-							+ e.getMessage());
+			System.err.println("Erro ao capturar link do captcha.\n" + e.getMessage());
+			e.printStackTrace();
+		} finally {
+			long end = System.currentTimeMillis();
+			System.out.println("tempo execução método getLinkImagemCaptcha: " + calculaTempoExecucao(start, end));
 		}
-
-		long end = System.currentTimeMillis();
-
-		System.out.println("tempo execução método getLinkImagemCaptcha: "
-				+ calculaTempoExecucao(start, end));
-
 		return linkImagem.toString();
-
 	}
 
 	/**
@@ -132,7 +104,6 @@ public class NavegadorSeleniumPhantomJs  implements Serializable{
 	}
 
 	private long calculaTempoExecucao(long start, long end) {
-
 		return (end - start);
 	}
 
@@ -143,11 +114,10 @@ public class NavegadorSeleniumPhantomJs  implements Serializable{
 	 * @param html
 	 */
 	private void salvaHtml(String html, String nomeArquivo) {
-
 		FileWriter arquivo;
 		try {
 			// arquivo = new FileWriter(new File("D:/Jaime/" + nomeArquivo));
-			arquivo = new FileWriter(new File("/portal/Jaime/" + nomeArquivo));
+			arquivo = new FileWriter(new File("/home/marcelo/Documents" + nomeArquivo));
 			arquivo.write(html);
 			arquivo.close();
 
@@ -169,14 +139,10 @@ public class NavegadorSeleniumPhantomJs  implements Serializable{
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
-	public static void downloadImage(StringBuilder linkImagem,
-			String targetDirectory) throws MalformedURLException, IOException,
-			FileNotFoundException {
-
+	public static void downloadImage(StringBuilder linkImagem, String targetDirectory) throws MalformedURLException, IOException, FileNotFoundException {
 		URL url = new URL(linkImagem.toString());
 		BufferedImage bufImgOne = ImageIO.read(url);
 		ImageIO.write(bufImgOne, "png", new File(targetDirectory));
-
 	}
 
 	/**
@@ -185,7 +151,7 @@ public class NavegadorSeleniumPhantomJs  implements Serializable{
 	 * Este método injeta as credenciais digitadas em nossa tela de login na
 	 * tela de login do consignum e se loga no sistema.
 	 * 
-	 * TO-DO: método deve ser refatorando para receber um caminho do arquivo csv
+	 * TODO: método deve ser refatorando para receber um caminho do arquivo csv
 	 * e fazer a leitura do mesmo e buscar pelos cpfs
 	 * 
 	 */
@@ -196,18 +162,10 @@ public class NavegadorSeleniumPhantomJs  implements Serializable{
 		 * Pega os elementos que representam os campos de
 		 * Usuário/Senha/Captcha/Botão de Entrar
 		 */
-		WebElement inputUsuario = setupSelenium.getWebDriver().findElement(
-				By.tagName("input").id("j_id_jsp_1179747809_21"));
-		WebElement inputPassword = SetupSelenium
-				.getInstance()
-				.getWebDriver()
-				.findElement(By.tagName("input").name("j_id_jsp_1179747809_23"));
-		WebElement inputCaptcha = SetupSelenium
-				.getInstance()
-				.getWebDriver()
-				.findElement(By.tagName("input").id("recaptcha_response_field"));
-		WebElement btnEntrar = setupSelenium.getWebDriver().findElement(
-				By.tagName("button").id("j_id_jsp_1179747809_27"));
+		WebElement inputUsuario = setupSelenium.getWebDriver().findElement(By.tagName("input").id("j_id_jsp_1179747809_21"));
+		WebElement inputPassword = setupSelenium.getWebDriver().findElement(By.tagName("input").name("j_id_jsp_1179747809_23"));
+		WebElement inputCaptcha = setupSelenium.getWebDriver().findElement(By.tagName("input").id("recaptcha_response_field"));
+		WebElement btnEntrar = setupSelenium.getWebDriver().findElement(By.tagName("button").id("j_id_jsp_1179747809_27"));
 
 		/*
 		 * Seta valores aos campos Usuário/Senha/CAPTCHA
@@ -235,11 +193,15 @@ public class NavegadorSeleniumPhantomJs  implements Serializable{
 		listCpf.add("63809885991");
 
 		getHtmlClientes(listCpf);
+		
+        //if (Cache.clientesCache != null) {
+        //	WriteFileXML.gravaXMLListaProdutos(Cache.clientesCache, Util.getInstanceProperties().getProperty("prop.diretorio.cache"));
+        //}
 
 	}
 
 	/**
-	 * TO-DO: Fazer lógica para verificar se existe mais de um link para clicar
+	 * TODO: Fazer lógica para verificar se existe mais de um link para clicar
 	 * após a pesquisa pelo cpf, caso exista, não deve trocar de cpf para saber
 	 * se existe mais de um registro tem como verificar pelo id que tem a
 	 * quantidade, no caso o primeiro registro fica como tabelaListaCol:0: e o
@@ -264,18 +226,8 @@ public class NavegadorSeleniumPhantomJs  implements Serializable{
 
 				// Pega os elementos que representam o campo CPF e o botão
 				// pesquisar
-				WebElement inputCpf = SetupSelenium
-						.getInstance()
-						.getWebDriver()
-						.findElement(
-								By.tagName("input")
-										.id("j_id_jsp_248910084_1:j_id_jsp_248910084_14"));
-				WebElement btnPesquisar = SetupSelenium
-						.getInstance()
-						.getWebDriver()
-						.findElement(
-								By.tagName("button")
-										.id("j_id_jsp_248910084_1:j_id_jsp_248910084_15"));
+				WebElement inputCpf = SetupSelenium.getInstance().getWebDriver().findElement(By.tagName("input").id("j_id_jsp_248910084_1:j_id_jsp_248910084_14"));
+				WebElement btnPesquisar = SetupSelenium.getInstance().getWebDriver().findElement(By.tagName("button").id("j_id_jsp_248910084_1:j_id_jsp_248910084_15"));
 
 				// limpa o input caso tenha algum cpf
 				inputCpf.clear();
@@ -293,11 +245,7 @@ public class NavegadorSeleniumPhantomJs  implements Serializable{
 
 				// Pega o elemento que contém o link para exibir o histórico do
 				// cliente
-				WebElement linkNome = SetupSelenium
-						.getInstance()
-						.getWebDriver()
-						.findElement(
-								By.id("j_id_jsp_248910084_1:tabelaListaCol:0:j_id_jsp_248910084_23"));
+				WebElement linkNome = SetupSelenium.getInstance().getWebDriver().findElement(By.id("j_id_jsp_248910084_1:tabelaListaCol:0:j_id_jsp_248910084_23"));
 
 				// Clica no elemento para exibir o histórico
 				linkNome.click();
@@ -305,9 +253,9 @@ public class NavegadorSeleniumPhantomJs  implements Serializable{
 				// Redireciona para a página do ByPass
 				setupSelenium.getWebDriver().get(URL_BYPASS);
 
+				//new HTMLJsoup(setupSelenium.getWebDriver().getPageSource());
 				// Salva o código fonte da página
-				salvaHtml(setupSelenium.getWebDriver().getPageSource(), cpf
-						+ ".html");
+				salvaHtml(setupSelenium.getWebDriver().getPageSource(), cpf + ".html");
 
 			}
 
@@ -315,36 +263,7 @@ public class NavegadorSeleniumPhantomJs  implements Serializable{
 
 		long end = System.currentTimeMillis();
 
-		System.out.println("tempo execução método getHtmlClientes(): "
-				+ calculaTempoExecucao(start, end));
-	}
-
-	/**
-	 * @return the pathDownloadImg
-	 */
-	public static String getPathDownloadImg() {
-		return PATH_DOWNLOAD_IMG;
-	}
-
-	/**
-	 * @return the nameImg
-	 */
-	public static String getNameImg() {
-		return NAME_IMG;
-	}
-
-	/**
-	 * @return the uRL_INICIAL_CONSIGNUM
-	 */
-	public static String getURL_INICIAL_CONSIGNUM() {
-		return URL_INICIAL_CONSIGNUM;
-	}
-
-	/**
-	 * @return the pathArquivoHtml
-	 */
-	public static String getPathArquivoHtml() {
-		return PATH_ARQUIVO_HTML;
+		System.out.println("tempo execução método getHtmlClientes(): " + calculaTempoExecucao(start, end));
 	}
 
 	/**
@@ -353,34 +272,4 @@ public class NavegadorSeleniumPhantomJs  implements Serializable{
 	public LoginMB getLoginMB() {
 		return loginMB;
 	}
-
-	/**
-	 * @param loginMB
-	 *            the loginMB to set
-	 */
-	public void setLoginMB(LoginMB loginMB) {
-		this.loginMB = loginMB;
-	}
-
-	/**
-	 * @return the urlInicialConsignum
-	 */
-	public static String getUrlInicialConsignum() {
-		return URL_INICIAL_CONSIGNUM;
-	}
-
-	/**
-	 * @return the urlDisponibilidadeMargem
-	 */
-	public static String getUrlDisponibilidadeMargem() {
-		return URL_DISPONIBILIDADE_MARGEM;
-	}
-
-	/**
-	 * @return the urlBypass
-	 */
-	public static String getUrlBypass() {
-		return URL_BYPASS;
-	}
-
 }

@@ -1,20 +1,18 @@
 package br.com.bjjsolutions.navegador;
 
-import java.io.Serializable;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-public class SetupSelenium implements Serializable {
+import br.com.bjjsolutions.enumerator.DriverPhantomJSEnum;
+import br.com.bjjsolutions.enumerator.SystemEnum;
 
-	private static final long serialVersionUID = 2089282789630132989L;
+public class SetupSelenium {
+
 	private static SetupSelenium instance = null;
 	private static DesiredCapabilities desiredCapabilities;
 	private static WebDriver webDriver;
-	private final static String PATH_DRIVER_PHANTOMJS_WINDOWS = "D:/Jaime/phantomjs-2.1.1-windows/bin/phantomjs.exe";
-	private final static String PATH_DRIVER_PHANTOMJS_UBUNTU = "/usr/local/bin/phantomjs";
 
 	/**
 	 * Singleton
@@ -39,14 +37,13 @@ public class SetupSelenium implements Serializable {
 		// ativa o javascript
 		desiredCapabilities.setJavascriptEnabled(true);
 
-		// Colocar o caminho do driver em uma propertie
-		desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-				PATH_DRIVER_PHANTOMJS_WINDOWS);
-
-		// desiredCapabilities.setCapability(
-		// PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-		// System.getProperty("phantomjs.binary.path",
-		// PATH_DRIVER_PHANTOMJS_UBUNTU));
+		if (System.getProperty("os.name").toUpperCase().equals(SystemEnum.LINUX.getSystem())) {
+			desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+					DriverPhantomJSEnum.PATH_DRIVER_PHANTOMJS_LINUX.getPath());
+		} else {
+			desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+					System.getProperty("phantomjs.binary.path", DriverPhantomJSEnum.PATH_DRIVER_PHANTOMJS_WINDOWS.getPath()));
+		}
 
 		webDriver = new PhantomJSDriver(desiredCapabilities);
 
@@ -81,19 +78,4 @@ public class SetupSelenium implements Serializable {
 	public static void setWebDriver(WebDriver webDriver) {
 		SetupSelenium.webDriver = webDriver;
 	}
-
-	/**
-	 * @return the pathDriverPhantomjsWindows
-	 */
-	public static String getPathDriverPhantomjsWindows() {
-		return PATH_DRIVER_PHANTOMJS_WINDOWS;
-	}
-
-	/**
-	 * @return the pathDriverPhantomjsUbuntu
-	 */
-	public static String getPathDriverPhantomjsUbuntu() {
-		return PATH_DRIVER_PHANTOMJS_UBUNTU;
-	}
-
 }
