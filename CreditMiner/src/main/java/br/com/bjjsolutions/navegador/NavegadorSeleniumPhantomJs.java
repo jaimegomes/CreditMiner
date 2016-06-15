@@ -20,9 +20,9 @@ import org.openqa.selenium.WebElement;
 import br.com.bjjsolutions.enumerator.SystemEnum;
 import br.com.bjjsolutions.model.LoginMB;
 import br.com.bjjsolutions.util.Util;
-//import br.com.bjjsolutions.xml.Cache;
-//import br.com.bjjsolutions.xml.HTMLJsoup;
-//import br.com.bjjsolutions.xml.WriteFileXML;
+import br.com.bjjsolutions.xml.Cache;
+import br.com.bjjsolutions.xml.HTMLJsoup;
+import br.com.bjjsolutions.xml.WriteFileXML;
 
 /**
  * Classe de navegação utilizando Selenium + PhantomJS
@@ -39,8 +39,10 @@ public class NavegadorSeleniumPhantomJs {
 	private final static String PATH_DOWNLOAD_IMG = "src/main/java/resources/captcha/";
 	private final static String NAME_IMG = "captcha.png";
 	private final static String PATH_ARQUIVO_HTML = "src/main/java/resources/htmls";
+	
 	private SetupSelenium setupSelenium = SetupSelenium.getInstance();
 	private LoginMB loginMB;
+	private HTMLJsoup instanceHTMLJsoup;
 
 	/**
 	 * Construtor
@@ -195,10 +197,9 @@ public class NavegadorSeleniumPhantomJs {
 
 		getHtmlClientes(listCpf);
 
-		// if (Cache.clientesCache != null) {
-		// WriteFileXML.gravaXMLListaProdutos(Cache.clientesCache,
-		// Util.getInstanceProperties().getProperty("prop.diretorio.cache"));
-		// }
+		if (Cache.clientesDTOCache != null) {
+			WriteFileXML.gravaXMLListaClientes(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache"));
+		}
 
 	}
 
@@ -255,9 +256,9 @@ public class NavegadorSeleniumPhantomJs {
 				// Redireciona para a página do ByPass
 				setupSelenium.getWebDriver().get(URL_BYPASS);
 
-				// new HTMLJsoup(setupSelenium.getWebDriver().getPageSource());
+				getInstanceHTMLJsoup().createObjectRecordHTML(setupSelenium.getWebDriver().getPageSource(), cpf);
 				// Salva o código fonte da página
-				salvaHtml(setupSelenium.getWebDriver().getPageSource(), cpf + ".html");
+				//salvaHtml(setupSelenium.getWebDriver().getPageSource(), cpf + ".html");
 
 				// setupSelenium.getWebDriver().quit();
 
@@ -275,5 +276,12 @@ public class NavegadorSeleniumPhantomJs {
 	 */
 	public LoginMB getLoginMB() {
 		return loginMB;
+	}
+	
+	public HTMLJsoup getInstanceHTMLJsoup(){
+		if (instanceHTMLJsoup == null) {
+			instanceHTMLJsoup = new HTMLJsoup();
+		}
+		return instanceHTMLJsoup;
 	}
 }

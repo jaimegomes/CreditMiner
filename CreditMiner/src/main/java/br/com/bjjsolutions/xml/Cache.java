@@ -2,10 +2,10 @@ package br.com.bjjsolutions.xml;
 
 import java.util.Map;
 
-import br.com.bjjsolutions.model.Cliente;
+import br.com.bjjsolutions.dto.ClienteDTO;
 
 /**
- * Classe cache para criação de clientes
+ * Classe cache para criação de clientes DTO
  * 
  * @author Marcelo Lopes Nunes</br>
  *         bjjsolutions.com.br - 31/05/2016</br>
@@ -14,6 +14,6 @@ import br.com.bjjsolutions.model.Cliente;
  */
 public class Cache {
     
-    public static Map<String, Cliente> clientesCache; 
+    public static Map<String, ClienteDTO> clientesDTOCache; 
     
 }
