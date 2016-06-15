@@ -41,7 +41,7 @@ public class Test {
 	 * @return Map<String, Object>
 	 */
 	public static Map<String, Object> getDadosDoColaborador(Document doc) {
-		Map<String, Object> map = new LinkedHashMap<>();
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		// Class table.headerTable - referencia para encontrar os dados do colaborador
 		Element headerTable = doc.select("table.headerTable").get(0);
 		Element table = headerTable.parent().select("table").get(2);
@@ -62,7 +62,7 @@ public class Test {
 	}
 
 	public static Map<String, Object> getDadosParcela(Document doc) {
-		Map<String, Object> map = new LinkedHashMap<>();
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		Element standardTable = doc.select("table.standardTable").first();
 		Elements theads = standardTable.parent().select("thead");
 		
