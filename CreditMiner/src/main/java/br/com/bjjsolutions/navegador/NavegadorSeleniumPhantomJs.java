@@ -16,6 +16,8 @@ import javax.imageio.ImageIO;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import br.com.bjjsolutions.enumerator.SystemEnum;
 import br.com.bjjsolutions.model.LoginMB;
@@ -72,9 +74,10 @@ public class NavegadorSeleniumPhantomJs {
 			WebElement element = setupSelenium.getWebDriver().findElement(By.tagName("a").className("loginInicio"));
 			element.click();
 
-			pause(1000);
+			WebElement imgElement = (new WebDriverWait(setupSelenium.getWebDriver(), 10))
+					  .until(ExpectedConditions.presenceOfElementLocated(By.tagName("img").id("recaptcha_challenge_image")));
 
-			WebElement imgElement = setupSelenium.getWebDriver().findElement(By.tagName("img").id("recaptcha_challenge_image"));
+//			WebElement imgElement = setupSelenium.getWebDriver().findElement(By.tagName("img").id("recaptcha_challenge_image"));
 			linkImagem.append(imgElement.getAttribute("src"));
 
 		} catch (Exception e) {
@@ -224,12 +227,18 @@ public class NavegadorSeleniumPhantomJs {
 				setupSelenium.getWebDriver().get(URL_DISPONIBILIDADE_MARGEM);
 
 				// pausa para carregar a página
-				pause(500);
-
+//				pause(500);
+				
 				// Pega os elementos que representam o campo CPF e o botão
 				// pesquisar
-				WebElement inputCpf = SetupSelenium.getInstance().getWebDriver().findElement(By.tagName("input").id("j_id_jsp_248910084_1:j_id_jsp_248910084_14"));
-				WebElement btnPesquisar = SetupSelenium.getInstance().getWebDriver().findElement(By.tagName("button").id("j_id_jsp_248910084_1:j_id_jsp_248910084_15"));
+				WebElement inputCpf = (new WebDriverWait(setupSelenium.getWebDriver(), 10))
+						  .until(ExpectedConditions.presenceOfElementLocated(By.tagName("input").id("j_id_jsp_248910084_1:j_id_jsp_248910084_14")));
+				
+				WebElement btnPesquisar = (new WebDriverWait(setupSelenium.getWebDriver(), 10))
+						  .until(ExpectedConditions.presenceOfElementLocated(By.tagName("button").id("j_id_jsp_248910084_1:j_id_jsp_248910084_15")));
+				
+//				WebElement inputCpf = SetupSelenium.getInstance().getWebDriver().findElement(By.tagName("input").id("j_id_jsp_248910084_1:j_id_jsp_248910084_14"));
+//				WebElement btnPesquisar = SetupSelenium.getInstance().getWebDriver().findElement(By.tagName("button").id("j_id_jsp_248910084_1:j_id_jsp_248910084_15"));
 
 				// limpa o input caso tenha algum cpf
 				inputCpf.clear();
@@ -243,12 +252,14 @@ public class NavegadorSeleniumPhantomJs {
 				// "pagina.html");
 
 				// pausa para carregar a página
-				pause(500);
+//				pause(500);
 
 				// Pega o elemento que contém o link para exibir o histórico do
 				// cliente
-				WebElement linkNome = SetupSelenium.getInstance().getWebDriver().findElement(By.id("j_id_jsp_248910084_1:tabelaListaCol:0:j_id_jsp_248910084_23"));
-
+				// WebElement linkNome =
+				// SetupSelenium.getInstance().getWebDriver().findElement(By.id("j_id_jsp_248910084_1:tabelaListaCol:0:j_id_jsp_248910084_23"));
+				WebElement linkNome = (new WebDriverWait(setupSelenium.getWebDriver(), 10))
+						  .until(ExpectedConditions.presenceOfElementLocated(By.id("j_id_jsp_248910084_1:tabelaListaCol:0:j_id_jsp_248910084_23")));
 				// Clica no elemento para exibir o histórico
 				linkNome.click();
 
