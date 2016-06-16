@@ -41,7 +41,7 @@ public class NavegadorSeleniumPhantomJs {
 	private final static String PATH_DOWNLOAD_IMG = "src/main/java/resources/captcha/";
 	private final static String NAME_IMG = "captcha.png";
 	private final static String PATH_ARQUIVO_HTML = "src/main/java/resources/htmls";
-	
+
 	private SetupSelenium setupSelenium = SetupSelenium.getInstance();
 	private LoginMB loginMB;
 	private HTMLJsoup instanceHTMLJsoup;
@@ -73,13 +73,11 @@ public class NavegadorSeleniumPhantomJs {
 		try {
 			setupSelenium.getWebDriver().get(URL_INICIAL_CONSIGNUM);
 
-			WebElement element = setupSelenium.getWebDriver().findElement(By.tagName("a").className("loginInicio"));
+			WebElement element = (new WebDriverWait(setupSelenium.getWebDriver(), 10)).until(ExpectedConditions.presenceOfElementLocated(By.tagName("a").className("loginInicio")));
 			element.click();
 
-			WebElement imgElement = (new WebDriverWait(setupSelenium.getWebDriver(), 10))
-					  .until(ExpectedConditions.presenceOfElementLocated(By.tagName("img").id("recaptcha_challenge_image")));
+			WebElement imgElement = (new WebDriverWait(setupSelenium.getWebDriver(), 10)).until(ExpectedConditions.presenceOfElementLocated(By.tagName("img").id("recaptcha_challenge_image")));
 
-//			WebElement imgElement = setupSelenium.getWebDriver().findElement(By.tagName("img").id("recaptcha_challenge_image"));
 			linkImagem.append(imgElement.getAttribute("src"));
 
 		} catch (Exception e) {
@@ -90,19 +88,6 @@ public class NavegadorSeleniumPhantomJs {
 			System.out.println("tempo execução método getLinkImagemCaptcha: " + calculaTempoExecucao(start, end));
 		}
 		return linkImagem.toString();
-	}
-
-	/**
-	 * Método que recebe como parâmetro o tempo de pausa em mili segundos.
-	 * 
-	 * @param timeMiliSec
-	 */
-	private void pause(long timeMiliSec) {
-		try {
-			Thread.sleep(timeMiliSec);
-		} catch (InterruptedException ex) {
-			Thread.currentThread().interrupt();
-		}
 	}
 
 	private long calculaTempoExecucao(long start, long end) {
@@ -168,10 +153,10 @@ public class NavegadorSeleniumPhantomJs {
 		 * Pega os elementos que representam os campos de
 		 * Usuário/Senha/Captcha/Botão de Entrar
 		 */
-		WebElement inputUsuario = setupSelenium.getWebDriver().findElement(By.tagName("input").id("j_id_jsp_1179747809_21"));
-		WebElement inputPassword = setupSelenium.getWebDriver().findElement(By.tagName("input").name("j_id_jsp_1179747809_23"));
-		WebElement inputCaptcha = setupSelenium.getWebDriver().findElement(By.tagName("input").id("recaptcha_response_field"));
-		WebElement btnEntrar = setupSelenium.getWebDriver().findElement(By.tagName("button").id("j_id_jsp_1179747809_27"));
+		WebElement inputUsuario = (new WebDriverWait(setupSelenium.getWebDriver(), 10)).until(ExpectedConditions.presenceOfElementLocated(By.tagName("input").id("j_id_jsp_1179747809_21")));
+		WebElement inputPassword = (new WebDriverWait(setupSelenium.getWebDriver(), 10)).until(ExpectedConditions.presenceOfElementLocated(By.tagName("input").name("j_id_jsp_1179747809_23")));
+		WebElement inputCaptcha = (new WebDriverWait(setupSelenium.getWebDriver(), 10)).until(ExpectedConditions.presenceOfElementLocated(By.tagName("input").id("recaptcha_response_field")));
+		WebElement btnEntrar = (new WebDriverWait(setupSelenium.getWebDriver(), 10)).until(ExpectedConditions.presenceOfElementLocated(By.tagName("button").id("j_id_jsp_1179747809_27")));
 
 		/*
 		 * Seta valores aos campos Usuário/Senha/CAPTCHA
@@ -184,7 +169,6 @@ public class NavegadorSeleniumPhantomJs {
 		btnEntrar.click();
 
 		// pausa para o navegador carregar o html da página principal após login
-		// pause(500);
 
 		List<String> listCpf = new ArrayList<String>();
 		listCpf.add("51202158900");
@@ -198,12 +182,25 @@ public class NavegadorSeleniumPhantomJs {
 		listCpf.add("67942385949");
 		listCpf.add("63809885991");
 
-		getHtmlClientes(listCpf);
+		processaCpfs(listCpf);
 
 		if (Cache.clientesDTOCache != null) {
 			WriteFileXML.gravaXMLListaClientes(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache"));
 		}
 
+	}
+
+	/**
+	 * Método que recebe como parâmetro o tempo de pausa em mili segundos.
+	 * 
+	 * @param timeMiliSec
+	 */
+	private void pause(long timeMiliSec) {
+		try {
+			Thread.sleep(timeMiliSec);
+		} catch (InterruptedException ex) {
+			Thread.currentThread().interrupt();
+		}
 	}
 
 	/**
@@ -216,62 +213,64 @@ public class NavegadorSeleniumPhantomJs {
 	 * @param listCpf
 	 */
 	@SuppressWarnings("static-access")
-	private void getHtmlClientes(List<String> listCpf) {
+	private void processaCpfs(List<String> listCpf) {
 
 		long start = System.currentTimeMillis();
 
-		if (!listCpf.isEmpty()) {
+		// Redireciona para a página de disponibilidade de margem
+		setupSelenium.getWebDriver().get(URL_DISPONIBILIDADE_MARGEM);
 
-			for (String cpf : listCpf) {
+		for (String cpf : listCpf) {
 
-				// Redireciona para a página de disponibilidade de margem
-				setupSelenium.getWebDriver().get(URL_DISPONIBILIDADE_MARGEM);
+			// Pega os elementos que representam o campo CPF e o botão
+			// pesquisar
+			WebElement inputCpf = (new WebDriverWait(setupSelenium.getWebDriver(), 10))
+					.until(ExpectedConditions.presenceOfElementLocated(By.tagName("input").id("j_id_jsp_248910084_1:j_id_jsp_248910084_14")));
+			WebElement btnPesquisar = (new WebDriverWait(setupSelenium.getWebDriver(), 10))
+					.until(ExpectedConditions.presenceOfElementLocated(By.tagName("button").id("j_id_jsp_248910084_1:j_id_jsp_248910084_15")));
 
-				// pausa para carregar a página
-//				pause(500);
-				
-				// Pega os elementos que representam o campo CPF e o botão
-				// pesquisar
-				WebElement inputCpf = (new WebDriverWait(setupSelenium.getWebDriver(), 10))
-						  .until(ExpectedConditions.presenceOfElementLocated(By.tagName("input").id("j_id_jsp_248910084_1:j_id_jsp_248910084_14")));
-				
-				WebElement btnPesquisar = (new WebDriverWait(setupSelenium.getWebDriver(), 10))
-						  .until(ExpectedConditions.presenceOfElementLocated(By.tagName("button").id("j_id_jsp_248910084_1:j_id_jsp_248910084_15")));
-				
-//				WebElement inputCpf = SetupSelenium.getInstance().getWebDriver().findElement(By.tagName("input").id("j_id_jsp_248910084_1:j_id_jsp_248910084_14"));
-//				WebElement btnPesquisar = SetupSelenium.getInstance().getWebDriver().findElement(By.tagName("button").id("j_id_jsp_248910084_1:j_id_jsp_248910084_15"));
+			// limpa o input caso tenha algum cpf
+			inputCpf.clear();
+			// Seta o valor do cpf
+			inputCpf.sendKeys(cpf);
 
-				// limpa o input caso tenha algum cpf
-				inputCpf.clear();
-				// Seta o valor do cpf
-				inputCpf.sendKeys(cpf);
+			// Clica no botão pesquisar
+			btnPesquisar.click();
 
-				// Clica no botão pesquisar
-				btnPesquisar.click();
+			/*
+			 * Caso não encontre resultados, aumentar o tempo
+			 */
+			pause(600);
 
-				// salvaHtml(setupSelenium.getWebDriver().getPageSource(),
-				// "pagina.html");
+			int cont = 0;
 
-				// pausa para carregar a página
-//				pause(500);
+			// salvaHtml(setupSelenium.getWebDriver().getPageSource(), cpf +
+			// ".html");
+			int qtdResultados = (new WebDriverWait(setupSelenium.getWebDriver(), 10))
+					.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//*[contains(./@id, 'j_id_jsp_248910084_23')]"))).size();
 
-				// Pega o elemento que contém o link para exibir o histórico do
-				// cliente
-				// WebElement linkNome =
-				// SetupSelenium.getInstance().getWebDriver().findElement(By.id("j_id_jsp_248910084_1:tabelaListaCol:0:j_id_jsp_248910084_23"));
+			System.out.println("qtdResultados: " + qtdResultados);
+
+			for (int i = 0; i < qtdResultados; i++) {
+
+				// Pega o elemento que contém o link para exibir o histórico
+				// do cliente
 				WebElement linkNome = (new WebDriverWait(setupSelenium.getWebDriver(), 10))
-						  .until(ExpectedConditions.presenceOfElementLocated(By.id("j_id_jsp_248910084_1:tabelaListaCol:0:j_id_jsp_248910084_23")));
+						.until(ExpectedConditions.presenceOfElementLocated(By.xpath(".//*[@id='j_id_jsp_248910084_1:tabelaListaCol:" + i + ":j_id_jsp_248910084_23']")));
+
 				// Clica no elemento para exibir o histórico
 				linkNome.click();
 
 				// Redireciona para a página do ByPass
 				setupSelenium.getWebDriver().get(URL_BYPASS);
 
-				getInstanceHTMLJsoup().createObjectRecordHTML(setupSelenium.getWebDriver().getPageSource(), cpf);
+				// new
+				// HTMLJsoup(setupSelenium.getWebDriver().getPageSource());
 				// Salva o código fonte da página
-				//salvaHtml(setupSelenium.getWebDriver().getPageSource(), cpf + ".html");
+				salvaHtml(setupSelenium.getWebDriver().getPageSource(), cont++ + "_" + cpf + ".html");
 
-				// setupSelenium.getWebDriver().quit();
+				// volta para a página de resultados
+				setupSelenium.getWebDriver().get(URL_DISPONIBILIDADE_MARGEM);
 
 			}
 
@@ -288,8 +287,8 @@ public class NavegadorSeleniumPhantomJs {
 	public LoginMB getLoginMB() {
 		return loginMB;
 	}
-	
-	public HTMLJsoup getInstanceHTMLJsoup(){
+
+	public HTMLJsoup getInstanceHTMLJsoup() {
 		if (instanceHTMLJsoup == null) {
 			instanceHTMLJsoup = new HTMLJsoup();
 		}
