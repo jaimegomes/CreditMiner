@@ -13,6 +13,7 @@ import org.jsoup.select.Elements;
 
 import br.com.bjjsolutions.dto.ClienteDTO;
 import br.com.bjjsolutions.dto.SolicitacaoDTO;
+import br.com.bjjsolutions.util.Util;
 
 public class HTMLJsoup {
 	
@@ -25,15 +26,14 @@ public class HTMLJsoup {
 	public void createObjectRecordHTML(String html, String cpf) {
 		try {
 			Document doc = Jsoup.parse(html);
-			System.out.println(doc.html());
+//			System.out.println(doc.html());
 
 			if (Cache.clientesDTOCache == null) {
 				Cache.clientesDTOCache = new TreeMap<String, ClienteDTO>();
 			}
-			System.out.println(doc.html());
 			ClienteDTO clienteDTO = new ClienteDTO();
 
-			// Extrai os dados do HTML e seta no Objeto ClienteDTO
+			// Extrai os dados do header da tabela do HTML e seta no Objeto ClienteDTO
 			Map<String, String> mapDadosDoCliente = getHeaderDadosDoCliente(doc);
 
 			clienteDTO.setCpf(cpf);
@@ -59,7 +59,6 @@ public class HTMLJsoup {
 
 			}
 
-			// Extrai os dados do HTML e seta no Objeto SolicitacaoDTO
 			// Extrai os dados do tbody da tabela listagem de solicitações ativas
 			List<SolicitacaoDTO> listSolicitacoes = new ArrayList<SolicitacaoDTO>();
 			Element standardTable = doc.select("table.standardTable").first();
@@ -67,10 +66,10 @@ public class HTMLJsoup {
 			Elements rowsTbody = tbody.select("tr");
 
 			for (int i = 0; i < rowsTbody.size(); i++) {
+				// Extrai os dados do HTML e seta no Objeto SolicitacaoDTO
 				SolicitacaoDTO solicitacaoDTO = new SolicitacaoDTO();
 				Element rowTbody = rowsTbody.get(i);
 				Elements colsTbody = rowTbody.select("td");
-				solicitacaoDTO.setCliente(clienteDTO);
 				solicitacaoDTO.setBanco(colsTbody.get(2).text().trim());
 				solicitacaoDTO.setParcelas(colsTbody.get(7).text().trim());
 				solicitacaoDTO.setValorAutorizado(colsTbody.get(5).text().trim());
@@ -83,11 +82,19 @@ public class HTMLJsoup {
 
 			clienteDTO.setSolicitacaes(listSolicitacoes);
 			
-			if (Cache.clientesDTOCache.containsKey(clienteDTO.getCpf()) == false && !clienteDTO.getCpf().isEmpty()) {
-				Cache.clientesDTOCache.put(clienteDTO.getCpf(), clienteDTO);
+			if (!clienteDTO.getCpf().isEmpty()) {
+				if (!Cache.clientesDTOCache.containsKey(clienteDTO.getCpf())) {
+					Cache.clientesDTOCache.put(clienteDTO.getCpf(), clienteDTO);
+				} else {
+					ClienteDTO clienteDTOMerge = Cache.clientesDTOCache.get(clienteDTO.getCpf()); 
+					clienteDTOMerge.getSolicitacaes().addAll(listSolicitacoes);
+					Cache.clientesDTOCache.put(clienteDTO.getCpf(), clienteDTOMerge);
+				}				
 			}
-		} catch (Exception erro) {
-			System.err.println(erro.getMessage());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(Util.getProperty("prop.error.html.jsoup") + cpf + " " + e.getMessage());
 		}
 	}
 
