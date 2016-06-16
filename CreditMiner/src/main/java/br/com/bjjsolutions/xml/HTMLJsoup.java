@@ -16,9 +16,10 @@ import br.com.bjjsolutions.dto.SolicitacaoDTO;
 import br.com.bjjsolutions.util.Util;
 
 public class HTMLJsoup {
-	
+
 	/**
-	 * Metodo responsavel por percorrer o html e extrair os dados setando no objeto DTO 
+	 * Metodo responsavel por percorrer o html e extrair os dados setando no
+	 * objeto DTO
 	 * 
 	 * @param html
 	 * @param cpf
@@ -26,14 +27,16 @@ public class HTMLJsoup {
 	public void createObjectRecordHTML(String html, String cpf) {
 		try {
 			Document doc = Jsoup.parse(html);
-//			System.out.println(doc.html());
+			// System.out.println(doc.html());
 
 			if (Cache.clientesDTOCache == null) {
 				Cache.clientesDTOCache = new TreeMap<String, ClienteDTO>();
 			}
 			ClienteDTO clienteDTO = new ClienteDTO();
+			List<SolicitacaoDTO> listSolicitacoes = new ArrayList<SolicitacaoDTO>();
 
-			// Extrai os dados do header da tabela do HTML e seta no Objeto ClienteDTO
+			// Extrai os dados do header da tabela do HTML e seta no Objeto
+			// ClienteDTO
 			Map<String, String> mapDadosDoCliente = getHeaderDadosDoCliente(doc);
 
 			clienteDTO.setCpf(cpf);
@@ -58,38 +61,47 @@ public class HTMLJsoup {
 				}
 
 			}
-
-			// Extrai os dados do tbody da tabela listagem de solicitações ativas
-			List<SolicitacaoDTO> listSolicitacoes = new ArrayList<SolicitacaoDTO>();
+			
+			// Extrai os dados do tbody da tabela listagem de solicitações
 			Element standardTable = doc.select("table.standardTable").first();
-			Element tbody = standardTable.select("tbody").first();
-			Elements rowsTbody = tbody.select("tr");
 
-			for (int i = 0; i < rowsTbody.size(); i++) {
-				// Extrai os dados do HTML e seta no Objeto SolicitacaoDTO
-				SolicitacaoDTO solicitacaoDTO = new SolicitacaoDTO();
-				Element rowTbody = rowsTbody.get(i);
-				Elements colsTbody = rowTbody.select("td");
-				solicitacaoDTO.setBanco(colsTbody.get(2).text().trim());
-				solicitacaoDTO.setParcelas(colsTbody.get(7).text().trim());
-				solicitacaoDTO.setValorAutorizado(colsTbody.get(5).text().trim());
-				// TODO Não sei o local para retirar a informação
-				// solicitacaoDTO.setPesquisado(pesquisado);
-				// solicitacaoDTO.setPagas(colsTbody.get(9).text().trim());
+			// verifica se é listagem de Solicitações Ativas
+			Element header = standardTable.select(".standardTable_Header").first();
 
-				listSolicitacoes.add(solicitacaoDTO);
+			if (header.text().equalsIgnoreCase(Parametros.LISTAGEM_SOLICITACOES_ATIVAS)) {
+
+				Element tbody = standardTable.select("tbody").first();
+
+				if (tbody.hasText()) {
+					Elements rowsTbody = tbody.select("tr");
+
+					for (int i = 0; i < rowsTbody.size(); i++) {
+						// Extrai os dados do HTML e seta no Objeto
+						// SolicitacaoDTO
+						SolicitacaoDTO solicitacaoDTO = new SolicitacaoDTO();
+						Element rowTbody = rowsTbody.get(i);
+						Elements colsTbody = rowTbody.select("td");
+						solicitacaoDTO.setBanco(colsTbody.get(2).text().trim());
+						solicitacaoDTO.setParcelas(colsTbody.get(7).text().trim());
+						solicitacaoDTO.setValorAutorizado(colsTbody.get(5).text().trim());
+						// TODO Não sei o local para retirar a informação
+						// solicitacaoDTO.setPesquisado(pesquisado);
+						// solicitacaoDTO.setPagas(colsTbody.get(9).text().trim());
+
+						listSolicitacoes.add(solicitacaoDTO);
+					}
+					clienteDTO.setSolicitacaes(listSolicitacoes);
+				}
 			}
 
-			clienteDTO.setSolicitacaes(listSolicitacoes);
-			
 			if (!clienteDTO.getCpf().isEmpty()) {
 				if (!Cache.clientesDTOCache.containsKey(clienteDTO.getCpf())) {
 					Cache.clientesDTOCache.put(clienteDTO.getCpf(), clienteDTO);
 				} else {
-					ClienteDTO clienteDTOMerge = Cache.clientesDTOCache.get(clienteDTO.getCpf()); 
+					ClienteDTO clienteDTOMerge = Cache.clientesDTOCache.get(clienteDTO.getCpf());
 					clienteDTOMerge.getSolicitacaes().addAll(listSolicitacoes);
 					Cache.clientesDTOCache.put(clienteDTO.getCpf(), clienteDTOMerge);
-				}				
+				}
 			}
 
 		} catch (Exception e) {
