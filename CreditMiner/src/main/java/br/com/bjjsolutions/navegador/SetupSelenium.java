@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import br.com.bjjsolutions.enumerator.DriverPhantomJSEnum;
 import br.com.bjjsolutions.enumerator.SystemEnum;
@@ -13,6 +14,7 @@ public class SetupSelenium {
 	private static SetupSelenium instance = null;
 	private static DesiredCapabilities desiredCapabilities;
 	private static WebDriver webDriver;
+	private static WebDriverWait wait;
 
 	/**
 	 * Singleton
@@ -47,6 +49,7 @@ public class SetupSelenium {
 		}
 
 		webDriver = new PhantomJSDriver(desiredCapabilities);
+		wait = new WebDriverWait(webDriver, 40);
 
 	}
 
@@ -79,4 +82,24 @@ public class SetupSelenium {
 	public static void setWebDriver(WebDriver webDriver) {
 		SetupSelenium.webDriver = webDriver;
 	}
+
+	/**
+	 * @return the wait
+	 */
+	public static WebDriverWait getWait() {
+		return wait;
+	}
+
+	/**
+	 * @param wait
+	 *            the wait to set
+	 */
+	public static void setWait(WebDriverWait wait) {
+		SetupSelenium.wait = wait;
+	}
+
+	public void closeWebDriver() {
+		webDriver.close();
+	}
+
 }
