@@ -24,7 +24,7 @@ public class HTMLJsoup {
 	 * @param html
 	 * @param cpf
 	 */
-	public void createObjectRecordHTML(String html, String cpf) {
+	protected void createObjectRecordHTML(String html, String cpf) {
 		try {
 			Document doc = Jsoup.parse(html);
 			// System.out.println(doc.html());
@@ -117,7 +117,7 @@ public class HTMLJsoup {
 	 * @param doc
 	 * @return Map<String, String>
 	 */
-	public static Map<String, String> getHeaderDadosDoCliente(Document doc) {
+	private static Map<String, String> getHeaderDadosDoCliente(Document doc) {
 		Map<String, String> map = new HashMap<String, String>();
 		Element headerTable = doc.select("table.headerTable").get(0);
 		Element table = headerTable.parent().select("table").get(2);
@@ -143,7 +143,7 @@ public class HTMLJsoup {
 	 * @param doc
 	 * @return Map<String, String>
 	 */
-	public static List<String> getTheadTableSolicitacao(Document doc) {
+	private static List<String> getTheadTableSolicitacao(Document doc) {
 		List<String> listTheads = new ArrayList<String>();
 		Element standardTable = doc.select("table.standardTable").first();
 
