@@ -3,21 +3,24 @@ package br.com.bjjsolutions.navegador;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.imageio.ImageIO;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.opencsv.CSVReader;
 
 import br.com.bjjsolutions.enumerator.SystemEnum;
 import br.com.bjjsolutions.model.LoginMB;
@@ -33,6 +36,7 @@ import br.com.bjjsolutions.xml.WriteFileXML;
  * 
  */
 @ManagedBean(name = "navegadorSeleniumPhantomJsBean")
+@RequestScoped
 public class NavegadorSeleniumPhantomJs {
 
 	private final static String URL_INICIAL_CONSIGNUM = "http://sc.consignum.com.br/wmc-sc/login/selecao_parceiro.faces";
@@ -41,7 +45,7 @@ public class NavegadorSeleniumPhantomJs {
 	private final static String PATH_DOWNLOAD_IMG = "src/main/java/resources/captcha/";
 	private final static String NAME_IMG = "captcha.png";
 	private final static String PATH_ARQUIVO_HTML = "src/main/java/resources/htmls";
-	
+
 	private SetupSelenium setupSelenium = SetupSelenium.getInstance();
 	private LoginMB loginMB;
 	private HTMLJsoup instanceHTMLJsoup;
@@ -73,13 +77,12 @@ public class NavegadorSeleniumPhantomJs {
 		try {
 			setupSelenium.getWebDriver().get(URL_INICIAL_CONSIGNUM);
 
-			WebElement element = setupSelenium.getWebDriver().findElement(By.tagName("a").className("loginInicio"));
+			WebElement element = (new WebDriverWait(setupSelenium.getWebDriver(), 10)).until(ExpectedConditions.visibilityOfElementLocated(By.className("loginInicio")));
+
 			element.click();
 
-			WebElement imgElement = (new WebDriverWait(setupSelenium.getWebDriver(), 10))
-					  .until(ExpectedConditions.presenceOfElementLocated(By.tagName("img").id("recaptcha_challenge_image")));
+			WebElement imgElement = (new WebDriverWait(setupSelenium.getWebDriver(), 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("recaptcha_challenge_image")));
 
-//			WebElement imgElement = setupSelenium.getWebDriver().findElement(By.tagName("img").id("recaptcha_challenge_image"));
 			linkImagem.append(imgElement.getAttribute("src"));
 
 		} catch (Exception e) {
@@ -90,19 +93,6 @@ public class NavegadorSeleniumPhantomJs {
 			System.out.println("tempo execução método getLinkImagemCaptcha: " + calculaTempoExecucao(start, end));
 		}
 		return linkImagem.toString();
-	}
-
-	/**
-	 * Método que recebe como parâmetro o tempo de pausa em mili segundos.
-	 * 
-	 * @param timeMiliSec
-	 */
-	private void pause(long timeMiliSec) {
-		try {
-			Thread.sleep(timeMiliSec);
-		} catch (InterruptedException ex) {
-			Thread.currentThread().interrupt();
-		}
 	}
 
 	private long calculaTempoExecucao(long start, long end) {
@@ -157,48 +147,45 @@ public class NavegadorSeleniumPhantomJs {
 	 * Este método injeta as credenciais digitadas em nossa tela de login na
 	 * tela de login do consignum e se loga no sistema.
 	 * 
-	 * TODO: método deve ser refatorando para receber um caminho do arquivo csv
-	 * e fazer a leitura do mesmo e buscar pelos cpfs
-	 * 
 	 */
 	@SuppressWarnings("static-access")
 	public void executeLogin() throws IOException {
 
-		/*
-		 * Pega os elementos que representam os campos de
-		 * Usuário/Senha/Captcha/Botão de Entrar
-		 */
-		WebElement inputUsuario = setupSelenium.getWebDriver().findElement(By.tagName("input").id("j_id_jsp_1179747809_21"));
-		WebElement inputPassword = setupSelenium.getWebDriver().findElement(By.tagName("input").name("j_id_jsp_1179747809_23"));
-		WebElement inputCaptcha = setupSelenium.getWebDriver().findElement(By.tagName("input").id("recaptcha_response_field"));
-		WebElement btnEntrar = setupSelenium.getWebDriver().findElement(By.tagName("button").id("j_id_jsp_1179747809_27"));
+		try {
 
-		/*
-		 * Seta valores aos campos Usuário/Senha/CAPTCHA
-		 */
-		inputUsuario.sendKeys(loginMB.getLogin());
-		inputPassword.sendKeys(loginMB.getSenha());
-		inputCaptcha.sendKeys(loginMB.getCaptcha());
+			System.out.println("INICIO");
 
-		// Clica no botão entrar
-		btnEntrar.click();
+			long start = System.currentTimeMillis();
 
-		// pausa para o navegador carregar o html da página principal após login
-		// pause(500);
+			/*
+			 * Pega os elementos que representam os campos de
+			 * Usuário/Senha/Captcha/Botão de Entrar
+			 */
+			WebElement inputUsuario = setupSelenium.getWait().until(ExpectedConditions.visibilityOfElementLocated(By.tagName("input").id("j_id_jsp_1179747809_21")));
+			WebElement inputPassword = setupSelenium.getWait().until(ExpectedConditions.visibilityOfElementLocated(By.tagName("input").name("j_id_jsp_1179747809_23")));
+			WebElement inputCaptcha = setupSelenium.getWait().until(ExpectedConditions.visibilityOfElementLocated(By.tagName("input").id("recaptcha_response_field")));
+			WebElement btnEntrar = setupSelenium.getWait().until(ExpectedConditions.visibilityOfElementLocated(By.tagName("button").id("j_id_jsp_1179747809_27")));
 
-		List<String> listCpf = new ArrayList<String>();
-		listCpf.add("51202158900");
-		listCpf.add("51112426949");
-		listCpf.add("41533135991");
-		listCpf.add("67326501904");
-		listCpf.add("89874102934");
-		listCpf.add("53457838968");
-		listCpf.add("54884020987");
-		listCpf.add("75147653953");
-		listCpf.add("67942385949");
-		listCpf.add("63809885991");
+			/*
+			 * Seta valores aos campos Usuário/Senha/CAPTCHA
+			 */
+			inputUsuario.sendKeys(loginMB.getLogin());
+			inputPassword.sendKeys(loginMB.getSenha());
+			inputCaptcha.sendKeys(loginMB.getCaptcha());
 
-		getHtmlClientes(listCpf);
+			// Clica no botão entrar
+			btnEntrar.click();
+
+			// Processa os cpfs que estão noi arquivo indicado
+			processaCpfs(getListCpfsByFile());
+
+			long end = System.currentTimeMillis();
+
+			System.out.println("tempo processamento total: " + calculaTempoExecucao(start, end));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		if (Cache.clientesDTOCache != null) {
 			WriteFileXML.gravaXMLListaClientes(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache"));
@@ -207,79 +194,125 @@ public class NavegadorSeleniumPhantomJs {
 	}
 
 	/**
-	 * TODO: Fazer lógica para verificar se existe mais de um link para clicar
-	 * após a pesquisa pelo cpf, caso exista, não deve trocar de cpf para saber
-	 * se existe mais de um registro tem como verificar pelo id que tem a
-	 * quantidade, no caso o primeiro registro fica como tabelaListaCol:0: e o
-	 * segundo como tabelaListaCol:1:
+	 * Método que lê os cpfs do arquivo csv.
+	 * 
+	 * TODO: esse método deve receber o caminnho do arquivo como parâmetro.
+	 * 
+	 * @param listCpf
+	 * @throws Exception
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	private List<String[]> getListCpfsByFile() throws Exception {
+
+		List<String[]> listCpf = null;
+		CSVReader reader = null;
+		try {
+			reader = new CSVReader(new FileReader(new File(Util.getProperty("prop.diretorio.d") + "cpf.csv")));
+			listCpf = reader.readAll();
+
+		} catch (Exception e) {
+			throw new Exception("Erro: " + e.getMessage());
+		} finally {
+			reader.close();
+		}
+
+		return listCpf;
+	}
+
+	/**
+	 * Método que recebe como parâmetro o tempo de pausa em mili segundos.
+	 * 
+	 * @param timeMiliSec
+	 */
+	private void pause(long timeMiliSec) {
+		try {
+			Thread.sleep(timeMiliSec);
+		} catch (InterruptedException ex) {
+			Thread.currentThread().interrupt();
+		}
+	}
+
+	/**
 	 * 
 	 * @param listCpf
 	 */
 	@SuppressWarnings("static-access")
-	private void getHtmlClientes(List<String> listCpf) {
+	private void processaCpfs(List<String[]> listCpf) {
 
-		long start = System.currentTimeMillis();
+		try {
+			int total = listCpf.size();
+			int cont = 0;
+			// Redireciona para a página de disponibilidade de margem
+			setupSelenium.getWebDriver().get(URL_DISPONIBILIDADE_MARGEM);
 
-		if (!listCpf.isEmpty()) {
+			for (String[] cpf : listCpf) {
 
-			for (String cpf : listCpf) {
+				salvaHtml(setupSelenium.getWebDriver().getPageSource(), "saida1.html");
 
-				// Redireciona para a página de disponibilidade de margem
-				setupSelenium.getWebDriver().get(URL_DISPONIBILIDADE_MARGEM);
+				long start = System.currentTimeMillis();
 
-				// pausa para carregar a página
-//				pause(500);
-				
 				// Pega os elementos que representam o campo CPF e o botão
 				// pesquisar
-				WebElement inputCpf = (new WebDriverWait(setupSelenium.getWebDriver(), 10))
-						  .until(ExpectedConditions.presenceOfElementLocated(By.tagName("input").id("j_id_jsp_248910084_1:j_id_jsp_248910084_14")));
-				
-				WebElement btnPesquisar = (new WebDriverWait(setupSelenium.getWebDriver(), 10))
-						  .until(ExpectedConditions.presenceOfElementLocated(By.tagName("button").id("j_id_jsp_248910084_1:j_id_jsp_248910084_15")));
-				
-//				WebElement inputCpf = SetupSelenium.getInstance().getWebDriver().findElement(By.tagName("input").id("j_id_jsp_248910084_1:j_id_jsp_248910084_14"));
-//				WebElement btnPesquisar = SetupSelenium.getInstance().getWebDriver().findElement(By.tagName("button").id("j_id_jsp_248910084_1:j_id_jsp_248910084_15"));
+				WebElement inputCpf = setupSelenium.getWait().until(ExpectedConditions.visibilityOfElementLocated(By.tagName("input").id("j_id_jsp_248910084_1:j_id_jsp_248910084_14")));
+				WebElement btnPesquisar = setupSelenium.getWait().until(ExpectedConditions.visibilityOfElementLocated(By.tagName("button").id("j_id_jsp_248910084_1:j_id_jsp_248910084_15")));
 
 				// limpa o input caso tenha algum cpf
 				inputCpf.clear();
 				// Seta o valor do cpf
 				inputCpf.sendKeys(cpf);
-
 				// Clica no botão pesquisar
 				btnPesquisar.click();
 
-				// salvaHtml(setupSelenium.getWebDriver().getPageSource(),
-				// "pagina.html");
+				/*
+				 * Caso não encontre resultados, aumentar o tempo
+				 */
+				pause(1000);
 
-				// pausa para carregar a página
-//				pause(500);
+				salvaHtml(setupSelenium.getWebDriver().getPageSource(), "saida2.html");
 
-				// Pega o elemento que contém o link para exibir o histórico do
-				// cliente
-				// WebElement linkNome =
-				// SetupSelenium.getInstance().getWebDriver().findElement(By.id("j_id_jsp_248910084_1:tabelaListaCol:0:j_id_jsp_248910084_23"));
-				WebElement linkNome = (new WebDriverWait(setupSelenium.getWebDriver(), 10))
-						  .until(ExpectedConditions.presenceOfElementLocated(By.id("j_id_jsp_248910084_1:tabelaListaCol:0:j_id_jsp_248910084_23")));
-				// Clica no elemento para exibir o histórico
-				linkNome.click();
+				int qtdResultados = setupSelenium.getWait().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//*[contains(./@id, 'j_id_jsp_248910084_23')]"))).size();
 
-				// Redireciona para a página do ByPass
-				setupSelenium.getWebDriver().get(URL_BYPASS);
+				System.out.println("qtd cpfs encontrados: " + qtdResultados);
 
-				getInstanceHTMLJsoup().createObjectRecordHTML(setupSelenium.getWebDriver().getPageSource(), cpf);
-				// Salva o código fonte da página
-				//salvaHtml(setupSelenium.getWebDriver().getPageSource(), cpf + ".html");
+				for (int i = 0; i < qtdResultados; i++) {
 
-				// setupSelenium.getWebDriver().quit();
+					// Pega o elemento que contém o link para exibir o histórico
+					// do cliente
+					WebElement linkNome = setupSelenium.getWait()
+							.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_248910084_1:tabelaListaCol:" + i + ":j_id_jsp_248910084_23']")));
+
+					// Clica no elemento para exibir o histórico
+					linkNome.click();
+
+					salvaHtml(setupSelenium.getWebDriver().getPageSource(), i + "saida.html");
+
+					// Redireciona para a página do ByPass
+					setupSelenium.getWebDriver().get(URL_BYPASS);
+
+					// new
+					// HTMLJsoup(setupSelenium.getWebDriver().getPageSource());
+					// Salva o código fonte da página
+					salvaHtml(setupSelenium.getWebDriver().getPageSource(), System.currentTimeMillis() + ".html");
+
+					// volta para a página de resultados
+					setupSelenium.getWebDriver().get(URL_DISPONIBILIDADE_MARGEM);
+
+				}
+
+				long end = System.currentTimeMillis();
+				cont++;
+
+				System.out.println("Status: " + cont + "/" + total);
 
 			}
 
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			setupSelenium.closeWebDriver();
 		}
 
-		long end = System.currentTimeMillis();
-
-		System.out.println("tempo execução método getHtmlClientes(): " + calculaTempoExecucao(start, end));
 	}
 
 	/**
@@ -288,8 +321,8 @@ public class NavegadorSeleniumPhantomJs {
 	public LoginMB getLoginMB() {
 		return loginMB;
 	}
-	
-	public HTMLJsoup getInstanceHTMLJsoup(){
+
+	public HTMLJsoup getInstanceHTMLJsoup() {
 		if (instanceHTMLJsoup == null) {
 			instanceHTMLJsoup = new HTMLJsoup();
 		}
