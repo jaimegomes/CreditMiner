@@ -20,14 +20,13 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.opencsv.CSVReader;
-
-import br.com.bjjsolutions.enumerator.SystemEnum;
 import br.com.bjjsolutions.model.LoginMB;
 import br.com.bjjsolutions.util.Util;
 import br.com.bjjsolutions.xml.Cache;
 import br.com.bjjsolutions.xml.HTMLJsoup;
 import br.com.bjjsolutions.xml.WriteFileXML;
+
+import com.opencsv.CSVReader;
 
 /**
  * Classe de navegação utilizando Selenium + PhantomJS
@@ -108,11 +107,7 @@ public class NavegadorSeleniumPhantomJs {
 	private void salvaHtml(String html, String nomeArquivo) {
 		FileWriter arquivo;
 		try {
-			if (System.getProperty("os.name").toUpperCase().equals(SystemEnum.LINUX.getSystem())) {
-				arquivo = new FileWriter(new File(Util.getProperty("prop.diretorio.home") + nomeArquivo));
-			} else {
-				arquivo = new FileWriter(new File(Util.getProperty("prop.diretorio.d") + nomeArquivo));
-			}
+			arquivo = new FileWriter(new File(Util.getDirectorySO() + nomeArquivo));
 
 			arquivo.write(html);
 			arquivo.close();
@@ -208,7 +203,7 @@ public class NavegadorSeleniumPhantomJs {
 		List<String[]> listCpf = null;
 		CSVReader reader = null;
 		try {
-			reader = new CSVReader(new FileReader(new File(Util.getProperty("prop.diretorio.d") + "cpf.csv")));
+			reader = new CSVReader(new FileReader(new File(Util.getDirectorySO() + "cpf.csv")));
 			listCpf = reader.readAll();
 
 		} catch (Exception e) {
@@ -290,8 +285,6 @@ public class NavegadorSeleniumPhantomJs {
 					// Redireciona para a página do ByPass
 					setupSelenium.getWebDriver().get(URL_BYPASS);
 
-					// new
-					// HTMLJsoup(setupSelenium.getWebDriver().getPageSource());
 					// Salva o código fonte da página
 					salvaHtml(setupSelenium.getWebDriver().getPageSource(), System.currentTimeMillis() + ".html");
 
