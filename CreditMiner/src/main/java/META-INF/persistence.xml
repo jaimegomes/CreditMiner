@@ -11,6 +11,7 @@
 
 		<!-- entidade mapeada -->
 		<class>br.com.bjjsolutions.model.Cliente</class>
+		<class>br.com.bjjsolutions.model.Solicitacao</class>
 
 		<properties>
 
