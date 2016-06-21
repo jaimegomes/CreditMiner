@@ -38,8 +38,14 @@ public class SetupSelenium {
 
 		// ativa o javascript
 		desiredCapabilities.setJavascriptEnabled(true);
-		String[] phantomJsArgs = { "--load-images=no", "--disk-cache=yes", "--web-security=false", "--ignore-ssl-errors=true" };
-		desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_GHOSTDRIVER_CLI_ARGS, phantomJsArgs);
+		desiredCapabilities.setCapability("takesScreenshot", false);
+		desiredCapabilities.setCapability("diskCache", true);
+		desiredCapabilities.setCapability("loadImages", false);
+		desiredCapabilities.setCapability("webSecurity", false);
+		desiredCapabilities.setCapability("ignoreSslErros", true);
+		
+//		String[] phantomJsArgs = { "--load-images=no", "--disk-cache=yes", "--web-security=false", "--ignore-ssl-errors=true" };
+//		desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_GHOSTDRIVER_CLI_ARGS, phantomJsArgs);
 
 		if (System.getProperty("os.name").toUpperCase().equals(SystemEnum.LINUX.getSystem())) {
 			desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, DriverPhantomJSEnum.PATH_DRIVER_PHANTOMJS_LINUX.getPath());
