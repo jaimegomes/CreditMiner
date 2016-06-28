@@ -1,6 +1,7 @@
 package br.com.bjjsolutions.navegador;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -8,17 +9,21 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.imageio.ImageIO;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import br.com.bjjsolutions.dto.CsvDTO;
 import br.com.bjjsolutions.model.LoginMB;
 import br.com.bjjsolutions.util.Util;
 import br.com.bjjsolutions.xml.Cache;
@@ -26,6 +31,8 @@ import br.com.bjjsolutions.xml.HTMLJsoup;
 import br.com.bjjsolutions.xml.WriteFileXML;
 
 import com.opencsv.CSVReader;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
 
 /**
  * Classe de navegação utilizando Selenium + PhantomJS
@@ -100,7 +107,7 @@ public class NavegadorSeleniumPhantomJs {
 		return linkImagem.toString();
 	}
 
-	private long calculaTempoExecucao(long start, long end) {
+	private static long calculaTempoExecucao(long start, long end) {
 		return (end - start);
 	}
 
@@ -189,7 +196,7 @@ public class NavegadorSeleniumPhantomJs {
 			btnEntrar.click();
 
 			// Processa os cpfs que estão noi arquivo indicado
-			processaCpfs(getListCpfsByFile());
+			processaCpfs(parseCsvFileToBeans(CsvDTO.class));
 
 			long end = System.currentTimeMillis();
 
@@ -235,6 +242,42 @@ public class NavegadorSeleniumPhantomJs {
 		return listCpf;
 	}
 
+	public static <CsvDTO> List<CsvDTO> parseCsvFileToBeans(
+			final Class<CsvDTO> beanClass) throws IOException {
+		CSVReader reader = null;
+
+		long start = System.currentTimeMillis();
+		try {
+			reader = new CSVReader(new BufferedReader(new FileReader(
+					Util.getDirectorySO() + "cpf.csv")), ';');
+
+			Map<String, String> columnMapping = new HashMap<String, String>();
+			columnMapping.put("CPF", "cpf");
+
+			HeaderColumnNameTranslateMappingStrategy<CsvDTO> strategy = new HeaderColumnNameTranslateMappingStrategy<CsvDTO>();
+			strategy.setType(beanClass);
+			strategy.setColumnMapping(columnMapping);
+
+			final CsvToBean<CsvDTO> csv = new CsvToBean<CsvDTO>();
+
+			long end = System.currentTimeMillis();
+
+			System.out.println("tempo execução parseCsvFileToBeans: "
+					+ calculaTempoExecucao(start, end));
+
+			return csv.parse(strategy, reader);
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (final IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+
 	/**
 	 * Método que recebe como parâmetro o tempo de pausa em mili segundos.
 	 * 
@@ -250,22 +293,23 @@ public class NavegadorSeleniumPhantomJs {
 
 	/**
 	 * 
-	 * @param listCpf
+	 * @param list
 	 */
 	@SuppressWarnings("static-access")
-	private void processaCpfs(List<String[]> listCpf) {
+	private void processaCpfs(List<br.com.bjjsolutions.dto.CsvDTO> list) {
 
 		try {
-			int total = listCpf.size();
+			int total = list.size();
 			int cont = 0;
 			// Redireciona para a página de disponibilidade de margem
 			setupSelenium.getWebDriver().get(URL_DISPONIBILIDADE_MARGEM);
 
-			for (String[] cpf : listCpf) {
+			for (CsvDTO csv : list) {
+
+				String cpf = StringUtils.leftPad(csv.getCpf(), 11, "0");
 
 				long start = System.currentTimeMillis();
-
-				salvaHtml(setupSelenium.getWebDriver().getPageSource(), "teste");
+				System.out.println("cpf: " + cpf);
 
 				// Pega os elementos que representam o campo CPF e o botão
 				// pesquisar
@@ -297,17 +341,11 @@ public class NavegadorSeleniumPhantomJs {
 								.xpath("//*[contains(./@id, 'j_id_jsp_248910084_23')]")))
 						.size();
 
-				String strCpf = setupSelenium
-						.getWait()
-						.until(ExpectedConditions.visibilityOfElementLocated(By
-								.xpath(".//*[@id='j_id_jsp_248910084_1:tabelaListaCol:tbody_element']/tr[1]/td[3]")))
-						.getText();
-
-				String matricula = setupSelenium
-						.getWait()
-						.until(ExpectedConditions.visibilityOfElementLocated(By
-								.xpath(".//*[@id='j_id_jsp_248910084_1:tabelaListaCol:tbody_element']/tr/td[1]")))
-						.getText();
+				// String strCpf = setupSelenium
+				// .getWait()
+				// .until(ExpectedConditions.visibilityOfElementLocated(By
+				// .xpath(".//*[@id='j_id_jsp_248910084_1:tabelaListaCol:tbody_element']/tr[1]/td[3]")))
+				// .getText();
 
 				for (int i = 0; i < qtdResultados; i++) {
 
@@ -321,20 +359,18 @@ public class NavegadorSeleniumPhantomJs {
 					// Clica no elemento para exibir o histórico
 					linkNome.click();
 
-					System.out.println("cpf: " + strCpf);
-
 					System.out
 							.println("qtd cpfs encontrados: " + qtdResultados);
 
-					salvaHtml(setupSelenium.getWebDriver().getPageSource(),
-							matricula + "-" + strCpf);
+					salvaHtml(setupSelenium.getWebDriver().getPageSource(), i
+							+ "-" + cpf);
 
 					// Redireciona para a página do ByPass
 					setupSelenium.getWebDriver().get(URL_BYPASS);
 
 					// Salva o código fonte da página
-					salvaHtml(setupSelenium.getWebDriver().getPageSource(),
-							matricula + "-" + strCpf + "-margem");
+					salvaHtml(setupSelenium.getWebDriver().getPageSource(), i
+							+ "-" + cpf + "-margem-");
 
 					// volta para a página de resultados
 					setupSelenium.getWebDriver()
