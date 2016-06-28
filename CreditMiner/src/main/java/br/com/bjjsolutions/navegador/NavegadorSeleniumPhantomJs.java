@@ -28,6 +28,7 @@ import br.com.bjjsolutions.model.LoginMB;
 import br.com.bjjsolutions.util.Util;
 import br.com.bjjsolutions.xml.Cache;
 import br.com.bjjsolutions.xml.HTMLJsoup;
+import br.com.bjjsolutions.xml.WriteFileCSV;
 import br.com.bjjsolutions.xml.WriteFileXML;
 
 import com.opencsv.CSVReader;
@@ -205,12 +206,13 @@ public class NavegadorSeleniumPhantomJs {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			if (Cache.clientesDTOCache != null) {
+				WriteFileXML.gravaXMLListaClientes(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache"));
+				WriteFileCSV.createCsvFile(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache"));
+			}
 		}
 
-		if (Cache.clientesDTOCache != null) {
-			WriteFileXML.gravaXMLListaClientes(Cache.clientesDTOCache,
-					Util.getProperty("prop.diretorio.cache"));
-		}
 
 	}
 
@@ -336,15 +338,18 @@ public class NavegadorSeleniumPhantomJs {
 					linkNome.click();
 
 					// Salva o código fonte da página sem a margem
-					salvaHtml(setupSelenium.getWebDriver().getPageSource(), i
-							+ "-" + cpf);
+					//salvaHtml(setupSelenium.getWebDriver().getPageSource(), i
+					//		+ "-" + cpf);
+					
+					getInstanceHTMLJsoup().createObjectRecordHTML(setupSelenium.getWebDriver().getPageSource(),  i + "-" + cpf);
 
 					// Redireciona para a página do ByPass
 					setupSelenium.getWebDriver().get(URL_BYPASS);
 
 					// Salva o código fonte da página com a margem
-					salvaHtml(setupSelenium.getWebDriver().getPageSource(), i
-							+ "-" + cpf + "-margem-");
+					//salvaHtml(setupSelenium.getWebDriver().getPageSource(), i
+					//		+ "-" + cpf + "-margem");
+					getInstanceHTMLJsoup().createObjectRecordHTML(setupSelenium.getWebDriver().getPageSource(),  i + "-" + cpf + "-margem");
 
 					// volta para a página de resultados
 					setupSelenium.getWebDriver()

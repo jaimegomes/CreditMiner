@@ -31,10 +31,11 @@ public class HTMLJsoup {
 	 * @param html
 	 * @param name
 	 */
-	protected void createObjectRecordHTML(String html, String name) {
+	public void createObjectRecordHTML(String html, String name) {
 		try {
 			Document doc = Jsoup.parse(html);
-			System.out.println(doc.html());
+			
+			//System.out.println(doc.html());
 
 			if (Cache.clientesDTOCache == null) {
 				Cache.clientesDTOCache = new TreeMap<String, ClienteDTO>();

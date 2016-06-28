@@ -15,14 +15,14 @@ public class ContextListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
 
-		Thread thread = new Thread(new HTMLProcessThread());
-		thread.start();
-		// dorme querida
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+//		Thread thread = new Thread(new HTMLProcessThread());
+//		thread.start();
+//		// dorme querida
+//		try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 
 	}
 
