@@ -215,33 +215,13 @@ public class NavegadorSeleniumPhantomJs {
 	}
 
 	/**
-	 * Método que lê os cpfs do arquivo csv.
+	 * Método que transforma cada cpf do arquivo csv em um objeto CsvDTO, nele
+	 * contem o cpf utilizado para as pesquisas
 	 * 
-	 * TODO: esse método deve receber o caminnho do arquivo como parâmetro.
-	 * 
-	 * @param listCpf
-	 * @throws Exception
-	 * @throws FileNotFoundException
+	 * @param beanClass
+	 * @return List<CsvDTO>
 	 * @throws IOException
 	 */
-	private List<String[]> getListCpfsByFile() throws Exception {
-
-		List<String[]> listCpf = null;
-		CSVReader reader = null;
-		try {
-			reader = new CSVReader(new FileReader(new File(
-					Util.getDirectorySO() + "cpf.csv")));
-			listCpf = reader.readAll();
-
-		} catch (Exception e) {
-			throw new Exception("Erro: " + e.getMessage());
-		} finally {
-			reader.close();
-		}
-
-		return listCpf;
-	}
-
 	public static <CsvDTO> List<CsvDTO> parseCsvFileToBeans(
 			final Class<CsvDTO> beanClass) throws IOException {
 		CSVReader reader = null;
@@ -341,11 +321,7 @@ public class NavegadorSeleniumPhantomJs {
 								.xpath("//*[contains(./@id, 'j_id_jsp_248910084_23')]")))
 						.size();
 
-				// String strCpf = setupSelenium
-				// .getWait()
-				// .until(ExpectedConditions.visibilityOfElementLocated(By
-				// .xpath(".//*[@id='j_id_jsp_248910084_1:tabelaListaCol:tbody_element']/tr[1]/td[3]")))
-				// .getText();
+				System.out.println("qtd cpfs encontrados: " + qtdResultados);
 
 				for (int i = 0; i < qtdResultados; i++) {
 
@@ -359,16 +335,14 @@ public class NavegadorSeleniumPhantomJs {
 					// Clica no elemento para exibir o histórico
 					linkNome.click();
 
-					System.out
-							.println("qtd cpfs encontrados: " + qtdResultados);
-
+					// Salva o código fonte da página sem a margem
 					salvaHtml(setupSelenium.getWebDriver().getPageSource(), i
 							+ "-" + cpf);
 
 					// Redireciona para a página do ByPass
 					setupSelenium.getWebDriver().get(URL_BYPASS);
 
-					// Salva o código fonte da página
+					// Salva o código fonte da página com a margem
 					salvaHtml(setupSelenium.getWebDriver().getPageSource(), i
 							+ "-" + cpf + "-margem-");
 
