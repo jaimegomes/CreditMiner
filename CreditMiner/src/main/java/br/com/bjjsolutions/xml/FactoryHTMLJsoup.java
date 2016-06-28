@@ -20,7 +20,7 @@ public class FactoryHTMLJsoup extends HTMLJsoup {
 		Map<String, String> htmlsSemMargem = new HashMap<String, String>();
 		Map<String, String> htmlsComMargem = new HashMap<String, String>();
 		
-		File file = new File(Util.getDirectorySO() + "/cpfs");
+		File file = new File(Util.getDirectorySO() + "/htmls_processados");
 		File afile[] = file.listFiles();
 		int i = 0;
 		for (int j = afile.length; i < j; i++) {
