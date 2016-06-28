@@ -7,18 +7,20 @@ public class SolicitacaoDTO {
 	private String parcelas;
 	private String pagas;
 	private String pesquisado;
+	private ClienteDTO cliente;
 	
 	public SolicitacaoDTO() {
 		super();
 	}
 
-	public SolicitacaoDTO(String banco, String valorAutorizado, String parcelas, String pagas, String pesquisado) {
+	public SolicitacaoDTO(String banco, String valorAutorizado, String parcelas, String pagas, String pesquisado, ClienteDTO cliente) {
 		super();
 		this.banco = banco;
 		this.valorAutorizado = valorAutorizado;
 		this.parcelas = parcelas;
 		this.pagas = pagas;
 		this.pesquisado = pesquisado;
+		this.cliente = cliente;
 	}
 
 	public String getBanco() {
@@ -59,5 +61,13 @@ public class SolicitacaoDTO {
 
 	public void setPesquisado(String pesquisado) {
 		this.pesquisado = pesquisado;
+	}
+	
+	public ClienteDTO getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(ClienteDTO clienteDTO) {
+		this.cliente = clienteDTO;
 	}
 }

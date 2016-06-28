@@ -1,7 +1,5 @@
 package br.com.bjjsolutions.util;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.util.Locale;
 import java.util.ResourceBundle;
 

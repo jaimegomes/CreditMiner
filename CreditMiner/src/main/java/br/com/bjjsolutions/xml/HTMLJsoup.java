@@ -15,6 +15,13 @@ import br.com.bjjsolutions.dto.ClienteDTO;
 import br.com.bjjsolutions.dto.SolicitacaoDTO;
 import br.com.bjjsolutions.util.Util;
 
+/**
+ * Classe que serve para extrair as informações do HTML
+ * 
+ * @author Marcelo Lopes Nunes</br> bjjsolutions.com.br - 23/06/2016</br> <a
+ *         href=malito:lopesnunnes@gmail.com>lopesnunnes@gmail.com</a>
+ * 
+ */
 public class HTMLJsoup {
 
 	/**
@@ -22,24 +29,27 @@ public class HTMLJsoup {
 	 * objeto DTO
 	 * 
 	 * @param html
-	 * @param cpf
+	 * @param name
 	 */
-	protected void createObjectRecordHTML(String html, String cpf) {
+	protected void createObjectRecordHTML(String html, String name) {
 		try {
 			Document doc = Jsoup.parse(html);
-			// System.out.println(doc.html());
+			System.out.println(doc.html());
 
 			if (Cache.clientesDTOCache == null) {
 				Cache.clientesDTOCache = new TreeMap<String, ClienteDTO>();
 			}
+			
 			ClienteDTO clienteDTO = new ClienteDTO();
-			List<SolicitacaoDTO> listSolicitacoes = new ArrayList<SolicitacaoDTO>();
 
+			String names[] = name.split("-");
+			String matricula = names[0];
+			clienteDTO.setCpf(names[1].substring(0, 11));
+			
 			// Extrai os dados do header da tabela do HTML e seta no Objeto
-			// ClienteDTO
+			
 			Map<String, String> mapDadosDoCliente = getHeaderDadosDoCliente(doc);
 
-			clienteDTO.setCpf(cpf);
 			if (mapDadosDoCliente.containsKey(Parametros.LABEL_COLABORADOR)) {
 				clienteDTO.setColaborador(mapDadosDoCliente.get(Parametros.LABEL_COLABORADOR));
 			}
@@ -61,52 +71,59 @@ public class HTMLJsoup {
 				}
 
 			}
-			
-			// Extrai os dados do tbody da tabela listagem de solicitações
-			Element standardTable = doc.select("table.standardTable").first();
 
-			// verifica se é listagem de Solicitações Ativas
-			Element header = standardTable.select(".standardTable_Header").first();
+			if (!name.contains("margem")){
+				// Extrai os dados do tbody da tabela listagem de solicitações
+				Element standardTable = doc.select("table.standardTable").first();
 
-			if (header.text().equalsIgnoreCase(Parametros.LISTAGEM_SOLICITACOES_ATIVAS)) {
+				// verifica se é listagem de Solicitações Ativas
+				Element header = standardTable.select(".standardTable_Header").first();
 
-				Element tbody = standardTable.select("tbody").first();
+				if (header.text().equalsIgnoreCase(Parametros.LISTAGEM_SOLICITACOES_ATIVAS)) {
+					
+					List<SolicitacaoDTO> listSolicitacoes = new ArrayList<SolicitacaoDTO>();
+					
+					Element tbody = standardTable.select("tbody").first();
 
-				if (tbody.hasText()) {
-					Elements rowsTbody = tbody.select("tr");
+					if (tbody.hasText()) {
+						Elements rowsTbody = tbody.select("tr");
 
-					for (int i = 0; i < rowsTbody.size(); i++) {
-						// Extrai os dados do HTML e seta no Objeto
-						// SolicitacaoDTO
-						SolicitacaoDTO solicitacaoDTO = new SolicitacaoDTO();
-						Element rowTbody = rowsTbody.get(i);
-						Elements colsTbody = rowTbody.select("td");
-						solicitacaoDTO.setBanco(colsTbody.get(2).text().trim());
-						solicitacaoDTO.setParcelas(colsTbody.get(7).text().trim());
-						solicitacaoDTO.setValorAutorizado(colsTbody.get(5).text().trim());
-						// TODO Não sei o local para retirar a informação
-						// solicitacaoDTO.setPesquisado(pesquisado);
-						// solicitacaoDTO.setPagas(colsTbody.get(9).text().trim());
+						for (int i = 0; i < rowsTbody.size(); i++) {
+							// Extrai os dados do HTML e seta no Objeto
+							
+							Element rowTbody = rowsTbody.get(i);
+							Elements colsTbody = rowTbody.select("td");
 
-						listSolicitacoes.add(solicitacaoDTO);
+							SolicitacaoDTO solicitacaoDTO = new SolicitacaoDTO();
+							solicitacaoDTO.setBanco(colsTbody.get(3).text().trim());
+							solicitacaoDTO.setParcelas(colsTbody.get(8).text().trim());
+							solicitacaoDTO.setPagas(colsTbody.get(9).text().trim());
+							solicitacaoDTO.setValorAutorizado(colsTbody.get(6).text().trim());
+							// TODO Não sei o local para retirar a informação
+							// solicitacaoDTO.setPesquisado(pesquisado);
+							
+							listSolicitacoes.add(solicitacaoDTO);
+						}
+						clienteDTO.setSolicitacaes(listSolicitacoes);
 					}
-					clienteDTO.setSolicitacaes(listSolicitacoes);
 				}
 			}
-
-			if (!clienteDTO.getCpf().isEmpty()) {
-				if (!Cache.clientesDTOCache.containsKey(clienteDTO.getCpf())) {
-					Cache.clientesDTOCache.put(clienteDTO.getCpf(), clienteDTO);
+			
+			if (!clienteDTO.getMatricula().isEmpty()) {
+				if (!Cache.clientesDTOCache.containsKey(clienteDTO.getMatricula())) {
+					Cache.clientesDTOCache.put(clienteDTO.getMatricula(), clienteDTO);
 				} else {
-					ClienteDTO clienteDTOMerge = Cache.clientesDTOCache.get(clienteDTO.getCpf());
-					clienteDTOMerge.getSolicitacaes().addAll(listSolicitacoes);
-					Cache.clientesDTOCache.put(clienteDTO.getCpf(), clienteDTOMerge);
+					ClienteDTO clienteDTOMerge = Cache.clientesDTOCache.get(clienteDTO.getMatricula());
+					if (!clienteDTO.getMargem().equals("")){
+						clienteDTOMerge.setMargem(clienteDTO.getMargem());						
+					}
+					Cache.clientesDTOCache.put(clienteDTO.getMatricula(), clienteDTOMerge);
 				}
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println(Util.getProperty("prop.error.html.jsoup") + cpf + " " + e.getMessage());
+			System.err.println(Util.getProperty("prop.error.html.jsoup") + name + " " + e.getMessage());
 		}
 	}
 
@@ -130,6 +147,9 @@ public class HTMLJsoup {
 			String key = cols.get(0).text().trim();
 			if (key.contains(":")) {
 				key = key.substring(0, key.indexOf(":"));
+			}
+			if (key.equals("")){
+				key = Parametros.LABEL_INFO_EXTRA;
 			}
 			String value = cols.get(1).text().trim();
 			map.put(key, value);
