@@ -19,33 +19,33 @@ public class FactoryHTMLJsoup extends HTMLJsoup {
 	protected void travelFilesHTML() throws IOException {
 		Map<String, String> htmlsSemMargem = new HashMap<String, String>();
 		Map<String, String> htmlsComMargem = new HashMap<String, String>();
-		
+
 		File file = new File(Util.getDirectorySO() + "/htmls_processados");
 		File afile[] = file.listFiles();
 		int i = 0;
 		for (int j = afile.length; i < j; i++) {
 			File files = afile[i];
-			
+
 			String html = readFile(files);
-			
-			if (!files.getName().contains("margem")){
+
+			if (!files.getName().contains("margem")) {
 				htmlsSemMargem.put(files.getName(), html);
 			} else {
 				htmlsComMargem.put(files.getName(), html);
 			}
 			file.delete();
 		}
-		
-        for (String key : htmlsSemMargem.keySet()) {
-            String value = htmlsSemMargem.get(key);
-            createObjectRecordHTML(value, key);
-        }
-        
-        for (String key : htmlsComMargem.keySet()) {
-            String value = htmlsComMargem.get(key);
-            createObjectRecordHTML(value, key);
-        }
-		
+
+		for (String key : htmlsSemMargem.keySet()) {
+			String value = htmlsSemMargem.get(key);
+			createObjectRecordHTML(value, key);
+		}
+
+		for (String key : htmlsComMargem.keySet()) {
+			String value = htmlsComMargem.get(key);
+			createObjectRecordHTML(value, key);
+		}
+
 		if (Cache.clientesDTOCache != null) {
 			WriteFileXML.gravaXMLListaClientes(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache"));
 			WriteFileCSV.createCsvFile(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache"));

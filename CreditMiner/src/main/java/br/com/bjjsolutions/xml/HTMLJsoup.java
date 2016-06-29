@@ -152,6 +152,9 @@ public class HTMLJsoup {
 			if (key.equals("")){
 				key = Parametros.LABEL_INFO_EXTRA;
 			}
+			if(key.equals("Margem Disponível")) {
+				key = Parametros.LABEL_MARGEM;
+			}
 			String value = cols.get(1).text().trim();
 			map.put(key, value);
 		}
