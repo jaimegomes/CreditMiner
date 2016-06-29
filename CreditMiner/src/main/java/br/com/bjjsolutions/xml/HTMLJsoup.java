@@ -44,8 +44,7 @@ public class HTMLJsoup {
 			ClienteDTO clienteDTO = new ClienteDTO();
 
 			String names[] = name.split("-");
-			String matricula = names[0];
-			clienteDTO.setCpf(names[1].substring(0, 11));
+			clienteDTO.setCpf(names[0].substring(0, 11));
 			
 			// Extrai os dados do header da tabela do HTML e seta no Objeto
 			

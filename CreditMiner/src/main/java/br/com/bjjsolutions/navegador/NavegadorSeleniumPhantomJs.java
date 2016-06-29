@@ -309,18 +309,18 @@ public class NavegadorSeleniumPhantomJs {
 					linkNome.click();
 
 					// Salva o código fonte da página sem a margem
-					// salvaHtml(setupSelenium.getWebDriver().getPageSource(), i
-					// + "-" + cpf);
+					salvaHtml(setupSelenium.getWebDriver().getPageSource(), i + "-" + cpf);
 
-					getInstanceHTMLJsoup().createObjectRecordHTML(setupSelenium.getWebDriver().getPageSource(), cpf + "-" + i);
+					// getInstanceHTMLJsoup().createObjectRecordHTML(setupSelenium.getWebDriver().getPageSource(),
+					// cpf + "-" + i);
 
 					// Redireciona para a página do ByPass
 					setupSelenium.getWebDriver().get(URL_BYPASS);
 
 					// Salva o código fonte da página com a margem
-					// salvaHtml(setupSelenium.getWebDriver().getPageSource(), i
-					// + "-" + cpf + "-margem");
-					getInstanceHTMLJsoup().createObjectRecordHTML(setupSelenium.getWebDriver().getPageSource(), cpf + "-" + i + "-margem");
+					salvaHtml(setupSelenium.getWebDriver().getPageSource(), i + "-" + cpf + "-margem");
+					// getInstanceHTMLJsoup().createObjectRecordHTML(setupSelenium.getWebDriver().getPageSource(),
+					// cpf + "-" + i + "-margem");
 
 					// volta para a página de resultados
 					setupSelenium.getWebDriver().get(URL_DISPONIBILIDADE_MARGEM);
