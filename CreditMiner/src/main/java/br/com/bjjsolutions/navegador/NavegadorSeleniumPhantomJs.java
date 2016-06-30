@@ -48,10 +48,6 @@ public class NavegadorSeleniumPhantomJs {
 	private final static String URL_INICIAL_CONSIGNUM = "http://sc.consignum.com.br/wmc-sc/login/selecao_parceiro.faces";
 	private final static String URL_DISPONIBILIDADE_MARGEM = "http://sc.consignum.com.br/wmc-sc/pages/consultas/historico/pesquisa_colaborador.faces";
 	private final static String URL_BYPASS = "http://sc.consignum.com.br/wmc-sc/pages/consultas/disponibilidade_margem/visualiza_margem_colaborador.faces";
-	private final static String PATH_DOWNLOAD_IMG = "src/main/java/resources/captcha/";
-	private final static String NAME_IMG = "captcha.png";
-	private final static String PATH_ARQUIVO_HTML = "src/main/java/resources/htmls";
-
 	private SetupSelenium setupSelenium = SetupSelenium.getInstance();
 	private LoginMB loginMB;
 	private HTMLJsoup instanceHTMLJsoup;
