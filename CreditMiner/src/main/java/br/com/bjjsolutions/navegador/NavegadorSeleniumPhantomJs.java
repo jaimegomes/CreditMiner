@@ -1,22 +1,11 @@
 package br.com.bjjsolutions.navegador;
 
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.imageio.ImageIO;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
@@ -31,10 +20,6 @@ import br.com.bjjsolutions.xml.HTMLJsoup;
 import br.com.bjjsolutions.xml.WriteFileCSV;
 import br.com.bjjsolutions.xml.WriteFileXML;
 
-import com.opencsv.CSVReader;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
-
 /**
  * Classe de navegação utilizando Selenium + PhantomJS
  * 
@@ -48,8 +33,6 @@ public class NavegadorSeleniumPhantomJs {
 	private final static String URL_INICIAL_CONSIGNUM = "http://sc.consignum.com.br/wmc-sc/login/selecao_parceiro.faces";
 	private final static String URL_HISTORICO = "http://sc.consignum.com.br/wmc-sc/pages/consultas/historico/pesquisa_colaborador.faces";
 	private final static String URL_BYPASS = "http://sc.consignum.com.br/wmc-sc/pages/consultas/disponibilidade_margem/visualiza_margem_colaborador.faces";
-	// private SetupSelenium setupSelenium =
-	// SetupSelenium.getInstance().getInstance();
 	private LoginMB loginMB;
 	private HTMLJsoup instanceHTMLJsoup;
 
@@ -93,58 +76,9 @@ public class NavegadorSeleniumPhantomJs {
 			e.printStackTrace();
 		} finally {
 			long end = System.currentTimeMillis();
-			System.out.println("tempo execução método getLinkImagemCaptcha: " + calculaTempoExecucao(start, end));
+			System.out.println("tempo execução método getLinkImagemCaptcha: " + Util.calculaTempoExecucao(start, end));
 		}
 		return linkImagem.toString();
-	}
-
-	/**
-	 * Método que calcula o tempo de execução em mili segundos
-	 * 
-	 * @param start
-	 * @param end
-	 * @return tempo total de execução
-	 */
-	private static long calculaTempoExecucao(long start, long end) {
-		return (end - start);
-	}
-
-	/**
-	 * Método que salva o HTML da página que está sendo navegada, no caminho
-	 * indicado pela variável
-	 * 
-	 * @param html
-	 */
-	private void salvaHtml(String html, String nomeArquivo) {
-		FileWriter arquivo;
-		try {
-			arquivo = new FileWriter(new File(Util.getDirectorySO() + nomeArquivo + ".html"));
-
-			arquivo.write(html);
-			arquivo.close();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	/**
-	 * Método que faz o download da imagem do captcha
-	 * 
-	 * @param linkImagem
-	 *            - Url da imagem que deseja fazer download
-	 * @param targetDirectory
-	 *            - Local onde será salva
-	 * 
-	 * @throws MalformedURLException
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 */
-	public static void downloadImage(StringBuilder linkImagem, String targetDirectory) throws MalformedURLException, IOException, FileNotFoundException {
-		URL url = new URL(linkImagem.toString());
-		BufferedImage bufImgOne = ImageIO.read(url);
-		ImageIO.write(bufImgOne, "png", new File(targetDirectory));
 	}
 
 	/**
@@ -164,11 +98,11 @@ public class NavegadorSeleniumPhantomJs {
 
 			insereCredenciais();
 
-			processaCpfs(parseCsvFileToBeans(CsvDTO.class));
+			processaCpfs(Util.parseCsvFileToBeans(CsvDTO.class));
 
 			long end = System.currentTimeMillis();
 
-			System.out.println("tempo processamento total: " + calculaTempoExecucao(start, end));
+			System.out.println("tempo processamento total: " + Util.calculaTempoExecucao(start, end));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -202,56 +136,6 @@ public class NavegadorSeleniumPhantomJs {
 	}
 
 	/**
-	 * Método que transforma cada cpf do arquivo csv em um objeto CsvDTO, nele
-	 * contem o cpf utilizado para as pesquisas
-	 * 
-	 * @param beanClass
-	 * @return List<CsvDTO>
-	 * @throws IOException
-	 */
-	@SuppressWarnings({ "hiding", "deprecation" })
-	public static <CsvDTO> List<CsvDTO> parseCsvFileToBeans(final Class<CsvDTO> beanClass) throws IOException {
-		CSVReader reader = null;
-
-		try {
-			reader = new CSVReader(new BufferedReader(new FileReader(Util.getDirectorySO() + "cpf.csv")), ';');
-
-			Map<String, String> columnMapping = new HashMap<String, String>();
-			columnMapping.put("CPF", "cpf");
-
-			HeaderColumnNameTranslateMappingStrategy<CsvDTO> strategy = new HeaderColumnNameTranslateMappingStrategy<CsvDTO>();
-			strategy.setType(beanClass);
-			strategy.setColumnMapping(columnMapping);
-
-			final CsvToBean<CsvDTO> csv = new CsvToBean<CsvDTO>();
-
-			return csv.parse(strategy, reader);
-		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (final IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-
-	}
-
-	/**
-	 * Método que recebe como parâmetro o tempo de pausa em mili segundos.
-	 * 
-	 * @param timeMiliSec
-	 */
-	private void pause(long timeMiliSec) {
-		try {
-			Thread.sleep(timeMiliSec);
-		} catch (InterruptedException ex) {
-			Thread.currentThread().interrupt();
-		}
-	}
-
-	/**
 	 * Método que captura os dados de acordo com os cpfs contidos na lista
 	 * passada como parâmetro
 	 * 
@@ -275,14 +159,7 @@ public class NavegadorSeleniumPhantomJs {
 
 				pesquisaCPF(cpf);
 
-				try {
-					qtdResultados = getQtdResultados();
-				} catch (Exception e) {
-					goTo(URL_HISTORICO);
-					pesquisaCPF(cpf);
-					qtdResultados = getQtdResultados();
-
-				}
+				qtdResultados = getQtdResultados(cpf);
 
 				System.out.println("cpf: " + cpf);
 				System.out.println("qtd cpfs encontrados: " + qtdResultados);
@@ -292,7 +169,7 @@ public class NavegadorSeleniumPhantomJs {
 				long end = System.currentTimeMillis();
 				cont++;
 
-				long totalTempoCpfs = calculaTempoExecucao(start, end);
+				long totalTempoCpfs = Util.calculaTempoExecucao(start, end);
 				System.out.println("tempo processamento cpfs: " + totalTempoCpfs);
 				System.out.println("Status: " + cont + "/" + total);
 
@@ -307,10 +184,18 @@ public class NavegadorSeleniumPhantomJs {
 	/**
 	 * Método que retorna a quantidade de resultados da pesquisa
 	 * 
-	 * @return
+	 * @return int qtdResultados
 	 */
-	private int getQtdResultados() {
-		int qtdResultados = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//*[contains(./@id, 'j_id_jsp_248910084_23')]"))).size();
+	private int getQtdResultados(String cpf) {
+		int qtdResultados = 0;
+		try {
+			qtdResultados = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//*[contains(./@id, 'j_id_jsp_248910084_23')]"))).size();
+		} catch (Exception e) {
+			goTo(URL_HISTORICO);
+			pesquisaCPF(cpf);
+			qtdResultados = getQtdResultados(cpf);
+		}
+
 		return qtdResultados;
 	}
 
@@ -331,8 +216,8 @@ public class NavegadorSeleniumPhantomJs {
 			} catch (Exception e) {
 				goTo(URL_HISTORICO);
 				pesquisaCPF(cpf);
-				linkNome = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.id("j_id_jsp_248910084_1:tabelaListaCol:" + i + ":j_id_jsp_248910084_23")));
-				linkNome.click();
+				int qtdResults = getQtdResultados(cpf);
+				setMapJsoup(cpf, qtdResults);
 			}
 
 			getInstanceHTMLJsoup().createObjectRecordHTML(SetupSelenium.getInstance().getWebDriver().getPageSource(), cpf + "-" + i);
@@ -354,15 +239,22 @@ public class NavegadorSeleniumPhantomJs {
 	 *            cpf
 	 */
 	private void pesquisaCPF(String cpf) {
+		WebElement inputCpf = null;
+		WebElement btnPesquisar = null;
+		try {
+			inputCpf = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_248910084_1:j_id_jsp_248910084_14']")));
+			btnPesquisar = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_248910084_1:j_id_jsp_248910084_15']")));
 
-		WebElement inputCpf = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_248910084_1:j_id_jsp_248910084_14']")));
-		WebElement btnPesquisar = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_248910084_1:j_id_jsp_248910084_15']")));
+		} catch (Exception e) {
+			goTo(URL_HISTORICO);
+			pesquisaCPF(cpf);
+		}
 
 		inputCpf.clear();
 		inputCpf.sendKeys(cpf);
 		btnPesquisar.click();
 
-		pause(1000);
+		Util.pause(1000);
 
 	}
 
