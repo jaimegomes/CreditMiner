@@ -1,5 +1,6 @@
 package br.com.bjjsolutions.xml;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,7 +80,7 @@ public class HTMLJsoup {
 				// verifica se é listagem de Solicitações Ativas
 				Element header = standardTable.select(".standardTable_Header").first();
 
-				if (header.text().equalsIgnoreCase(Parametros.LISTAGEM_SOLICITACOES_ATIVAS)) {
+				if (header.text().contains(Parametros.LISTAGEM_SOLICITACOES_ATIVAS)) {
 					
 					List<SolicitacaoDTO> listSolicitacoes = new ArrayList<SolicitacaoDTO>();
 					
