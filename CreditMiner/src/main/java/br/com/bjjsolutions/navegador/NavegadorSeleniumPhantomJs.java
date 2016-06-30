@@ -122,11 +122,20 @@ public class NavegadorSeleniumPhantomJs {
 	 * valores digitados em nossa página de login e se loga no site do consignum
 	 */
 	private void insereCredenciais() {
+		WebElement inputUsuario = null;
+		WebElement inputPassword = null;
+		WebElement inputCaptcha = null;
+		WebElement btnEntrar = null;
 
-		WebElement inputUsuario = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_1179747809_21']")));
-		WebElement inputPassword = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.name("j_id_jsp_1179747809_23")));
-		WebElement inputCaptcha = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='recaptcha_response_field']")));
-		WebElement btnEntrar = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_1179747809_27']")));
+		try {
+			inputUsuario = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_1179747809_21']")));
+			inputPassword = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.name("j_id_jsp_1179747809_23")));
+			inputCaptcha = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='recaptcha_response_field']")));
+			btnEntrar = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_1179747809_27']")));
+
+		} catch (Exception e) {
+			insereCredenciais();
+		}
 
 		inputUsuario.sendKeys(loginMB.getLogin());
 		inputPassword.sendKeys(loginMB.getSenha());
