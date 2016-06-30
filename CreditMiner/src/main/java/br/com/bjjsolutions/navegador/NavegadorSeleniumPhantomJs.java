@@ -77,7 +77,7 @@ public class NavegadorSeleniumPhantomJs {
 		StringBuilder linkImagem = new StringBuilder();
 
 		try {
-			setupSelenium.getWebDriver().get(URL_INICIAL_CONSIGNUM);
+			SetupSelenium.getInstance().getWebDriver().get(URL_INICIAL_CONSIGNUM);
 
 			WebElement element = setupSelenium.getWait().until(
 					ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_1088422203_1:j_id_jsp_1088422203_8:tbody_element']/tr/td[2]/a")));
