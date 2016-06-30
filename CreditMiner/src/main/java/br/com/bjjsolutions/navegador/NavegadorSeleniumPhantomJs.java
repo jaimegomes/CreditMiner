@@ -273,12 +273,7 @@ public class NavegadorSeleniumPhantomJs {
 
 				long start = System.currentTimeMillis();
 
-				try {
-					pesquisaCPF(cpf);
-				} catch (Exception e) {
-					goTo(URL_HISTORICO);
-					pesquisaCPF(cpf);
-				}
+				pesquisaCPF(cpf);
 
 				try {
 					qtdResultados = getQtdResultados();
