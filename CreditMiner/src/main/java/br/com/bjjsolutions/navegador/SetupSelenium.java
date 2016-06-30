@@ -55,7 +55,7 @@ public class SetupSelenium {
 		}
 
 		webDriver = new PhantomJSDriver(desiredCapabilities);
-		wait = new WebDriverWait(webDriver, 20);
+		wait = new WebDriverWait(webDriver, 10);
 
 	}
 
@@ -77,7 +77,7 @@ public class SetupSelenium {
 	/**
 	 * @return the webDriver
 	 */
-	public static WebDriver getWebDriver() {
+	public WebDriver getWebDriver() {
 		return webDriver;
 	}
 
@@ -92,7 +92,7 @@ public class SetupSelenium {
 	/**
 	 * @return the wait
 	 */
-	public static WebDriverWait getWait() {
+	public WebDriverWait getWait() {
 		return wait;
 	}
 
