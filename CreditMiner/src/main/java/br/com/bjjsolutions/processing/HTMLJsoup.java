@@ -1,6 +1,5 @@
-package br.com.bjjsolutions.xml;
+package br.com.bjjsolutions.processing;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +35,7 @@ public class HTMLJsoup {
 		try {
 			Document doc = Jsoup.parse(html);
 			
-			System.out.println(doc.html());
+//			System.out.println(doc.html());
 
 			if (Cache.clientesDTOCache == null) {
 				Cache.clientesDTOCache = new TreeMap<String, ClienteDTO>();
@@ -164,9 +163,11 @@ public class HTMLJsoup {
 	/**
 	 * Captura do HTML os dados do theady da table de solicitacoes
 	 * 
+	 * 
 	 * @param doc
 	 * @return Map<String, String>
 	 */
+	@Deprecated 
 	private static List<String> getTheadTableSolicitacao(Document doc) {
 		List<String> listTheads = new ArrayList<String>();
 		Element standardTable = doc.select("table.standardTable").first();

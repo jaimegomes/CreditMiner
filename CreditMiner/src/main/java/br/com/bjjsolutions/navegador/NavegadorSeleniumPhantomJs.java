@@ -14,11 +14,11 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import br.com.bjjsolutions.dto.CsvDTO;
 import br.com.bjjsolutions.model.LoginMB;
+import br.com.bjjsolutions.processing.Cache;
+import br.com.bjjsolutions.processing.HTMLJsoup;
+import br.com.bjjsolutions.processing.WriteFileCSV;
+import br.com.bjjsolutions.processing.WriteFileXML;
 import br.com.bjjsolutions.util.Util;
-import br.com.bjjsolutions.xml.Cache;
-import br.com.bjjsolutions.xml.HTMLJsoup;
-import br.com.bjjsolutions.xml.WriteFileCSV;
-import br.com.bjjsolutions.xml.WriteFileXML;
 
 /**
  * Classe de navegação utilizando Selenium + PhantomJS

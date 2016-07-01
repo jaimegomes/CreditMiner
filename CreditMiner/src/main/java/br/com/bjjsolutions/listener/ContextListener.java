@@ -3,8 +3,14 @@ package br.com.bjjsolutions.listener;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import br.com.bjjsolutions.xml.HTMLProcessThread;
-
+/**
+ * Classe que inicializa junto com o container do tomcat
+ * 
+ * @author Marcelo Lopes Nunes</br>
+ *         bjjsolutions.com.br - 30/05/2016</br>
+ *         <a href=malito:lopesnunnes@gmail.com>lopesnunnes@gmail.com</a>
+ * 
+ */
 public class ContextListener implements ServletContextListener {
 
 	@Override
@@ -14,16 +20,7 @@ public class ContextListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
-
-//		Thread thread = new Thread(new HTMLProcessThread());
-//		thread.start();
-//		// dorme querida
-//		try {
-//			Thread.sleep(1000);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-
+		System.out.println("=========== Inicializou CREDITMINER ===========");
 	}
 
 }

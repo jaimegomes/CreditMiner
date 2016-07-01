@@ -1,4 +1,4 @@
-package br.com.bjjsolutions.xml;
+package br.com.bjjsolutions.processing;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -7,6 +7,14 @@ import java.util.Map;
 import br.com.bjjsolutions.dto.ClienteDTO;
 import br.com.bjjsolutions.dto.SolicitacaoDTO;
 
+/**
+ * Classe que gera o csv com os dados processados
+ * 
+ * @author Marcelo Lopes Nunes</br>
+ *         bjjsolutions.com.br - 30/06/2016</br>
+ *         <a href=malito:lopesnunnes@gmail.com>lopesnunnes@gmail.com</a>
+ * 
+ */
 public class WriteFileCSV {
 
 	private static final String COMMA_DELIMITER = ";";
