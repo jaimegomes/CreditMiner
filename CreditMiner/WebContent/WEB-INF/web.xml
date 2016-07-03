@@ -28,7 +28,7 @@
 		<exception-type>javax.faces.application.ViewExpiredException</exception-type>
 		<location>/pages/index.xhtml</location>
 	</error-page>
-	<listener>
-		<listener-class>br.com.bjjsolutions.listener.ContextListener</listener-class>
-	</listener>
+<!-- 	<listener> -->
+<!-- 		<listener-class>br.com.bjjsolutions.listener.ContextListener</listener-class> -->
+<!-- 	</listener> -->
 </web-app>

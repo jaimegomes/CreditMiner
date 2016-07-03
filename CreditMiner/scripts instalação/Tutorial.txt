@@ -1,0 +1,11 @@
+Tutorial Multi Processamento de Dados.
+Autor: Jaime Gomes
+
+
+	Para que o sistema faça o multi processamento de dados é necessário instalar um tomcat para cada minerador. 
+	Devido o phantomjs utilizar a porta 8080, sempre que fizemos uma requisição para o endereço (localhost:8080/CreditMiner/pages/login.jsf)
+	do sistema estamos apontando para o mesmo webDriver que está rodando na porta 8080. Em nossa solução a utilização do selenium grid a princípio
+	não se aplica pois seria necessário rodar o minerador pelo eclipse utilizando o Junit ou TestNG o que se torna inviável, por isso é necessário
+	um tomcat para cada minerador.
+	
+	Em cada tomcat é preciso configurar as portas http (ex: 8080, 8081, 8082).

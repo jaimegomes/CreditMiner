@@ -46,12 +46,13 @@ public class NavegadorSeleniumPhantomJs {
 	@PostConstruct
 	public void init() {
 		this.loginMB = new LoginMB();
+
 	}
 
 	/**
 	 * Método que navega pelo site e busca a imagem do captcha.
 	 * 
-	 * @return String SlinkImagem
+	 * @return String linkImagem
 	 * 
 	 */
 	public String getLinkImagemCaptcha() {
@@ -107,7 +108,6 @@ public class NavegadorSeleniumPhantomJs {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			SetupSelenium.getInstance().closeWebDriver();
 			if (Cache.clientesDTOCache != null) {
 				WriteFileXML.gravaXMLListaClientes(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache"));
 				WriteFileCSV.createCsvFile(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache"));
@@ -117,9 +117,10 @@ public class NavegadorSeleniumPhantomJs {
 	}
 
 	/**
-	 * Método que pega os elementos da página que representam os campos login,
-	 * password, campo de resposta do captcha e o botão de entrar e adiciona os
-	 * valores digitados em nossa página de login e se loga no site do consignum
+	 * Método que pega os elementos da página de login que representam os campos
+	 * login, password, campo de resposta do captcha e o botão de entrar,
+	 * adiciona os valores digitados em nossa página de login e se loga no site
+	 * do consignum
 	 */
 	private void insereCredenciais() {
 		WebElement inputUsuario = null;

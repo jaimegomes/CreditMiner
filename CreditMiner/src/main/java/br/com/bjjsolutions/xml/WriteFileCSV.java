@@ -16,9 +16,10 @@ public class WriteFileCSV {
 	public static void createCsvFile(Map<String, ClienteDTO> clientes, String fileName) {
 
 		FileWriter fileWriter = null;
+		long start = System.currentTimeMillis();
 
 		try {
-			fileWriter = new FileWriter(fileName + "/clientes.csv", true);
+			fileWriter = new FileWriter(fileName + "/"+start+"_clientes.csv", true);
 
 			fileWriter.append(FILE_HEADER.toString());
 
