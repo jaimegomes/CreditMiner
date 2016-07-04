@@ -46,12 +46,13 @@ public class NavegadorSeleniumPhantomJs {
 	@PostConstruct
 	public void init() {
 		this.loginMB = new LoginMB();
+
 	}
 
 	/**
 	 * Método que navega pelo site e busca a imagem do captcha.
 	 * 
-	 * @return String SlinkImagem
+	 * @return String linkImagem
 	 * 
 	 */
 	public String getLinkImagemCaptcha() {
@@ -107,7 +108,6 @@ public class NavegadorSeleniumPhantomJs {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			SetupSelenium.getInstance().closeWebDriver();
 			if (Cache.clientesDTOCache != null) {
 				WriteFileXML.gravaXMLListaClientes(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache"));
 				WriteFileCSV.createCsvFile(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache"));
@@ -117,16 +117,26 @@ public class NavegadorSeleniumPhantomJs {
 	}
 
 	/**
-	 * Método que pega os elementos da página que representam os campos login,
-	 * password, campo de resposta do captcha e o botão de entrar e adiciona os
-	 * valores digitados em nossa página de login e se loga no site do consignum
+	 * Método que pega os elementos da página de login que representam os campos
+	 * login, password, campo de resposta do captcha e o botão de entrar,
+	 * adiciona os valores digitados em nossa página de login e se loga no site
+	 * do consignum
 	 */
 	private void insereCredenciais() {
+		WebElement inputUsuario = null;
+		WebElement inputPassword = null;
+		WebElement inputCaptcha = null;
+		WebElement btnEntrar = null;
 
-		WebElement inputUsuario = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_1179747809_21']")));
-		WebElement inputPassword = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.name("j_id_jsp_1179747809_23")));
-		WebElement inputCaptcha = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='recaptcha_response_field']")));
-		WebElement btnEntrar = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_1179747809_27']")));
+		try {
+			inputUsuario = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_1179747809_21']")));
+			inputPassword = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.name("j_id_jsp_1179747809_23")));
+			inputCaptcha = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='recaptcha_response_field']")));
+			btnEntrar = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_1179747809_27']")));
+
+		} catch (Exception e) {
+			insereCredenciais();
+		}
 
 		inputUsuario.sendKeys(loginMB.getLogin());
 		inputPassword.sendKeys(loginMB.getSenha());

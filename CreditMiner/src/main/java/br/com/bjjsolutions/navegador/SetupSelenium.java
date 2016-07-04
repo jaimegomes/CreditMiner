@@ -1,5 +1,6 @@
 package br.com.bjjsolutions.navegador;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
@@ -43,9 +44,15 @@ public class SetupSelenium {
 		desiredCapabilities.setCapability("loadImages", false);
 		desiredCapabilities.setCapability("webSecurity", false);
 		desiredCapabilities.setCapability("ignoreSslErros", true);
-		
-//		String[] phantomJsArgs = { "--load-images=no", "--disk-cache=yes", "--web-security=false", "--ignore-ssl-errors=true" };
-//		desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_GHOSTDRIVER_CLI_ARGS, phantomJsArgs);
+		desiredCapabilities.setBrowserName("phantomjs");
+		desiredCapabilities.setPlatform(Platform.LINUX);
+
+		// String nodeUrl = "http://localhost:5555/wd/hub";
+
+		// String[] phantomJsArgs = { "--load-images=no", "--disk-cache=yes",
+		// "--web-security=false", "--ignore-ssl-errors=true" };
+		// desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_GHOSTDRIVER_CLI_ARGS,
+		// phantomJsArgs);
 
 		if (System.getProperty("os.name").toUpperCase().equals(SystemEnum.LINUX.getSystem())) {
 			desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, DriverPhantomJSEnum.PATH_DRIVER_PHANTOMJS_LINUX.getPath());
@@ -105,7 +112,7 @@ public class SetupSelenium {
 	}
 
 	public void closeWebDriver() {
-		webDriver.close();
+		webDriver.quit();
 	}
 
 }
