@@ -3,34 +3,59 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 <h:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link href="resources/css/bootstrap.min.css" rel="stylesheet" />
 	<title>Credit Miner</title>
 </h:head>
 <h:body>
-	<h:form>
-		<h:panelGrid columns="2">
-			<h:outputLabel value="Login: " />
-			<h:inputText id="login" name="txtLogin" value="#{navegadorSeleniumPhantomJsBean.loginMB.login}"
-				style="width: 174px; height: 10px; ">
-			</h:inputText>
-			<h:outputLabel value="Senha: " />
-			<h:inputSecret id="passwd" name="txtPassword" value="#{navegadorSeleniumPhantomJsBean.loginMB.senha}"
-				style="width: 174px; height: 10px;" />
-			<h:outputLabel value="CAPTCHA: " />
-			<h:inputText id="captcha" name="txtCaptcha" value="#{navegadorSeleniumPhantomJsBean.loginMB.captcha}"
-				style="width: 174px; height: 10px;" />
-		</h:panelGrid>
-		<h:panelGrid>
-			<h:graphicImage
-				value="#{navegadorSeleniumPhantomJsBean.getLinkImagemCaptcha()}" />
-			<br></br>
-			<h:commandButton value="Entrar"
-				action="#{navegadorSeleniumPhantomJsBean.executeLogin()}" />
-		</h:panelGrid>
-	</h:form>
-
+	<main>
+		<div class="container">
+			<div class="navbar navbar-inverse">
+				<div class="navbar-brand">
+					Credit Miner
+				</div>
+			</div>
+		</div>
+		<div class="text-center">
+			<h3>Credit Miner</h3>
+		</div>
+		<div class="row">
+			<div class="thumbnail text-center col-md-4 col-md-offset-4">
+				<h:form styleClass="form-horizontal">
+					<div class="form-group">
+						<h:outputLabel value="Login:" styleClass="control-label col-md-2"/>
+						<div class="col-md-10">
+							<h:inputText id="login" name="txtLogin" value="#{navegadorSeleniumPhantomJsBean.loginMB.login}" placeholder="Login" styleClass="form-control" />
+						</div>
+					</div>
+					<div class="form-group">
+						<h:outputLabel value="Senha:" styleClass="control-label col-md-2"/>
+						<div class="col-md-10">
+							<h:inputSecret id="passwd" name="txtPassword" value="#{navegadorSeleniumPhantomJsBean.loginMB.senha}" styleClass="form-control" />
+						</div>
+					</div>	
+					<div class="form-group">
+						<h:outputLabel value="CAPTCHA:" styleClass="control-label col-md-2"/>
+						<div class="col-md-10">				
+							<h:inputText id="captcha" name="txtCaptcha" value="#{navegadorSeleniumPhantomJsBean.loginMB.captcha}" placeholder="Digite a imagem" styleClass="form-control"/>
+						</div>
+					</div>		
+					<div class="form-group col-md-12">
+						<h:graphicImage
+							value="#{navegadorSeleniumPhantomJsBean.getLinkImagemCaptcha()}" />
+					</div>	
+					<div class="btn-group col-md-12 text-center">	
+						<h:commandLink value="Login"
+							action="#{navegadorSeleniumPhantomJsBean.executeLogin()}" styleClass="btn btn-primary">
+							<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+						</h:commandLink>	
+					</div>	
+				</h:form>		
+			</div>
+		</div>	
+	</main>
 </h:body>
 </html>
