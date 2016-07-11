@@ -13,6 +13,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import br.com.bjjsolutions.dto.CsvDTO;
+import br.com.bjjsolutions.mb.ConfiguracaoMB;
 import br.com.bjjsolutions.model.LoginMB;
 import br.com.bjjsolutions.processing.Cache;
 import br.com.bjjsolutions.processing.HTMLJsoup;
@@ -90,14 +91,26 @@ public class NavegadorSeleniumPhantomJs {
 	 * 
 	 */
 	public void executeLogin() throws IOException {
+		
+		try {
+			ConfiguracaoMB.setIsLogin(true);
+
+			insereCredenciais();
+
+		} catch (Exception e) {
+			ConfiguracaoMB.setIsLogin(false);
+			e.printStackTrace();
+		}
+
+	}
+	
+	public void initMiner() throws IOException {
 
 		try {
 
 			System.out.println("INICIO");
 
 			long start = System.currentTimeMillis();
-
-			insereCredenciais();
 
 			processaCpfs(Util.parseCsvFileToBeans(CsvDTO.class));
 
@@ -115,6 +128,7 @@ public class NavegadorSeleniumPhantomJs {
 		}
 
 	}
+
 
 	/**
 	 * Método que pega os elementos da página de login que representam os campos
