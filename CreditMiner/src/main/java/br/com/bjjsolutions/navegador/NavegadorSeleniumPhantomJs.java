@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import br.com.bjjsolutions.dto.CsvDTO;
 import br.com.bjjsolutions.mb.ConfiguracaoMB;
@@ -36,6 +37,7 @@ public class NavegadorSeleniumPhantomJs {
 	private final static String URL_BYPASS = "http://sc.consignum.com.br/wmc-sc/pages/consultas/disponibilidade_margem/visualiza_margem_colaborador.faces";
 	private LoginMB loginMB;
 	private HTMLJsoup instanceHTMLJsoup;
+	private String banco;
 
 	/**
 	 * Construtor
@@ -47,6 +49,7 @@ public class NavegadorSeleniumPhantomJs {
 	@PostConstruct
 	public void init() {
 		this.loginMB = new LoginMB();
+		ConfiguracaoMB.setIsLogin(false);
 
 	}
 
@@ -91,19 +94,21 @@ public class NavegadorSeleniumPhantomJs {
 	 * 
 	 */
 	public void executeLogin() throws IOException {
-		
+
 		try {
-			ConfiguracaoMB.setIsLogin(true);
 
 			insereCredenciais();
 
 		} catch (Exception e) {
-			ConfiguracaoMB.setIsLogin(false);
-			e.printStackTrace();
+			getLinkImagemCaptcha();
 		}
 
 	}
 	
+	public void uploadArquivo() {
+		
+	}
+
 	public void initMiner() throws IOException {
 
 		try {
@@ -129,7 +134,6 @@ public class NavegadorSeleniumPhantomJs {
 
 	}
 
-
 	/**
 	 * Método que pega os elementos da página de login que representam os campos
 	 * login, password, campo de resposta do captcha e o botão de entrar,
@@ -141,6 +145,7 @@ public class NavegadorSeleniumPhantomJs {
 		WebElement inputPassword = null;
 		WebElement inputCaptcha = null;
 		WebElement btnEntrar = null;
+		WebElement logado = null;
 
 		try {
 			inputUsuario = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_1179747809_21']")));
@@ -156,7 +161,30 @@ public class NavegadorSeleniumPhantomJs {
 		inputPassword.sendKeys(loginMB.getSenha());
 		inputCaptcha.sendKeys(loginMB.getCaptcha());
 
+		verificaBanco();
+
 		btnEntrar.click();
+
+		logado = new WebDriverWait(SetupSelenium.getInstance().getWebDriver(), 5).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(./@id, 'j_id_jsp_252844863_0pc3')]")));
+		ConfiguracaoMB.setIsLogin(true);
+
+	}
+
+	/**
+	 * Verifica de qual banco está se logando
+	 */
+	private void verificaBanco() {
+
+		if (loginMB.getLogin().equals("SC01R021432")) {
+			setBanco("parana");
+		} else if (loginMB.getLogin().equals("SC01C02775067")) {
+			setBanco("pan");
+		} else if (loginMB.getLogin().equals("SC01R02385")) {
+			setBanco("bmg");
+		} else if (loginMB.getLogin().equals("SC01C0290506708")) {
+			setBanco("bomsucesso");
+		}
+
 	}
 
 	/**
@@ -169,6 +197,7 @@ public class NavegadorSeleniumPhantomJs {
 	private void processaCpfs(List<br.com.bjjsolutions.dto.CsvDTO> list) {
 
 		try {
+
 			int total = list.size();
 			int cont = 0;
 			int qtdResultados = 0;
@@ -246,9 +275,16 @@ public class NavegadorSeleniumPhantomJs {
 
 			getInstanceHTMLJsoup().createObjectRecordHTML(SetupSelenium.getInstance().getWebDriver().getPageSource(), cpf + "-" + i);
 
-			goTo(URL_BYPASS);
+			// verifica se é paraná banco, se não for faz o bypass para buscar a
+			// margem, caso seja paraná banco não tem margem e por isso não
+			// precisa fazer o bypass
+			if (!this.banco.equals("parana")) {
 
-			getInstanceHTMLJsoup().createObjectRecordHTML(SetupSelenium.getInstance().getWebDriver().getPageSource(), cpf + "-" + i + "-margem");
+				goTo(URL_BYPASS);
+
+				getInstanceHTMLJsoup().createObjectRecordHTML(SetupSelenium.getInstance().getWebDriver().getPageSource(), cpf + "-" + i + "-margem");
+
+			}
 
 			goTo(URL_HISTORICO);
 
@@ -309,4 +345,20 @@ public class NavegadorSeleniumPhantomJs {
 	private void goTo(String url) {
 		SetupSelenium.getInstance().getWebDriver().get(url);
 	}
+
+	/**
+	 * @return the banco
+	 */
+	public String getBanco() {
+		return banco;
+	}
+
+	/**
+	 * @param banco
+	 *            the banco to set
+	 */
+	public void setBanco(String banco) {
+		this.banco = banco;
+	}
+
 }

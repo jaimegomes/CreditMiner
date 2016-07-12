@@ -99,8 +99,6 @@ public class HTMLJsoup {
 							solicitacaoDTO.setParcelas(colsTbody.get(8).text().trim());
 							solicitacaoDTO.setPagas(colsTbody.get(9).text().trim());
 							solicitacaoDTO.setValorAutorizado(colsTbody.get(6).text().trim());
-							// TODO Não sei o local para retirar a informação
-							// solicitacaoDTO.setPesquisado(pesquisado);
 							
 							listSolicitacoes.add(solicitacaoDTO);
 						}
