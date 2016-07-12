@@ -29,7 +29,6 @@ import br.com.bjjsolutions.util.Util;
  * 
  */
 @ManagedBean(name = "navegadorSeleniumPhantomJsBean")
-@RequestScoped
 public class NavegadorSeleniumPhantomJs {
 
 	private final static String URL_INICIAL_CONSIGNUM = "http://sc.consignum.com.br/wmc-sc/login/selecao_parceiro.faces";
@@ -107,6 +106,18 @@ public class NavegadorSeleniumPhantomJs {
 	
 	public void uploadArquivo() {
 		
+	}
+	
+	public void login() throws IOException {
+
+		try {
+
+			insereCredenciais();
+
+		} catch (Exception e) {
+			getLinkImagemCaptcha();
+		}
+
 	}
 
 	public void initMiner() throws IOException {

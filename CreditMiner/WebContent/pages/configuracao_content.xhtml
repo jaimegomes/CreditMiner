@@ -5,7 +5,8 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 
-	<main> <nav class="navbar navbar-default navbar-static-top">
+	<main> 
+	<nav class="navbar navbar-default navbar-static-top">
 	<div class="container-fluid">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed"
@@ -41,84 +42,73 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">
 
-					<!-- 					<h:form id="form" enctype="multipart/form-data" styleClass="form-horizontal"> -->
+					<h:form id="form" enctype="multipart/form-data"
+						styleClass="form-horizontal">
 
-					<!-- 					    <h:outputLabel value="Arquivo" styleClass="control-label col-md-2"/> -->
-					<!-- 					    <h:inputFile id="file" value="#{configuracaoMB.file}"  -->
-					<!-- 					        required="true" label="Arquivo" styleClass="form-control" /> -->
+						<h:outputLabel value="Arquivo" styleClass="control-label col-md-2"
+							class="text-right" />
+						<h:inputFile id="file" value="#{configuracaoMB.file}"
+							required="true" label="Arquivo" styleClass="form-control" />
 
-					<!-- 					    <h:commandButton value="Upload"  -->
-					<!-- 					        action="#{configuracaoMB.upload()}" styleClass="btn btn-sm btn-primary"  > -->
-					<!-- 					        <f:ajax execute="@form" render="@all" /> -->
-					<!-- 					    </h:commandButton> -->
-					<!-- 					</h:form> -->
-
-					<h:form id="form-upload" styleClass="form-horizontal">
-						<h:inputFile id="upload-arquivo"
-							value="#{navegadorSeleniumPhantomJsBean.uploadArquivo()}"
-							required="true" label="Upload
-							de Arquivo"
-							class="btn-group pull-right" />
-						<!-- 							<input -->
-						<!-- 							id="my-file-selector" type="file" style="display: none;" -->
-						<!-- 							onchange="$('#upload-file-info').html($(this).val());" />  -->
-						<!-- 						<span class='label label-info' id="upload-file-info"></span> -->
-						<div class="btn-group pull-right">
-					</h:form>
-					<h:form styleClass="form-horizontal">
-						<h:commandButton value="Iniciar"
-							action="#{navegadorSeleniumPhantomJsBean.initMiner()}"
-							styleClass="btn btn-sm btn-primary" immediate="true">
-							<span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
+						<h:commandButton value="Upload"
+							action="#{configuracaoMB.upload()}"
+							styleClass="btn btn-sm btn-primary">
+							<f:ajax execute="@form" render="@all" />
 						</h:commandButton>
+						<div class="btn-group pull-right">
+							<h:commandButton value="Iniciar"
+								action="#{navegadorSeleniumPhantomJsBean.initMiner()}"
+								styleClass="btn btn-sm btn-primary">
+							</h:commandButton>
+						</div>
 					</h:form>
+
 				</div>
-			</div>
-			<div class="panel-body">
-				<div class="container">
-					<div class="row">
+				<div class="panel-body">
+					<div class="container">
+						<div class="row">
 
-						<div class="col-md-12">
-							<h4>1 de 2500</h4>
-							<div class="table-responsive">
+							<div class="col-md-12">
+								<h4>1 de 2500</h4>
+								<div class="table-responsive">
 
-								<table id="mytable" class="table table-bordred table-striped">
+									<table id="mytable" class="table table-bordred table-striped">
 
-									<thead>
-										<th>Nome do arquivo</th>
-										<th>Download</th>
-										<th>Excluir</th>
-									</thead>
+										<thead>
+											<th>Nome do arquivo</th>
+											<th>Download</th>
+											<th>Excluir</th>
+										</thead>
 
-									<tbody>
-										<tr>
-											<td>Resultado_Vanessa.BMG_10/07/2016_13:53.csv</td>
-											<td><p data-placement="top" data-toggle="tooltip"
-													title="Edit">
-													<button class="btn btn-success btn-xs"
-														data-title="Download" data-toggle="modal"
-														data-target="#edit">
-														<span class="glyphicon glyphicon-download-alt"></span>
-													</button>
-												</p></td>
-											<td><p data-placement="top" data-toggle="tooltip"
-													title="Delete">
-													<button class="btn btn-danger btn-xs" data-title="Excluir"
-														data-toggle="modal" data-target="#delete">
-														<span class="glyphicon glyphicon-trash"></span>
-													</button>
-												</p></td>
-										</tr>
-									</tbody>
+										<tbody>
+											<tr>
+												<td>Resultado_Vanessa.BMG_10/07/2016_13:53.csv</td>
+												<td><p data-placement="top" data-toggle="tooltip"
+														title="Edit">
+														<button class="btn btn-success btn-xs"
+															data-title="Download" data-toggle="modal"
+															data-target="#edit">
+															<span class="glyphicon glyphicon-download-alt"></span>
+														</button>
+													</p></td>
+												<td><p data-placement="top" data-toggle="tooltip"
+														title="Delete">
+														<button class="btn btn-danger btn-xs" data-title="Excluir"
+															data-toggle="modal" data-target="#delete">
+															<span class="glyphicon glyphicon-trash"></span>
+														</button>
+													</p></td>
+											</tr>
+										</tbody>
 
-								</table>
+									</table>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 	</div>
 	</main>
 </ui:composition>
