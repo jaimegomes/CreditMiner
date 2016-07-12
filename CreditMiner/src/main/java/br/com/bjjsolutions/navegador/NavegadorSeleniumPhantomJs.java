@@ -15,7 +15,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import br.com.bjjsolutions.dto.CsvDTO;
 import br.com.bjjsolutions.mb.ConfiguracaoMB;
-import br.com.bjjsolutions.model.LoginMB;
+import br.com.bjjsolutions.mb.LoginMB;
 import br.com.bjjsolutions.processing.Cache;
 import br.com.bjjsolutions.processing.HTMLJsoup;
 import br.com.bjjsolutions.processing.WriteFileCSV;

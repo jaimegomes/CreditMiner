@@ -1,4 +1,4 @@
-package br.com.bjjsolutions.model;
+package br.com.bjjsolutions.mb;
 
 public class LoginMB {
 
