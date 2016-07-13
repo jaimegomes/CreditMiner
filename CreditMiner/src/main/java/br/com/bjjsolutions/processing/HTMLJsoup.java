@@ -34,24 +34,24 @@ public class HTMLJsoup {
 	public void createObjectRecordHTML(String html, String name) {
 		try {
 			Document doc = Jsoup.parse(html);
-			
-//			System.out.println(doc.html());
+
+			// System.out.println(doc.html());
 
 			if (Cache.clientesDTOCache == null) {
 				Cache.clientesDTOCache = new TreeMap<String, ClienteDTO>();
 			}
-			
+
 			// Extrai os dados do header da tabela do HTML e seta no Objeto
-			
+
 			Map<String, String> mapDadosDoCliente = getHeaderDadosDoCliente(doc);
 
-			if (mapDadosDoCliente != null) {
-				
+			if (mapDadosDoCliente.size() > 0) {
+
 				ClienteDTO clienteDTO = new ClienteDTO();
 
 				String names[] = name.split("-");
 				clienteDTO.setCpf(names[0].substring(0, 11));
-				
+
 				if (mapDadosDoCliente.containsKey(Parametros.LABEL_COLABORADOR)) {
 					clienteDTO.setColaborador(mapDadosDoCliente.get(Parametros.LABEL_COLABORADOR));
 				}
@@ -74,17 +74,18 @@ public class HTMLJsoup {
 
 				}
 
-				if (!name.contains("margem")){
-					// Extrai os dados do tbody da tabela listagem de solicitações
+				if (!name.contains("margem")) {
+					// Extrai os dados do tbody da tabela listagem de
+					// solicitações
 					Element standardTable = doc.select("table.standardTable").first();
 
 					// verifica se é listagem de Solicitações Ativas
 					Element header = standardTable.select(".standardTable_Header").first();
 
 					if (header.text().contains(Parametros.LISTAGEM_SOLICITACOES_ATIVAS)) {
-						
+
 						List<SolicitacaoDTO> listSolicitacoes = new ArrayList<SolicitacaoDTO>();
-						
+
 						Element tbody = standardTable.select("tbody").first();
 
 						if (tbody.hasText()) {
@@ -92,7 +93,7 @@ public class HTMLJsoup {
 
 							for (int i = 0; i < rowsTbody.size(); i++) {
 								// Extrai os dados do HTML e seta no Objeto
-								
+
 								Element rowTbody = rowsTbody.get(i);
 								Elements colsTbody = rowTbody.select("td");
 
@@ -101,27 +102,26 @@ public class HTMLJsoup {
 								solicitacaoDTO.setParcelas(colsTbody.get(8).text().trim());
 								solicitacaoDTO.setPagas(colsTbody.get(9).text().trim());
 								solicitacaoDTO.setValorAutorizado(colsTbody.get(6).text().trim());
-								
+
 								listSolicitacoes.add(solicitacaoDTO);
 							}
 							clienteDTO.setSolicitacaes(listSolicitacoes);
 						}
 					}
 				}
-				
+
 				if (!clienteDTO.getMatricula().isEmpty()) {
 					if (!Cache.clientesDTOCache.containsKey(clienteDTO.getMatricula())) {
 						Cache.clientesDTOCache.put(clienteDTO.getMatricula(), clienteDTO);
 					} else {
 						ClienteDTO clienteDTOMerge = Cache.clientesDTOCache.get(clienteDTO.getMatricula());
-						if (!clienteDTO.getMargem().equals("")){
-							clienteDTOMerge.setMargem(clienteDTO.getMargem());						
+						if (!clienteDTO.getMargem().equals("")) {
+							clienteDTOMerge.setMargem(clienteDTO.getMargem());
 						}
 						Cache.clientesDTOCache.put(clienteDTO.getMatricula(), clienteDTOMerge);
 					}
 				}
 			}
-			
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -137,12 +137,20 @@ public class HTMLJsoup {
 	 * @return Map<String, String>
 	 */
 	private static Map<String, String> getHeaderDadosDoCliente(Document doc) {
-		if (doc.hasClass("table.headerTable")) {
-			Element headerTable = doc.select("table.headerTable").get(0);
-			Map<String, String> map = new HashMap<String, String>();
-			Element table = headerTable.parent().select("table").get(2);
-			Elements rows = table.select("tr");
+		Element headerTable = doc.select("table.headerTable").get(0);
+		Element table = null;
+		Elements rows = null;
+		Map<String, String> map = new HashMap<String, String>();
 
+		if (headerTable != null) {
+			table = headerTable.parent().select("table").get(2);
+		}
+
+		if (table != null) {
+			rows = table.select("tr");
+		}
+
+		if (rows != null) {
 			for (int i = 0; i < rows.size(); i++) {
 				Element row = rows.get(i);
 				Elements cols = row.select("td");
@@ -151,18 +159,17 @@ public class HTMLJsoup {
 				if (key.contains(":")) {
 					key = key.substring(0, key.indexOf(":"));
 				}
-				if (key.equals("")){
+				if (key.equals("")) {
 					key = Parametros.LABEL_INFO_EXTRA;
 				}
-				if(key.contains("Margem Dispo")) {
+				if (key.contains("Margem Dispo")) {
 					key = Parametros.LABEL_MARGEM;
 				}
 				String value = cols.get(1).text().trim();
 				map.put(key, value);
 			}
-			return map;
 		}
-		return null;
+		return map;
 	}
 
 	/**
@@ -172,7 +179,7 @@ public class HTMLJsoup {
 	 * @param doc
 	 * @return Map<String, String>
 	 */
-	@Deprecated 
+	@Deprecated
 	private static List<String> getTheadTableSolicitacao(Document doc) {
 		List<String> listTheads = new ArrayList<String>();
 		Element standardTable = doc.select("table.standardTable").first();
