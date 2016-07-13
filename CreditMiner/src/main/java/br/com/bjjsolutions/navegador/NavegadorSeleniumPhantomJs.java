@@ -35,7 +35,6 @@ public class NavegadorSeleniumPhantomJs {
 	private final static String URL_BYPASS = "http://sc.consignum.com.br/wmc-sc/pages/consultas/disponibilidade_margem/visualiza_margem_colaborador.faces";
 	private LoginMB loginMB;
 	private HTMLJsoup instanceHTMLJsoup;
-	private String banco;
 
 	/**
 	 * Construtor
@@ -102,11 +101,11 @@ public class NavegadorSeleniumPhantomJs {
 		}
 
 	}
-	
+
 	public void uploadArquivo() {
-		
+
 	}
-	
+
 	public void login() throws IOException {
 
 		try {
@@ -171,29 +170,10 @@ public class NavegadorSeleniumPhantomJs {
 		inputPassword.sendKeys(loginMB.getSenha());
 		inputCaptcha.sendKeys(loginMB.getCaptcha());
 
-		verificaBanco();
-
 		btnEntrar.click();
 
 		logado = new WebDriverWait(SetupSelenium.getInstance().getWebDriver(), 5).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(./@id, 'j_id_jsp_252844863_0pc3')]")));
 		ConfiguracaoMB.setIsLogin(true);
-
-	}
-
-	/**
-	 * Verifica de qual banco está se logando
-	 */
-	private void verificaBanco() {
-
-		if (loginMB.getLogin().equals("SC01R021432")) {
-			setBanco("parana");
-		} else if (loginMB.getLogin().equals("SC01C02775067")) {
-			setBanco("pan");
-		} else if (loginMB.getLogin().equals("SC01R02385")) {
-			setBanco("bmg");
-		} else if (loginMB.getLogin().equals("SC01C0290506708")) {
-			setBanco("bomsucesso");
-		}
 
 	}
 
@@ -288,13 +268,10 @@ public class NavegadorSeleniumPhantomJs {
 			// verifica se é paraná banco, se não for faz o bypass para buscar a
 			// margem, caso seja paraná banco não tem margem e por isso não
 			// precisa fazer o bypass
-			if (!this.banco.equals("parana")) {
 
-				goTo(URL_BYPASS);
+			goTo(URL_BYPASS);
 
-				getInstanceHTMLJsoup().createObjectRecordHTML(SetupSelenium.getInstance().getWebDriver().getPageSource(), cpf + "-" + i + "-margem");
-
-			}
+			getInstanceHTMLJsoup().createObjectRecordHTML(SetupSelenium.getInstance().getWebDriver().getPageSource(), cpf + "-" + i + "-margem");
 
 			goTo(URL_HISTORICO);
 
@@ -354,21 +331,6 @@ public class NavegadorSeleniumPhantomJs {
 	 */
 	private void goTo(String url) {
 		SetupSelenium.getInstance().getWebDriver().get(url);
-	}
-
-	/**
-	 * @return the banco
-	 */
-	public String getBanco() {
-		return banco;
-	}
-
-	/**
-	 * @param banco
-	 *            the banco to set
-	 */
-	public void setBanco(String banco) {
-		this.banco = banco;
 	}
 
 }
