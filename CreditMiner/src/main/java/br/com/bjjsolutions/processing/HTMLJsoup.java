@@ -144,13 +144,8 @@ public class HTMLJsoup {
 
 		if (headerTable != null) {
 			table = headerTable.parent().select("table").get(2);
-		}
-
-		if (table != null) {
 			rows = table.select("tr");
-		}
 
-		if (rows != null) {
 			for (int i = 0; i < rows.size(); i++) {
 				Element row = rows.get(i);
 				Elements cols = row.select("td");
