@@ -111,6 +111,7 @@ public class NavegadorSeleniumPhantomJs {
 			long start = System.currentTimeMillis();
 
 			processaCpfs(Util.parseCsvFileToBeans(CsvDTO.class));
+			ConfiguracaoMB.setIsLogin(true);
 
 			long end = System.currentTimeMillis();
 
@@ -199,7 +200,6 @@ public class NavegadorSeleniumPhantomJs {
 				long totalTempoCpfs = Util.calculaTempoExecucao(start, end);
 				System.out.println("tempo processamento cpfs: " + totalTempoCpfs);
 				System.out.println("Status: " + cont + "/" + total);
-				ConfiguracaoMB.setIsLogin(true);
 
 			}
 
