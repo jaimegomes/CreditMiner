@@ -41,83 +41,87 @@ public class HTMLJsoup {
 				Cache.clientesDTOCache = new TreeMap<String, ClienteDTO>();
 			}
 			
-			ClienteDTO clienteDTO = new ClienteDTO();
-
-			String names[] = name.split("-");
-			clienteDTO.setCpf(names[0].substring(0, 11));
-			
 			// Extrai os dados do header da tabela do HTML e seta no Objeto
 			
 			Map<String, String> mapDadosDoCliente = getHeaderDadosDoCliente(doc);
 
-			if (mapDadosDoCliente.containsKey(Parametros.LABEL_COLABORADOR)) {
-				clienteDTO.setColaborador(mapDadosDoCliente.get(Parametros.LABEL_COLABORADOR));
-			}
-			if (mapDadosDoCliente.containsKey(Parametros.LABEL_MATRICULA)) {
-				clienteDTO.setMatricula(mapDadosDoCliente.get(Parametros.LABEL_MATRICULA));
-			}
-			if (mapDadosDoCliente.containsKey(Parametros.LABEL_MARGEM)) {
-				clienteDTO.setMargem(mapDadosDoCliente.get(Parametros.LABEL_MARGEM));
-			}
-			if (mapDadosDoCliente.containsKey(Parametros.LABEL_INFO_EXTRA)) {
-				String[] retornoSplit = mapDadosDoCliente.get(Parametros.LABEL_INFO_EXTRA).split("-");
-				if (retornoSplit.length >= 1) {
-					clienteDTO.setSecretaria(retornoSplit[0].trim());
+			if (mapDadosDoCliente != null) {
+				
+				ClienteDTO clienteDTO = new ClienteDTO();
+
+				String names[] = name.split("-");
+				clienteDTO.setCpf(names[0].substring(0, 11));
+				
+				if (mapDadosDoCliente.containsKey(Parametros.LABEL_COLABORADOR)) {
+					clienteDTO.setColaborador(mapDadosDoCliente.get(Parametros.LABEL_COLABORADOR));
 				}
-				if (retornoSplit.length >= 2) {
-					if (retornoSplit[1].contains(Parametros.LABEL_DT_NASC)) {
-						clienteDTO.setNascimento(retornoSplit[1].substring(10, 21).trim());
+				if (mapDadosDoCliente.containsKey(Parametros.LABEL_MATRICULA)) {
+					clienteDTO.setMatricula(mapDadosDoCliente.get(Parametros.LABEL_MATRICULA));
+				}
+				if (mapDadosDoCliente.containsKey(Parametros.LABEL_MARGEM)) {
+					clienteDTO.setMargem(mapDadosDoCliente.get(Parametros.LABEL_MARGEM));
+				}
+				if (mapDadosDoCliente.containsKey(Parametros.LABEL_INFO_EXTRA)) {
+					String[] retornoSplit = mapDadosDoCliente.get(Parametros.LABEL_INFO_EXTRA).split("-");
+					if (retornoSplit.length >= 1) {
+						clienteDTO.setSecretaria(retornoSplit[0].trim());
+					}
+					if (retornoSplit.length >= 2) {
+						if (retornoSplit[1].contains(Parametros.LABEL_DT_NASC)) {
+							clienteDTO.setNascimento(retornoSplit[1].substring(10, 21).trim());
+						}
+					}
+
+				}
+
+				if (!name.contains("margem")){
+					// Extrai os dados do tbody da tabela listagem de solicitações
+					Element standardTable = doc.select("table.standardTable").first();
+
+					// verifica se é listagem de Solicitações Ativas
+					Element header = standardTable.select(".standardTable_Header").first();
+
+					if (header.text().contains(Parametros.LISTAGEM_SOLICITACOES_ATIVAS)) {
+						
+						List<SolicitacaoDTO> listSolicitacoes = new ArrayList<SolicitacaoDTO>();
+						
+						Element tbody = standardTable.select("tbody").first();
+
+						if (tbody.hasText()) {
+							Elements rowsTbody = tbody.select("tr");
+
+							for (int i = 0; i < rowsTbody.size(); i++) {
+								// Extrai os dados do HTML e seta no Objeto
+								
+								Element rowTbody = rowsTbody.get(i);
+								Elements colsTbody = rowTbody.select("td");
+
+								SolicitacaoDTO solicitacaoDTO = new SolicitacaoDTO();
+								solicitacaoDTO.setBanco(colsTbody.get(3).text().trim());
+								solicitacaoDTO.setParcelas(colsTbody.get(8).text().trim());
+								solicitacaoDTO.setPagas(colsTbody.get(9).text().trim());
+								solicitacaoDTO.setValorAutorizado(colsTbody.get(6).text().trim());
+								
+								listSolicitacoes.add(solicitacaoDTO);
+							}
+							clienteDTO.setSolicitacaes(listSolicitacoes);
+						}
 					}
 				}
-
-			}
-
-			if (!name.contains("margem")){
-				// Extrai os dados do tbody da tabela listagem de solicitações
-				Element standardTable = doc.select("table.standardTable").first();
-
-				// verifica se é listagem de Solicitações Ativas
-				Element header = standardTable.select(".standardTable_Header").first();
-
-				if (header.text().contains(Parametros.LISTAGEM_SOLICITACOES_ATIVAS)) {
-					
-					List<SolicitacaoDTO> listSolicitacoes = new ArrayList<SolicitacaoDTO>();
-					
-					Element tbody = standardTable.select("tbody").first();
-
-					if (tbody.hasText()) {
-						Elements rowsTbody = tbody.select("tr");
-
-						for (int i = 0; i < rowsTbody.size(); i++) {
-							// Extrai os dados do HTML e seta no Objeto
-							
-							Element rowTbody = rowsTbody.get(i);
-							Elements colsTbody = rowTbody.select("td");
-
-							SolicitacaoDTO solicitacaoDTO = new SolicitacaoDTO();
-							solicitacaoDTO.setBanco(colsTbody.get(3).text().trim());
-							solicitacaoDTO.setParcelas(colsTbody.get(8).text().trim());
-							solicitacaoDTO.setPagas(colsTbody.get(9).text().trim());
-							solicitacaoDTO.setValorAutorizado(colsTbody.get(6).text().trim());
-							
-							listSolicitacoes.add(solicitacaoDTO);
+				
+				if (!clienteDTO.getMatricula().isEmpty()) {
+					if (!Cache.clientesDTOCache.containsKey(clienteDTO.getMatricula())) {
+						Cache.clientesDTOCache.put(clienteDTO.getMatricula(), clienteDTO);
+					} else {
+						ClienteDTO clienteDTOMerge = Cache.clientesDTOCache.get(clienteDTO.getMatricula());
+						if (!clienteDTO.getMargem().equals("")){
+							clienteDTOMerge.setMargem(clienteDTO.getMargem());						
 						}
-						clienteDTO.setSolicitacaes(listSolicitacoes);
+						Cache.clientesDTOCache.put(clienteDTO.getMatricula(), clienteDTOMerge);
 					}
 				}
 			}
 			
-			if (!clienteDTO.getMatricula().isEmpty()) {
-				if (!Cache.clientesDTOCache.containsKey(clienteDTO.getMatricula())) {
-					Cache.clientesDTOCache.put(clienteDTO.getMatricula(), clienteDTO);
-				} else {
-					ClienteDTO clienteDTOMerge = Cache.clientesDTOCache.get(clienteDTO.getMatricula());
-					if (!clienteDTO.getMargem().equals("")){
-						clienteDTOMerge.setMargem(clienteDTO.getMargem());						
-					}
-					Cache.clientesDTOCache.put(clienteDTO.getMatricula(), clienteDTOMerge);
-				}
-			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -133,29 +137,32 @@ public class HTMLJsoup {
 	 * @return Map<String, String>
 	 */
 	private static Map<String, String> getHeaderDadosDoCliente(Document doc) {
-		Map<String, String> map = new HashMap<String, String>();
-		Element headerTable = doc.select("table.headerTable").get(0);
-		Element table = headerTable.parent().select("table").get(2);
-		Elements rows = table.select("tr");
+		if (doc.hasClass("table.headerTable")) {
+			Element headerTable = doc.select("table.headerTable").get(0);
+			Map<String, String> map = new HashMap<String, String>();
+			Element table = headerTable.parent().select("table").get(2);
+			Elements rows = table.select("tr");
 
-		for (int i = 0; i < rows.size(); i++) {
-			Element row = rows.get(i);
-			Elements cols = row.select("td");
+			for (int i = 0; i < rows.size(); i++) {
+				Element row = rows.get(i);
+				Elements cols = row.select("td");
 
-			String key = cols.get(0).text().trim();
-			if (key.contains(":")) {
-				key = key.substring(0, key.indexOf(":"));
+				String key = cols.get(0).text().trim();
+				if (key.contains(":")) {
+					key = key.substring(0, key.indexOf(":"));
+				}
+				if (key.equals("")){
+					key = Parametros.LABEL_INFO_EXTRA;
+				}
+				if(key.contains("Margem Dispo")) {
+					key = Parametros.LABEL_MARGEM;
+				}
+				String value = cols.get(1).text().trim();
+				map.put(key, value);
 			}
-			if (key.equals("")){
-				key = Parametros.LABEL_INFO_EXTRA;
-			}
-			if(key.contains("Margem Dispo")) {
-				key = Parametros.LABEL_MARGEM;
-			}
-			String value = cols.get(1).text().trim();
-			map.put(key, value);
+			return map;
 		}
-		return map;
+		return null;
 	}
 
 	/**
