@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;

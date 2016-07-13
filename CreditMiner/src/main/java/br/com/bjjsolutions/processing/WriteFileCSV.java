@@ -34,34 +34,12 @@ public class WriteFileCSV {
 			
 	        for (ClienteDTO clienteDTO : clientes.values()) {
 
-	        	if (clienteDTO.getSolicitacaes() != null)
-	        	if (!clienteDTO.getSolicitacaes().isEmpty()) {
-	        		
+	        	if (clienteDTO.getSolicitacaes() != null && !clienteDTO.getSolicitacaes().isEmpty()) {
 	        		for (SolicitacaoDTO solicitacaoDTO : clienteDTO.getSolicitacaes()) {
-	        			fileWriter.append(clienteDTO.getCpf());
-	        			fileWriter.append(COMMA_DELIMITER);
-	        			fileWriter.append(clienteDTO.getMatricula());
-	        			fileWriter.append(COMMA_DELIMITER);
-	        			fileWriter.append(clienteDTO.getColaborador());
-	        			fileWriter.append(COMMA_DELIMITER);
-	        			fileWriter.append(clienteDTO.getSecretaria());
-	        			fileWriter.append(COMMA_DELIMITER);
-	        			fileWriter.append(clienteDTO.getNascimento());
-	        			fileWriter.append(COMMA_DELIMITER);
-	        			fileWriter.append(clienteDTO.getMargem());
-	        			fileWriter.append(COMMA_DELIMITER);
-	        			
-	        			fileWriter.append(solicitacaoDTO.getBanco());
-	        			fileWriter.append(COMMA_DELIMITER);
-	        			fileWriter.append(solicitacaoDTO.getValorAutorizado());
-	        			fileWriter.append(COMMA_DELIMITER);
-	        			fileWriter.append(solicitacaoDTO.getParcelas());
-	        			fileWriter.append(COMMA_DELIMITER);
-	        			fileWriter.append(solicitacaoDTO.getPagas());
-	        			fileWriter.append(COMMA_DELIMITER);
-	        			fileWriter.append(solicitacaoDTO.getPesquisado());
-	        			fileWriter.append(NEW_LINE_SEPARATOR);
+	        			writeLine(fileWriter, clienteDTO, solicitacaoDTO);
 	        		}
+	        	} else {
+	        		writeLine(fileWriter, clienteDTO, null);
 	        	}
 
 			}
@@ -80,5 +58,45 @@ public class WriteFileCSV {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	private static void writeLine(FileWriter fileWriter, ClienteDTO clienteDTO, SolicitacaoDTO solicitacaoDTO) throws IOException{
+		String banco = "";
+		String valorAutorizado = "";
+		String parcelas = "";
+		String pagas = "";
+		String pesquisado = "";
+		
+		if (solicitacaoDTO != null) {
+			banco = solicitacaoDTO.getBanco() != null ? solicitacaoDTO.getBanco() : "";
+			valorAutorizado = solicitacaoDTO.getValorAutorizado() != null ? solicitacaoDTO.getValorAutorizado() : "";
+			parcelas = solicitacaoDTO.getParcelas() != null ? solicitacaoDTO.getParcelas() : "";
+			pagas = solicitacaoDTO.getPagas() != null ? solicitacaoDTO.getPagas() : "";
+			pesquisado = solicitacaoDTO.getPesquisado() != null ? solicitacaoDTO.getPesquisado() : "";
+		}
+		
+		fileWriter.append(clienteDTO.getCpf());
+		fileWriter.append(COMMA_DELIMITER);
+		fileWriter.append(clienteDTO.getMatricula());
+		fileWriter.append(COMMA_DELIMITER);
+		fileWriter.append(clienteDTO.getColaborador());
+		fileWriter.append(COMMA_DELIMITER);
+		fileWriter.append(clienteDTO.getSecretaria());
+		fileWriter.append(COMMA_DELIMITER);
+		fileWriter.append(clienteDTO.getNascimento());
+		fileWriter.append(COMMA_DELIMITER);
+		fileWriter.append(clienteDTO.getMargem());
+		fileWriter.append(COMMA_DELIMITER);
+		
+		fileWriter.append(banco);
+		fileWriter.append(COMMA_DELIMITER);
+		fileWriter.append(valorAutorizado);
+		fileWriter.append(COMMA_DELIMITER);
+		fileWriter.append(parcelas);
+		fileWriter.append(COMMA_DELIMITER);
+		fileWriter.append(pagas);
+		fileWriter.append(COMMA_DELIMITER);
+		fileWriter.append(pesquisado);
+		fileWriter.append(NEW_LINE_SEPARATOR);
 	}
 }
