@@ -102,22 +102,6 @@ public class NavegadorSeleniumPhantomJs {
 
 	}
 
-	public void uploadArquivo() {
-
-	}
-
-	public void login() throws IOException {
-
-		try {
-
-			insereCredenciais();
-
-		} catch (Exception e) {
-			getLinkImagemCaptcha();
-		}
-
-	}
-
 	public void initMiner() throws IOException {
 
 		try {
@@ -215,6 +199,7 @@ public class NavegadorSeleniumPhantomJs {
 				long totalTempoCpfs = Util.calculaTempoExecucao(start, end);
 				System.out.println("tempo processamento cpfs: " + totalTempoCpfs);
 				System.out.println("Status: " + cont + "/" + total);
+				ConfiguracaoMB.setIsLogin(true);
 
 			}
 
