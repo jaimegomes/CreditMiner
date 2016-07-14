@@ -115,8 +115,10 @@ public class HTMLJsoup {
 						Cache.clientesDTOCache.put(clienteDTO.getMatricula(), clienteDTO);
 					} else {
 						ClienteDTO clienteDTOMerge = Cache.clientesDTOCache.get(clienteDTO.getMatricula());
-						if (!clienteDTO.getMargem().equals("") && clienteDTO.getMargem() != null) {
-							clienteDTOMerge.setMargem(clienteDTO.getMargem());
+						if (clienteDTO.getMargem() != null) {
+							if (!clienteDTO.getMargem().equals("")) {
+								clienteDTOMerge.setMargem(clienteDTO.getMargem());
+							}
 						}
 						Cache.clientesDTOCache.put(clienteDTO.getMatricula(), clienteDTOMerge);
 					}
