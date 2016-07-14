@@ -91,7 +91,6 @@ public class WriteFileCSV {
 		}
 		
 		fileWriter.append(COMMA_DELIMITER);
-
 		fileWriter.append(banco);
 		fileWriter.append(COMMA_DELIMITER);
 		fileWriter.append(valorAutorizado);
