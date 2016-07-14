@@ -64,7 +64,6 @@ public class WriteFileCSV {
 		String valorAutorizado = "";
 		String parcelas = "";
 		String pagas = "";
-		String pesquisado = "";
 
 		if (solicitacaoDTO != null) {
 			banco = solicitacaoDTO.getBanco() != null ? solicitacaoDTO.getBanco() : "";
@@ -100,6 +99,6 @@ public class WriteFileCSV {
 		fileWriter.append(parcelas);
 		fileWriter.append(COMMA_DELIMITER);
 		fileWriter.append(pagas);
-		fileWriter.append(COMMA_DELIMITER);
+		fileWriter.append(NEW_LINE_SEPARATOR);
 	}
 }
