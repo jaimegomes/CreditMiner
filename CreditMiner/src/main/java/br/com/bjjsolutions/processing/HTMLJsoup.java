@@ -139,9 +139,17 @@ public class HTMLJsoup {
 	 * @return Map<String, String>
 	 */
 	private static Map<String, String> getHeaderDadosDoCliente(Document doc) {
-		Element headerTable = doc.select("table.headerTable").get(0);
+		Element headerTable = null;
 		Element table = null;
 		Elements rows = null;
+
+		// try catch para evitar que dê o erro em log ao buscar a tabela,
+		// gambiarra para fazer funcionar o paraná banco
+		try {
+			headerTable = doc.select("table.headerTable").get(0);
+		} catch (Exception e) {
+		}
+
 		Map<String, String> map = new HashMap<String, String>();
 
 		if (headerTable != null) {
