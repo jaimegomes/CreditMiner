@@ -69,6 +69,8 @@ public class HTMLJsoup {
 					if (retornoSplit.length >= 2) {
 						if (retornoSplit[1].contains(Parametros.LABEL_DT_NASC)) {
 							clienteDTO.setNascimento(retornoSplit[1].substring(10, 21).trim());
+						} else if (retornoSplit[2].contains(Parametros.LABEL_DT_NASC)) {
+							clienteDTO.setNascimento(retornoSplit[2].substring(10, 21).trim());
 						}
 					}
 
