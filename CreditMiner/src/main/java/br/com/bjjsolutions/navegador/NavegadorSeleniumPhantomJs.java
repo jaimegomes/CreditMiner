@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
@@ -28,6 +29,7 @@ import br.com.bjjsolutions.util.Util;
  * 
  */
 @ManagedBean(name = "navegadorSeleniumPhantomJsBean")
+@RequestScoped
 public class NavegadorSeleniumPhantomJs {
 
 	private final static String URL_INICIAL_CONSIGNUM = "http://sc.consignum.com.br/wmc-sc/login/selecao_parceiro.faces";
@@ -154,7 +156,7 @@ public class NavegadorSeleniumPhantomJs {
 		inputUsuario.sendKeys(loginMB.getLogin());
 		inputPassword.sendKeys(loginMB.getSenha());
 		inputCaptcha.sendKeys(loginMB.getCaptcha());
-
+		
 		btnEntrar.click();
 
 		logado = new WebDriverWait(SetupSelenium.getInstance().getWebDriver(), 5).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(./@id, 'j_id_jsp_252844863_0pc3')]")));
@@ -186,7 +188,7 @@ public class NavegadorSeleniumPhantomJs {
 				long start = System.currentTimeMillis();
 
 				pesquisaCPF(cpf);
-
+				
 				qtdResultados = getQtdResultados(cpf);
 
 				System.out.println("cpf: " + cpf);
@@ -249,10 +251,6 @@ public class NavegadorSeleniumPhantomJs {
 			}
 
 			getInstanceHTMLJsoup().createObjectRecordHTML(SetupSelenium.getInstance().getWebDriver().getPageSource(), cpf + "-" + i);
-
-			// verifica se é paraná banco, se não for faz o bypass para buscar a
-			// margem, caso seja paraná banco não tem margem e por isso não
-			// precisa fazer o bypass
 
 			goTo(URL_BYPASS);
 
