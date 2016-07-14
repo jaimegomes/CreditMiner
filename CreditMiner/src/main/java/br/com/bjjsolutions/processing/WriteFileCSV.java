@@ -70,7 +70,6 @@ public class WriteFileCSV {
 			valorAutorizado = solicitacaoDTO.getValorAutorizado() != null ? solicitacaoDTO.getValorAutorizado() : "";
 			parcelas = solicitacaoDTO.getParcelas() != null ? solicitacaoDTO.getParcelas() : "";
 			pagas = solicitacaoDTO.getPagas() != null ? solicitacaoDTO.getPagas() : "";
-			pesquisado = solicitacaoDTO.getPesquisado() != null ? solicitacaoDTO.getPesquisado() : "";
 		}
 
 		fileWriter.append(clienteDTO.getCpf());
