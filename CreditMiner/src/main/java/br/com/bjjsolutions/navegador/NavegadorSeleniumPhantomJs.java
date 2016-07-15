@@ -36,6 +36,7 @@ public class NavegadorSeleniumPhantomJs {
 	private final static String URL_HISTORICO = "http://sc.consignum.com.br/wmc-sc/pages/consultas/historico/pesquisa_colaborador.faces";
 	private final static String URL_BYPASS = "http://sc.consignum.com.br/wmc-sc/pages/consultas/disponibilidade_margem/visualiza_margem_colaborador.faces";
 	private LoginMB loginMB;
+	private ConfiguracaoMB configuracaoMB;
 	private HTMLJsoup instanceHTMLJsoup;
 
 	/**
@@ -48,6 +49,7 @@ public class NavegadorSeleniumPhantomJs {
 	@PostConstruct
 	public void init() {
 		this.loginMB = new LoginMB();
+		configuracaoMB = new ConfiguracaoMB();
 		ConfiguracaoMB.setIsLogin(false);
 
 	}
@@ -116,7 +118,7 @@ public class NavegadorSeleniumPhantomJs {
 			ConfiguracaoMB.setIsLogin(true);
 
 			long end = System.currentTimeMillis();
-
+			
 			System.out.println("tempo processamento total: " + Util.calculaTempoExecucao(start, end));
 
 		} catch (Exception e) {
@@ -125,6 +127,9 @@ public class NavegadorSeleniumPhantomJs {
 			if (Cache.clientesDTOCache != null) {
 				WriteFileXML.gravaXMLListaClientes(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache"));
 				WriteFileCSV.createCsvFile(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache"));
+				
+				//Atualiza a lista da tela
+				configuracaoMB.listCSVDir();
 			}
 		}
 
@@ -314,6 +319,10 @@ public class NavegadorSeleniumPhantomJs {
 	 */
 	private void goTo(String url) {
 		SetupSelenium.getInstance().getWebDriver().get(url);
+	}
+	
+	public ConfiguracaoMB getConfiguracaoMB() {
+		return configuracaoMB;
 	}
 
 }
