@@ -1,6 +1,7 @@
 package br.com.bjjsolutions.mb;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,16 +31,31 @@ public class ConfiguracaoMB {
 		listCSVDir();
 	}
 
+	@SuppressWarnings("resource")
 	public void upload() {
 		try {
 			if (file != null) {
-				new Scanner(file.getInputStream()).useDelimiter("\\A").next();
+				String conteudo = new Scanner(file.getInputStream()).useDelimiter("\\A").next();
+				salvarArquivo(conteudo, getFileNameFromPart(file));
+
 			}
 		} catch (IOException e) {
-
+			e.printStackTrace();
 		}
 	}
 
+	private void salvarArquivo(String conteudo, String nomeArquivo) {
+		FileWriter arquivo;
+		try {
+			arquivo = new FileWriter(new File("/home/CreditMiner/leitura/" + nomeArquivo));
+			arquivo.write(conteudo);
+			arquivo.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	public Part getFile() {
 		return file;
 	}
@@ -80,5 +96,16 @@ public class ConfiguracaoMB {
 	
 	public void setListCsvProcess(List<CsvDTO> listCsvProcess) {
 		this.listCsvProcess = listCsvProcess;
+	}
+
+	private static String getFileNameFromPart(Part part) {
+		final String partHeader = part.getHeader("content-disposition");
+		for (String content : partHeader.split(";")) {
+			if (content.trim().startsWith("filename")) {
+				String fileName = content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
+				return fileName;
+			}
+		}
+		return null;
 	}
 }
