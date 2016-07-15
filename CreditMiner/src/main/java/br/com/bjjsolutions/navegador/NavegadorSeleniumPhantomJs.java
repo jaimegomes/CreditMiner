@@ -1,6 +1,8 @@
 package br.com.bjjsolutions.navegador;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -36,8 +38,8 @@ public class NavegadorSeleniumPhantomJs {
 	private final static String URL_HISTORICO = "http://sc.consignum.com.br/wmc-sc/pages/consultas/historico/pesquisa_colaborador.faces";
 	private final static String URL_BYPASS = "http://sc.consignum.com.br/wmc-sc/pages/consultas/disponibilidade_margem/visualiza_margem_colaborador.faces";
 	private LoginMB loginMB;
-	private ConfiguracaoMB configuracaoMB;
 	private HTMLJsoup instanceHTMLJsoup;
+	private List<CsvDTO> listCsvProcess;
 
 	/**
 	 * Construtor
@@ -49,9 +51,8 @@ public class NavegadorSeleniumPhantomJs {
 	@PostConstruct
 	public void init() {
 		this.loginMB = new LoginMB();
-		configuracaoMB = new ConfiguracaoMB();
 		ConfiguracaoMB.setIsLogin(false);
-
+		listCSVDir();
 	}
 
 	/**
@@ -129,7 +130,7 @@ public class NavegadorSeleniumPhantomJs {
 				WriteFileCSV.createCsvFile(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache"));
 				
 				//Atualiza a lista da tela
-				configuracaoMB.listCSVDir();
+				listCSVDir();
 			}
 		}
 
@@ -321,8 +322,28 @@ public class NavegadorSeleniumPhantomJs {
 		SetupSelenium.getInstance().getWebDriver().get(url);
 	}
 	
-	public ConfiguracaoMB getConfiguracaoMB() {
-		return configuracaoMB;
+	
+	public List<CsvDTO> listCSVDir(){
+		listCsvProcess = new ArrayList<CsvDTO>();
+        File baseFolder = new File(Util.getProperty("prop.diretorio.cache"));
+        File[] files = baseFolder.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            File file = files[i];
+            if (file.getPath().endsWith(".csv")) {
+            	CsvDTO csvDTO = new CsvDTO();
+            	csvDTO.setCpf(file.getName());
+                listCsvProcess.add(csvDTO);
+            }
+        }
+        return listCsvProcess;
+	}
+	
+	public List<CsvDTO> getListCsvProcess() {
+		return listCsvProcess;
+	}
+	
+	public void setListCsvProcess(List<CsvDTO> listCsvProcess) {
+		this.listCsvProcess = listCsvProcess;
 	}
 
 }

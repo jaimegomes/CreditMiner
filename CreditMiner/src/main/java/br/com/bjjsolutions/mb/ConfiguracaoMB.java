@@ -21,14 +21,13 @@ public class ConfiguracaoMB {
 
 	private Part file;
 	private static boolean isLogin = false;
-	private List<CsvDTO> listCsvProcess;
 
 	private static final String PATH_CONTENT_LOGIN = "pages/login_content.xhtml";
 	private static final String PATH_CONTENT_CONFIGURACAO = "pages/configuracao_content.xhtml";
 	
 	@PostConstruct
 	public void init() {
-		listCSVDir();
+		
 	}
 
 	@SuppressWarnings("resource")
@@ -75,29 +74,6 @@ public class ConfiguracaoMB {
 		isLogin = isLoginP;
 	}
 	
-	public List<CsvDTO> listCSVDir(){
-		listCsvProcess = new ArrayList<CsvDTO>();
-        File baseFolder = new File(Util.getProperty("prop.diretorio.cache"));
-        File[] files = baseFolder.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            File file = files[i];
-            if (file.getPath().endsWith(".csv")) {
-            	CsvDTO csvDTO = new CsvDTO();
-            	csvDTO.setCpf(file.getName());
-                listCsvProcess.add(csvDTO);
-            }
-        }
-        return listCsvProcess;
-	}
-	
-	public List<CsvDTO> getListCsvProcess() {
-		return listCsvProcess;
-	}
-	
-	public void setListCsvProcess(List<CsvDTO> listCsvProcess) {
-		this.listCsvProcess = listCsvProcess;
-	}
-
 	private static String getFileNameFromPart(Part part) {
 		final String partHeader = part.getHeader("content-disposition");
 		for (String content : partHeader.split(";")) {

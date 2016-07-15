@@ -59,7 +59,7 @@
 							<h:commandButton value="Iniciar"
 								action="#{navegadorSeleniumPhantomJsBean.initMiner()}"
 								styleClass="btn btn-sm btn-primary"
-								rerender="teste">
+								render="teste">
 							</h:commandButton>
 						</div>
 					</h:form>
@@ -74,7 +74,7 @@
 								<h4>1 de 2500</h4>
 								<div class="table-responsive">
 								
-									<h:dataTable id="tableArquivosProcessados" value="#{configuracaoMB.listCsvProcess}" var="list"
+									<h:dataTable id="tableArquivosProcessados" value="#{navegadorSeleniumPhantomJsBean.listCsvProcess}" var="list"
     										styleClass="table table-bordred table-striped" >
     										
     									<h:column>
