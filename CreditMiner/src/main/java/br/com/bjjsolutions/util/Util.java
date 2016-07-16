@@ -97,7 +97,7 @@ public class Util {
 	public static String getDirectorySO() {
 		String directory = "";
 		if (System.getProperty("os.name").toUpperCase().equals(SystemEnum.LINUX.getSystem())) {
-			directory = Util.getProperty("prop.diretorio.home");
+			directory = Util.getProperty("prop.diretorio.leitura");
 		} else {
 			directory = Util.getProperty("prop.diretorio.d");
 		}

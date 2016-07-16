@@ -7,15 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.faces.context.FacesContext;
 import javax.servlet.http.Part;
 
-import br.com.bjjsolutions.dto.CsvDTO;
+import br.com.bjjsolutions.dto.FileDTO;
 import br.com.bjjsolutions.util.Util;
 
 public class FileController {
 
 	private Part file;
-	private List<CsvDTO> listCsvProcess;
+	private List<FileDTO> listArquivosProcessados;
 
 	/**
 	 * Método responsável por ler o arquivo inserido no botão de upload e
@@ -47,7 +48,7 @@ public class FileController {
 	private static void salvarArquivo(String conteudo, String nomeArquivo) {
 		FileWriter arquivo;
 		try {
-			arquivo = new FileWriter(new File("/home/CreditMiner/leitura/" + nomeArquivo));
+			arquivo = new FileWriter(new File(Util.getProperty("prop.diretorio.leitura") + nomeArquivo));
 			arquivo.write(conteudo);
 			arquivo.close();
 		} catch (IOException e) {
@@ -78,23 +79,36 @@ public class FileController {
 	 * Método que retorna a lista de arquivos csv no diretório
 	 * /home/CreditMiner/cache
 	 * 
-	 * @return
+	 * @return List<CsvDTO>
 	 */
-	public List<CsvDTO> listCSVDir() {
-		listCsvProcess = new ArrayList<CsvDTO>();
+	public List<FileDTO> listCSVDir() {
+		listArquivosProcessados = new ArrayList<FileDTO>();
 		File baseFolder = new File(Util.getProperty("prop.diretorio.cache"));
 		File[] files = baseFolder.listFiles();
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
 			if (file.getPath().endsWith(".csv")) {
-				CsvDTO csvDTO = new CsvDTO();
-				csvDTO.setCpf(file.getName());
-				listCsvProcess.add(csvDTO);
+				FileDTO fileDTO = new FileDTO();
+				fileDTO.setFileName(file.getName());
+				listArquivosProcessados.add(fileDTO);
 			}
 		}
-		return listCsvProcess;
+		return listArquivosProcessados;
 	}
 
+	public boolean excluir() {
+
+		String nomeArquivoExclusao = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("fileName");
+		File baseFolder = new File(Util.getProperty("prop.diretorio.cache"));
+		File arquivoExcluir = new File(baseFolder + nomeArquivoExclusao);
+
+		if (arquivoExcluir.exists()) {
+			arquivoExcluir.delete();
+			return true;
+		}
+		return false;
+
+	}
 	/**
 	 * @return the file
 	 */
@@ -111,18 +125,18 @@ public class FileController {
 	}
 
 	/**
-	 * @return the listCsvProcess
+	 * @return the listArquivosProcessados
 	 */
-	public List<CsvDTO> getListCsvProcess() {
-		return listCsvProcess;
+	public List<FileDTO> getListArquivosProcessados() {
+		return listArquivosProcessados;
 	}
 
 	/**
-	 * @param listCsvProcess
-	 *            the listCsvProcess to set
+	 * @param listArquivosProcessados
+	 *            the listArquivosProcessados to set
 	 */
-	public void setListCsvProcess(List<CsvDTO> listCsvProcess) {
-		this.listCsvProcess = listCsvProcess;
+	public void setListArquivosProcessados(List<FileDTO> listArquivosProcessados) {
+		this.listArquivosProcessados = listArquivosProcessados;
 	}
 
 }

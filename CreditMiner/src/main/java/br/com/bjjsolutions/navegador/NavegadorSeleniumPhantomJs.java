@@ -335,7 +335,7 @@ public class NavegadorSeleniumPhantomJs {
 	/**
 	 * @return the uploadController
 	 */
-	public FileController getUploadController() {
+	public FileController getFileController() {
 		return fileController;
 	}
 
@@ -343,8 +343,8 @@ public class NavegadorSeleniumPhantomJs {
 	 * @param uploadController
 	 *            the uploadController to set
 	 */
-	public void setUploadController(FileController uploadController) {
-		this.fileController = uploadController;
+	public void setFileController(FileController fileController) {
+		this.fileController = fileController;
 	}
 
 }

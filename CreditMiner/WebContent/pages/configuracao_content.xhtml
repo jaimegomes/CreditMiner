@@ -47,7 +47,7 @@
 						<h:outputLabel value="Arquivo" styleClass="control-label col-md-2"
 							class="text-right" />
 						<h:inputFile id="file"
-							value="#{navegadorSeleniumPhantomJsBean.uploadController.file}"
+							value="#{navegadorSeleniumPhantomJsBean.fileController.file}"
 							label="Arquivo" styleClass="form-control" />
 
 						<!-- 						<h:commandButton value="Upload" -->
@@ -97,11 +97,13 @@
 											<h:column>
 												<f:facet name="header">Excluir</f:facet>
 												<p data-placement="top" data-toggle="tooltip" title="Delete">
-													<h:commandLink class="btn btn-danger btn-xs" data-title="Excluir"
-														data-toggle="modal" data-target="#delete"
-														onclick="#{navegadorSeleniumPhantomJsBean.fileController.excluir(#{listArquivosProcessados.fileName)})}">
+													<h:commandButton class="btn btn-danger btn-xs"
+														data-title="Excluir" data-toggle="modal"
+														data-target="#delete"
+														value=""
+														action="#{navegadorSeleniumPhantomJsBean.fileController.excluir}">
 														<span class="glyphicon glyphicon-trash"></span>
-														<f:setPropertyActionListener value="#{cli}" target="#{clienteBean.cliente}" />
+														<f:param name="fileName" value="#{listArquivosProcessados.fileName}" />
 													</h:commandButton>
 												</p>
 											</h:column>
