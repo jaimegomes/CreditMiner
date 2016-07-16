@@ -1,8 +1,6 @@
 package br.com.bjjsolutions.navegador;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -16,8 +14,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import br.com.bjjsolutions.dto.CsvDTO;
+import br.com.bjjsolutions.mb.FileController;
 import br.com.bjjsolutions.mb.PathPage;
-import br.com.bjjsolutions.mb.UploadController;
 import br.com.bjjsolutions.mb.Usuario;
 import br.com.bjjsolutions.processing.Cache;
 import br.com.bjjsolutions.processing.HTMLJsoup;
@@ -38,9 +36,8 @@ public class NavegadorSeleniumPhantomJs {
 	private final static String URL_HISTORICO = "http://sc.consignum.com.br/wmc-sc/pages/consultas/historico/pesquisa_colaborador.faces";
 	private final static String URL_BYPASS = "http://sc.consignum.com.br/wmc-sc/pages/consultas/disponibilidade_margem/visualiza_margem_colaborador.faces";
 	private Usuario usuario;
-	private UploadController uploadController;
+	private FileController fileController;
 	private HTMLJsoup instanceHTMLJsoup;
-	private List<CsvDTO> listCsvProcess;
 
 	/**
 	 * Construtor
@@ -52,9 +49,9 @@ public class NavegadorSeleniumPhantomJs {
 	@PostConstruct
 	public void init() {
 		this.usuario = new Usuario();
-		this.uploadController = new UploadController();
+		this.fileController = new FileController();
 		PathPage.isLogin(false);
-		listCSVDir();
+		this.fileController.listCSVDir();
 	}
 
 	/**
@@ -117,7 +114,7 @@ public class NavegadorSeleniumPhantomJs {
 
 			long start = System.currentTimeMillis();
 
-			fileName = uploadController.upload();
+			fileName = fileController.upload();
 			processaCpfs(Util.parseCsvFileToBeans(CsvDTO.class, fileName));
 			PathPage.isLogin(true);
 
@@ -134,7 +131,7 @@ public class NavegadorSeleniumPhantomJs {
 				WriteFileCSV.createCsvFile(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache") + fileName);
 
 				// Atualiza a lista da tela
-				listCSVDir();
+				this.fileController.listCSVDir();
 			}
 		}
 
@@ -320,29 +317,6 @@ public class NavegadorSeleniumPhantomJs {
 		SetupSelenium.getInstance().getWebDriver().get(url);
 	}
 
-	public List<CsvDTO> listCSVDir() {
-		listCsvProcess = new ArrayList<CsvDTO>();
-		File baseFolder = new File(Util.getProperty("prop.diretorio.cache"));
-		File[] files = baseFolder.listFiles();
-		for (int i = 0; i < files.length; i++) {
-			File file = files[i];
-			if (file.getPath().endsWith(".csv")) {
-				CsvDTO csvDTO = new CsvDTO();
-				csvDTO.setCpf(file.getName());
-				listCsvProcess.add(csvDTO);
-			}
-		}
-		return listCsvProcess;
-	}
-
-	public List<CsvDTO> getListCsvProcess() {
-		return listCsvProcess;
-	}
-
-	public void setListCsvProcess(List<CsvDTO> listCsvProcess) {
-		this.listCsvProcess = listCsvProcess;
-	}
-
 	/**
 	 * @return the usuario
 	 */
@@ -361,16 +335,16 @@ public class NavegadorSeleniumPhantomJs {
 	/**
 	 * @return the uploadController
 	 */
-	public UploadController getUploadController() {
-		return uploadController;
+	public FileController getUploadController() {
+		return fileController;
 	}
 
 	/**
 	 * @param uploadController
 	 *            the uploadController to set
 	 */
-	public void setUploadController(UploadController uploadController) {
-		this.uploadController = uploadController;
+	public void setUploadController(FileController uploadController) {
+		this.fileController = uploadController;
 	}
 
 }
