@@ -80,7 +80,7 @@
 											styleClass="table table-bordred table-striped">
 											<h:column>
 												<f:facet name="header">Nome do arquivo</f:facet>
-						    				#{listArquivosProcessados.fileName}
+						    				#{listArquivosProcessados.name}
 						    			</h:column>
 
 											<h:column>
@@ -103,7 +103,7 @@
 														value=""
 														action="#{navegadorSeleniumPhantomJsBean.fileController.excluir}">
 														<span class="glyphicon glyphicon-trash"></span>
-														<f:param name="fileName" value="#{listArquivosProcessados.fileName}" />
+														<f:param name="fileName" value="#{listArquivosProcessados.name}" />
 													</h:commandButton>
 												</p>
 											</h:column>

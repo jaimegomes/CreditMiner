@@ -10,13 +10,12 @@ import java.util.Scanner;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.Part;
 
-import br.com.bjjsolutions.dto.FileDTO;
 import br.com.bjjsolutions.util.Util;
 
 public class FileController {
 
 	private Part file;
-	private List<FileDTO> listArquivosProcessados;
+	private List<File> listArquivosProcessados;
 
 	/**
 	 * Método responsável por ler o arquivo inserido no botão de upload e
@@ -79,18 +78,16 @@ public class FileController {
 	 * Método que retorna a lista de arquivos csv no diretório
 	 * /home/CreditMiner/cache
 	 * 
-	 * @return List<CsvDTO>
+	 * @return List<File>
 	 */
-	public List<FileDTO> listCSVDir() {
-		listArquivosProcessados = new ArrayList<FileDTO>();
+	public List<File> listCSVDir() {
+		listArquivosProcessados = new ArrayList<File>();
 		File baseFolder = new File(Util.getProperty("prop.diretorio.cache"));
 		File[] files = baseFolder.listFiles();
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
 			if (file.getPath().endsWith(".csv")) {
-				FileDTO fileDTO = new FileDTO();
-				fileDTO.setFileName(file.getName());
-				listArquivosProcessados.add(fileDTO);
+				listArquivosProcessados.add(file);
 			}
 		}
 		return listArquivosProcessados;
@@ -127,7 +124,7 @@ public class FileController {
 	/**
 	 * @return the listArquivosProcessados
 	 */
-	public List<FileDTO> getListArquivosProcessados() {
+	public List<File> getListArquivosProcessados() {
 		return listArquivosProcessados;
 	}
 
@@ -135,7 +132,7 @@ public class FileController {
 	 * @param listArquivosProcessados
 	 *            the listArquivosProcessados to set
 	 */
-	public void setListArquivosProcessados(List<FileDTO> listArquivosProcessados) {
+	public void setListArquivosProcessados(List<File> listArquivosProcessados) {
 		this.listArquivosProcessados = listArquivosProcessados;
 	}
 
