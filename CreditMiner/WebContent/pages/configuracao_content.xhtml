@@ -75,12 +75,12 @@
 									<div class="table-responsive">
 
 										<h:dataTable id="tableArquivosProcessados"
-											value="#{navegadorSeleniumPhantomJsBean.listCsvProcess}"
-											var="list" styleClass="table table-bordred table-striped">
-
+											value="#{navegadorSeleniumPhantomJsBean.fileController.listArquivosProcessados}"
+											var="listArquivosProcessados"
+											styleClass="table table-bordred table-striped">
 											<h:column>
 												<f:facet name="header">Nome do arquivo</f:facet>
-						    				#{list.cpf}
+						    				#{listArquivosProcessados.fileName}
 						    			</h:column>
 
 											<h:column>
@@ -97,10 +97,12 @@
 											<h:column>
 												<f:facet name="header">Excluir</f:facet>
 												<p data-placement="top" data-toggle="tooltip" title="Delete">
-													<button class="btn btn-danger btn-xs" data-title="Excluir"
-														data-toggle="modal" data-target="#delete">
+													<h:commandLink class="btn btn-danger btn-xs" data-title="Excluir"
+														data-toggle="modal" data-target="#delete"
+														onclick="#{navegadorSeleniumPhantomJsBean.fileController.excluir(#{listArquivosProcessados.fileName)})}">
 														<span class="glyphicon glyphicon-trash"></span>
-													</button>
+														<f:setPropertyActionListener value="#{cli}" target="#{clienteBean.cliente}" />
+													</h:commandButton>
 												</p>
 											</h:column>
 
