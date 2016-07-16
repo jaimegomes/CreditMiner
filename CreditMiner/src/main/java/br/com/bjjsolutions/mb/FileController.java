@@ -3,11 +3,16 @@ package br.com.bjjsolutions.mb;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.FileInputStream;  
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.faces.context.ExternalContext;  
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;  
 import javax.servlet.http.Part;
 
 import br.com.bjjsolutions.util.Util;
@@ -93,19 +98,57 @@ public class FileController {
 		return listArquivosProcessados;
 	}
 
-	public boolean excluir() {
+	public boolean excluir(File file) {
 
-		String nomeArquivoExclusao = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("fileName");
-		File baseFolder = new File(Util.getProperty("prop.diretorio.cache"));
-		File arquivoExcluir = new File(baseFolder + nomeArquivoExclusao);
-
-		if (arquivoExcluir.exists()) {
-			arquivoExcluir.delete();
+		if (file.exists()) {
+			file.delete();
+			
+			System.out.println("item excluido");
+			listCSVDir();
 			return true;
 		}
+
 		return false;
 
 	}
+	
+    public String download(){
+    	FacesContext facesContext = FacesContext.getCurrentInstance();
+    	
+    	File file = (File) facesContext.getExternalContext().getRequestMap().get("file");
+    	
+        downloadFile(file.getName(), file.getAbsolutePath(), "csv", facesContext);
+        return "gotoDownload";
+    }
+	
+	public static synchronized void downloadFile(String filename, String fileLocation, String mimeType, FacesContext facesContext) {
+		ExternalContext context = facesContext.getExternalContext();
+		
+		String path = fileLocation;
+		String fullFileName = path + filename;
+		File file = new File(fullFileName);
+		HttpServletResponse response = (HttpServletResponse) context.getResponse();
+		response.setHeader("Content-Disposition", "attachment;filename=\"" + filename + "\"");
+		response.setContentLength((int) file.length());
+		response.setContentType(mimeType);
+		try {
+			FileInputStream in = new FileInputStream(file);
+			OutputStream out = response.getOutputStream();
+			byte[] buf = new byte[(int) file.length()];
+			int count;
+			while ((count = in.read(buf)) >= 0) {
+				out.write(buf, 0, count);
+			}
+			in.close();
+			out.flush();
+			out.close();
+			facesContext.responseComplete();
+		} catch (IOException ex) {
+			System.out.println("Error in downloadFile: " + ex.getMessage());
+			ex.printStackTrace();
+		}
+	}
+
 	/**
 	 * @return the file
 	 */
