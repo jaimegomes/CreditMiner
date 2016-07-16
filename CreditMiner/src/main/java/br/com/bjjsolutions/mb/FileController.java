@@ -11,7 +11,6 @@ import java.util.Scanner;
 
 import javax.faces.context.ExternalContext;  
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;  
 import javax.servlet.http.Part;
 
