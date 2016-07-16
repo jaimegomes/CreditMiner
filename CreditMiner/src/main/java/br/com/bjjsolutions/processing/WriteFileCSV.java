@@ -25,7 +25,7 @@ public class WriteFileCSV {
 		FileWriter fileWriter = null;
 
 		try {
-			fileWriter = new FileWriter(fileName + "/clientes.csv", true);
+			fileWriter = new FileWriter(fileName, true);
 
 			fileWriter.append(FILE_HEADER.toString());
 

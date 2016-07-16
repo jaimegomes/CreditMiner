@@ -16,12 +16,12 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import br.com.bjjsolutions.dto.CsvDTO;
-import br.com.bjjsolutions.mb.ConfiguracaoMB;
+import br.com.bjjsolutions.mb.PathPage;
+import br.com.bjjsolutions.mb.UploadController;
 import br.com.bjjsolutions.mb.Usuario;
 import br.com.bjjsolutions.processing.Cache;
 import br.com.bjjsolutions.processing.HTMLJsoup;
 import br.com.bjjsolutions.processing.WriteFileCSV;
-import br.com.bjjsolutions.processing.WriteFileXML;
 import br.com.bjjsolutions.util.Util;
 
 /**
@@ -38,6 +38,7 @@ public class NavegadorSeleniumPhantomJs {
 	private final static String URL_HISTORICO = "http://sc.consignum.com.br/wmc-sc/pages/consultas/historico/pesquisa_colaborador.faces";
 	private final static String URL_BYPASS = "http://sc.consignum.com.br/wmc-sc/pages/consultas/disponibilidade_margem/visualiza_margem_colaborador.faces";
 	private Usuario usuario;
+	private UploadController uploadController;
 	private HTMLJsoup instanceHTMLJsoup;
 	private List<CsvDTO> listCsvProcess;
 
@@ -51,7 +52,8 @@ public class NavegadorSeleniumPhantomJs {
 	@PostConstruct
 	public void init() {
 		this.usuario = new Usuario();
-		ConfiguracaoMB.isLogin(false);
+		this.uploadController = new UploadController();
+		PathPage.isLogin(false);
 		listCSVDir();
 	}
 
@@ -108,16 +110,16 @@ public class NavegadorSeleniumPhantomJs {
 	}
 
 	public void initMiner() throws IOException {
-
+		String fileName = "";
 		try {
 
 			System.out.println("INICIO");
 
 			long start = System.currentTimeMillis();
 
-			ConfiguracaoMB.upload();
-			processaCpfs(Util.parseCsvFileToBeans(CsvDTO.class));
-			ConfiguracaoMB.isLogin(true);
+			fileName = uploadController.upload();
+			processaCpfs(Util.parseCsvFileToBeans(CsvDTO.class, fileName));
+			PathPage.isLogin(true);
 
 			long end = System.currentTimeMillis();
 
@@ -127,8 +129,9 @@ public class NavegadorSeleniumPhantomJs {
 			e.printStackTrace();
 		} finally {
 			if (Cache.clientesDTOCache != null) {
-				WriteFileXML.gravaXMLListaClientes(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache"));
-				WriteFileCSV.createCsvFile(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache"));
+				// WriteFileXML.gravaXMLListaClientes(Cache.clientesDTOCache,
+				// Util.getProperty("prop.diretorio.cache"));
+				WriteFileCSV.createCsvFile(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache") + fileName);
 
 				// Atualiza a lista da tela
 				listCSVDir();
@@ -168,7 +171,7 @@ public class NavegadorSeleniumPhantomJs {
 		btnEntrar.click();
 
 		logado = new WebDriverWait(SetupSelenium.getInstance().getWebDriver(), 5).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(./@id, 'j_id_jsp_252844863_0pc3')]")));
-		ConfiguracaoMB.isLogin(true);
+		PathPage.isLogin(true);
 
 	}
 
@@ -353,6 +356,21 @@ public class NavegadorSeleniumPhantomJs {
 	 */
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+
+	/**
+	 * @return the uploadController
+	 */
+	public UploadController getUploadController() {
+		return uploadController;
+	}
+
+	/**
+	 * @param uploadController
+	 *            the uploadController to set
+	 */
+	public void setUploadController(UploadController uploadController) {
+		this.uploadController = uploadController;
 	}
 
 }

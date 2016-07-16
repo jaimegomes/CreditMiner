@@ -53,11 +53,11 @@ public class Util {
 	 * @throws IOException
 	 */
 	@SuppressWarnings("deprecation")
-	public static <CsvDTO> List<CsvDTO> parseCsvFileToBeans(final Class<CsvDTO> beanClass) throws IOException {
+	public static <CsvDTO> List<CsvDTO> parseCsvFileToBeans(final Class<CsvDTO> beanClass, String fileName) throws IOException {
 		CSVReader reader = null;
 
 		try {
-			reader = new CSVReader(new BufferedReader(new FileReader(Util.getDirectorySO() + "cpf.csv")), ';');
+			reader = new CSVReader(new BufferedReader(new FileReader(Util.getDirectorySO() + fileName)), ';');
 
 			Map<String, String> columnMapping = new HashMap<String, String>();
 			columnMapping.put("CPF", "cpf");
@@ -86,7 +86,7 @@ public class Util {
 	 * 
 	 * @param timeMiliSec
 	 */
-	public static  void pause(long timeMiliSec) {
+	public static void pause(long timeMiliSec) {
 		try {
 			Thread.sleep(timeMiliSec);
 		} catch (InterruptedException ex) {
