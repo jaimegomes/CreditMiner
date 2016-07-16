@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.faces.context.FacesContext;
 import javax.servlet.http.Part;
 
 import br.com.bjjsolutions.util.Util;
@@ -93,16 +92,16 @@ public class FileController {
 		return listArquivosProcessados;
 	}
 
-	public boolean excluir() {
+	public boolean excluir(File file) {
 
-		String nomeArquivoExclusao = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("fileName");
-		File baseFolder = new File(Util.getProperty("prop.diretorio.cache"));
-		File arquivoExcluir = new File(baseFolder + nomeArquivoExclusao);
-
-		if (arquivoExcluir.exists()) {
-			arquivoExcluir.delete();
+		if (file.exists()) {
+			file.delete();
+			
+			System.out.println("item excluido");
+			listCSVDir();
 			return true;
 		}
+
 		return false;
 
 	}
