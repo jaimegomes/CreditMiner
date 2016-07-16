@@ -3,35 +3,29 @@ package br.com.bjjsolutions.mb;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.servlet.http.Part;
 
-import br.com.bjjsolutions.dto.CsvDTO;
-import br.com.bjjsolutions.util.Util;
-
 @ManagedBean(name = "configuracaoMB")
-@ViewScoped
+@SessionScoped
 public class ConfiguracaoMB {
 
-	private Part file;
+	private static Part file;
 	private static boolean isLogin = false;
 
 	private static final String PATH_CONTENT_LOGIN = "pages/login_content.xhtml";
 	private static final String PATH_CONTENT_CONFIGURACAO = "pages/configuracao_content.xhtml";
-	
-	@PostConstruct
-	public void init() {
-		
-	}
 
+	/**
+	 * Método responsável por ler o arquivo inserido no botão de upload e
+	 * salvá-lo no diretório /home/CreditMiner/leitura.
+	 */
 	@SuppressWarnings("resource")
-	public void upload() {
+	public static void upload() {
 		try {
 			if (file != null) {
 				String conteudo = new Scanner(file.getInputStream()).useDelimiter("\\A").next();
@@ -43,7 +37,13 @@ public class ConfiguracaoMB {
 		}
 	}
 
-	private void salvarArquivo(String conteudo, String nomeArquivo) {
+	/**
+	 * Método responsável por salvar o arquivo no diretório
+	 * 
+	 * @param conteudo
+	 * @param nomeArquivo
+	 */
+	private static void salvarArquivo(String conteudo, String nomeArquivo) {
 		FileWriter arquivo;
 		try {
 			arquivo = new FileWriter(new File("/home/CreditMiner/leitura/" + nomeArquivo));
@@ -55,14 +55,14 @@ public class ConfiguracaoMB {
 			e.printStackTrace();
 		}
 	}
-	public Part getFile() {
-		return file;
-	}
 
-	public void setFile(Part file) {
-		this.file = file;
-	}
-
+	/**
+	 * Método responsável por retornar a página atual do sistema de acordo com a
+	 * flag isLogin, se isLogin = true exibe a página de configuração, se
+	 * isLogin = false exibe a página de login
+	 * 
+	 * @return página do sistema
+	 */
 	public String getPathPage() {
 		if (!isLogin) {
 			return PATH_CONTENT_LOGIN;
@@ -70,10 +70,12 @@ public class ConfiguracaoMB {
 		return PATH_CONTENT_CONFIGURACAO;
 	}
 
-	public static void setIsLogin(boolean isLoginP) {
-		isLogin = isLoginP;
-	}
-	
+	/**
+	 * Método que retorna no nome do arquivo que foi feito upload
+	 * 
+	 * @param part
+	 * @return String fileName
+	 */
 	private static String getFileNameFromPart(Part part) {
 		final String partHeader = part.getHeader("content-disposition");
 		for (String content : partHeader.split(";")) {
@@ -84,4 +86,35 @@ public class ConfiguracaoMB {
 		}
 		return null;
 	}
+
+	/**
+	 * @return the file
+	 */
+	public static Part getFile() {
+		return file;
+	}
+
+	/**
+	 * @param file
+	 *            the file to set
+	 */
+	public static void setFile(Part file) {
+		ConfiguracaoMB.file = file;
+	}
+
+	/**
+	 * @return the isLogin
+	 */
+	public static boolean isLogin() {
+		return isLogin;
+	}
+
+	/**
+	 * @param isLogin
+	 *            the isLogin to set
+	 */
+	public static void isLogin(boolean isLogin) {
+		ConfiguracaoMB.isLogin = isLogin;
+	}
+
 }

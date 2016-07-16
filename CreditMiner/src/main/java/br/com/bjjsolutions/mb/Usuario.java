@@ -1,12 +1,22 @@
 package br.com.bjjsolutions.mb;
 
-public class LoginMB {
+/**
+ * Classe que representa a entidade Usuario utilizada para se logar no sistema
+ * Credit Miner / Consignum
+ * 
+ * @author Jaime Gomes
+ * 
+ */
+public class Usuario {
 
 	private String login;
 	private String senha;
 	private String captcha;
 
-	public LoginMB() {
+	/**
+	 * Contrutor
+	 */
+	public Usuario() {
 
 	}
 

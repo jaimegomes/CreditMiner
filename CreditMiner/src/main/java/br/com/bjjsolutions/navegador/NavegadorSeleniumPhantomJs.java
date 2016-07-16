@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
@@ -17,7 +17,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import br.com.bjjsolutions.dto.CsvDTO;
 import br.com.bjjsolutions.mb.ConfiguracaoMB;
-import br.com.bjjsolutions.mb.LoginMB;
+import br.com.bjjsolutions.mb.Usuario;
 import br.com.bjjsolutions.processing.Cache;
 import br.com.bjjsolutions.processing.HTMLJsoup;
 import br.com.bjjsolutions.processing.WriteFileCSV;
@@ -31,13 +31,13 @@ import br.com.bjjsolutions.util.Util;
  * 
  */
 @ManagedBean(name = "navegadorSeleniumPhantomJsBean")
-@RequestScoped
+@SessionScoped
 public class NavegadorSeleniumPhantomJs {
 
 	private final static String URL_INICIAL_CONSIGNUM = "http://sc.consignum.com.br/wmc-sc/login/selecao_parceiro.faces";
 	private final static String URL_HISTORICO = "http://sc.consignum.com.br/wmc-sc/pages/consultas/historico/pesquisa_colaborador.faces";
 	private final static String URL_BYPASS = "http://sc.consignum.com.br/wmc-sc/pages/consultas/disponibilidade_margem/visualiza_margem_colaborador.faces";
-	private LoginMB loginMB;
+	private Usuario usuario;
 	private HTMLJsoup instanceHTMLJsoup;
 	private List<CsvDTO> listCsvProcess;
 
@@ -50,8 +50,8 @@ public class NavegadorSeleniumPhantomJs {
 
 	@PostConstruct
 	public void init() {
-		this.loginMB = new LoginMB();
-		ConfiguracaoMB.setIsLogin(false);
+		this.usuario = new Usuario();
+		ConfiguracaoMB.isLogin(false);
 		listCSVDir();
 	}
 
@@ -91,8 +91,8 @@ public class NavegadorSeleniumPhantomJs {
 	/**
 	 * Método que representa o action do botão entrar da nossa tela de login.
 	 * 
-	 * Este método injeta as credenciais digitadas em nossa tela de login na
-	 * tela de login do consignum e se loga no sistema.
+	 * Este método injeta as usuario digitadas em nossa tela de login na tela de
+	 * login do consignum e se loga no sistema.
 	 * 
 	 */
 	public void executeLogin() throws IOException {
@@ -115,11 +115,12 @@ public class NavegadorSeleniumPhantomJs {
 
 			long start = System.currentTimeMillis();
 
+			ConfiguracaoMB.upload();
 			processaCpfs(Util.parseCsvFileToBeans(CsvDTO.class));
-			ConfiguracaoMB.setIsLogin(true);
+			ConfiguracaoMB.isLogin(true);
 
 			long end = System.currentTimeMillis();
-			
+
 			System.out.println("tempo processamento total: " + Util.calculaTempoExecucao(start, end));
 
 		} catch (Exception e) {
@@ -128,8 +129,8 @@ public class NavegadorSeleniumPhantomJs {
 			if (Cache.clientesDTOCache != null) {
 				WriteFileXML.gravaXMLListaClientes(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache"));
 				WriteFileCSV.createCsvFile(Cache.clientesDTOCache, Util.getProperty("prop.diretorio.cache"));
-				
-				//Atualiza a lista da tela
+
+				// Atualiza a lista da tela
 				listCSVDir();
 			}
 		}
@@ -142,6 +143,7 @@ public class NavegadorSeleniumPhantomJs {
 	 * adiciona os valores digitados em nossa página de login e se loga no site
 	 * do consignum
 	 */
+	@SuppressWarnings("unused")
 	private void insereCredenciais() {
 		WebElement inputUsuario = null;
 		WebElement inputPassword = null;
@@ -159,14 +161,14 @@ public class NavegadorSeleniumPhantomJs {
 			insereCredenciais();
 		}
 
-		inputUsuario.sendKeys(loginMB.getLogin());
-		inputPassword.sendKeys(loginMB.getSenha());
-		inputCaptcha.sendKeys(loginMB.getCaptcha());
-		
+		inputUsuario.sendKeys(usuario.getLogin());
+		inputPassword.sendKeys(usuario.getSenha());
+		inputCaptcha.sendKeys(usuario.getCaptcha());
+
 		btnEntrar.click();
 
 		logado = new WebDriverWait(SetupSelenium.getInstance().getWebDriver(), 5).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(./@id, 'j_id_jsp_252844863_0pc3')]")));
-		ConfiguracaoMB.setIsLogin(true);
+		ConfiguracaoMB.isLogin(true);
 
 	}
 
@@ -194,7 +196,7 @@ public class NavegadorSeleniumPhantomJs {
 				long start = System.currentTimeMillis();
 
 				pesquisaCPF(cpf);
-				
+
 				qtdResultados = getQtdResultados(cpf);
 
 				System.out.println("cpf: " + cpf);
@@ -295,13 +297,6 @@ public class NavegadorSeleniumPhantomJs {
 	}
 
 	/**
-	 * @return the loginMB
-	 */
-	public LoginMB getLoginMB() {
-		return loginMB;
-	}
-
-	/**
 	 * Singleton Jsoup
 	 * 
 	 * @return
@@ -321,29 +316,43 @@ public class NavegadorSeleniumPhantomJs {
 	private void goTo(String url) {
 		SetupSelenium.getInstance().getWebDriver().get(url);
 	}
-	
-	
-	public List<CsvDTO> listCSVDir(){
+
+	public List<CsvDTO> listCSVDir() {
 		listCsvProcess = new ArrayList<CsvDTO>();
-        File baseFolder = new File(Util.getProperty("prop.diretorio.cache"));
-        File[] files = baseFolder.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            File file = files[i];
-            if (file.getPath().endsWith(".csv")) {
-            	CsvDTO csvDTO = new CsvDTO();
-            	csvDTO.setCpf(file.getName());
-                listCsvProcess.add(csvDTO);
-            }
-        }
-        return listCsvProcess;
+		File baseFolder = new File(Util.getProperty("prop.diretorio.cache"));
+		File[] files = baseFolder.listFiles();
+		for (int i = 0; i < files.length; i++) {
+			File file = files[i];
+			if (file.getPath().endsWith(".csv")) {
+				CsvDTO csvDTO = new CsvDTO();
+				csvDTO.setCpf(file.getName());
+				listCsvProcess.add(csvDTO);
+			}
+		}
+		return listCsvProcess;
 	}
-	
+
 	public List<CsvDTO> getListCsvProcess() {
 		return listCsvProcess;
 	}
-	
+
 	public void setListCsvProcess(List<CsvDTO> listCsvProcess) {
 		this.listCsvProcess = listCsvProcess;
+	}
+
+	/**
+	 * @return the usuario
+	 */
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	/**
+	 * @param usuario
+	 *            the usuario to set
+	 */
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 }
