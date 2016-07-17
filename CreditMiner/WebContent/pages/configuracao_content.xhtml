@@ -88,12 +88,11 @@
 														class="glyphicon glyphicon-download-alt"></span>
 												</f:facet>
 												<p data-placement="top" data-toggle="tooltip" title="Download">													
-													<h:commandButton action="#{navegadorSeleniumPhantomJsBean.fileController.download()}" 
+													<h:commandLink action="#{navegadorSeleniumPhantomJsBean.fileController.download()}" 
 														styleClass="btn btn-success btn-xs" data-title="Download" data-toggle="modal">
 														<span class="glyphicon glyphicon-download-alt"></span>
-                           								<f:param name="file" value="#{listArquivosProcessados}" />
-                            							<f:param name="fileLocation" value="#{listArquivosProcessados.getAbsolutePath()}" />														
-													</h:commandButton>														
+                           								<f:param name="file" value="#{arquivoProcessado}" />
+													</h:commandLink>														
 												</p>
 											</h:column>
 
@@ -102,11 +101,11 @@
 														class="glyphicon glyphicon-trash"></span>
 												</f:facet>
 												<p data-placement="top" data-toggle="tooltip" title="Delete">
-													<h:commandLink value="Excluir"
-														action="#{navegadorSeleniumPhantomJsBean.fileController.excluir(arquivoProcessado)}"
-														render="tabela_downloads">
+													<h:commandLink action="#{navegadorSeleniumPhantomJsBean.fileController.excluir(arquivoProcessado)}"
+														styleClass="btn btn-danger btn-xs" data-title="Excluir" data-toggle="modal" render="tabela_downloads" >
+														<span class="glyphicon glyphicon-trash"></span>
 													</h:commandLink>
-												</p>
+												</p>						
 											</h:column>
 
 										</h:dataTable>

@@ -111,20 +111,35 @@ public class FileController {
 
 	}
 	
+	/**
+	 * Metodo que inicializa a ação de download
+	 * recupera o parametro setado na tela
+	 * 
+	 * @return gotoDownload
+	 */
     public String download(){
     	FacesContext facesContext = FacesContext.getCurrentInstance();
     	
-    	File file = (File) facesContext.getExternalContext().getRequestMap().get("file");
+    	File file = (File) facesContext.getExternalContext().getRequestMap().get("arquivoProcessado");
     	
         downloadFile(file.getName(), file.getAbsolutePath(), "csv", facesContext);
         return "gotoDownload";
     }
 	
+    /**
+     * Método que realiza o download do arquivo
+     * e retorna o arquivo para o navegador
+     * 
+     * @param filename
+     * @param fileLocation
+     * @param mimeType
+     * @param facesContext
+     */
 	public static synchronized void downloadFile(String filename, String fileLocation, String mimeType, FacesContext facesContext) {
 		ExternalContext context = facesContext.getExternalContext();
 		
 		String path = fileLocation;
-		String fullFileName = path + filename;
+		String fullFileName = path;
 		File file = new File(fullFileName);
 		HttpServletResponse response = (HttpServletResponse) context.getResponse();
 		response.setHeader("Content-Disposition", "attachment;filename=\"" + filename + "\"");
