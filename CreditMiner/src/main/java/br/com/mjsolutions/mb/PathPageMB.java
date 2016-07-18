@@ -2,7 +2,6 @@ package br.com.mjsolutions.mb;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.view.ViewScoped;
 
 /**
  * Classe responsável por administraro carregamento de páginas
@@ -10,8 +9,8 @@ import javax.faces.view.ViewScoped;
  * @author Jaime Gomes
  * 
  */
-@ManagedBean(name="pathPageMB")
-@ViewScoped
+@ManagedBean(name = "pathPageMB")
+@SessionScoped
 public class PathPageMB {
 
 	private static boolean isLogin = false;

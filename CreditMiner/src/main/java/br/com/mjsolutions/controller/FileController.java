@@ -1,17 +1,17 @@
 package br.com.mjsolutions.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.FileInputStream;  
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.faces.context.ExternalContext;  
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletResponse;  
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import br.com.mjsolutions.mb.PathPageMB;
@@ -102,8 +102,8 @@ public class FileController {
 
 		if (file.exists()) {
 			file.delete();
-			
-			System.out.println("item excluido");
+
+			System.out.println(file.getName() + " excluido.");
 			listCSVDir();
 			PathPageMB.isLogin(true);
 			return true;
@@ -112,34 +112,35 @@ public class FileController {
 		return false;
 
 	}
-	
+
 	/**
-	 * Metodo que inicializa a ação de download
-	 * recupera o parametro setado na tela
+	 * Metodo que inicializa a ação de download recupera o parametro setado na
+	 * tela
 	 * 
 	 * @return gotoDownload
 	 */
-    public String download(){
-    	FacesContext facesContext = FacesContext.getCurrentInstance();
-    	
-    	File file = (File) facesContext.getExternalContext().getRequestMap().get("arquivoProcessado");
-    	
-        downloadFile(file.getName(), file.getAbsolutePath(), "csv", facesContext);
-        return "gotoDownload";
-    }
-	
-    /**
-     * Método que realiza o download do arquivo
-     * e retorna o arquivo para o navegador
-     * 
-     * @param filename
-     * @param fileLocation
-     * @param mimeType
-     * @param facesContext
-     */
+	public String download() {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+
+		File file = (File) facesContext.getExternalContext().getRequestMap().get("arquivoProcessado");
+
+		downloadFile(file.getName(), file.getAbsolutePath(), "csv", facesContext);
+		PathPageMB.isLogin(true);
+		return "gotoDownload";
+	}
+
+	/**
+	 * Método que realiza o download do arquivo e retorna o arquivo para o
+	 * navegador
+	 * 
+	 * @param filename
+	 * @param fileLocation
+	 * @param mimeType
+	 * @param facesContext
+	 */
 	public static synchronized void downloadFile(String filename, String fileLocation, String mimeType, FacesContext facesContext) {
 		ExternalContext context = facesContext.getExternalContext();
-		
+
 		String path = fileLocation;
 		String fullFileName = path;
 		File file = new File(fullFileName);

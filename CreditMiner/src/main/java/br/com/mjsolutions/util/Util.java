@@ -51,6 +51,9 @@ public class Util {
 	 * @param beanClass
 	 * @return List<CsvDTO>
 	 * @throws IOException
+	 * 
+	 * @TODO FAZER VALIDAÇÃO DO NOME DO ARQUIVO (SE CONTEM .CSV), VALIDAR SE O
+	 *       CABEÇALHO DO ARQUIVO TEM A PALAVRA CPF
 	 */
 	@SuppressWarnings("deprecation")
 	public static <CsvDTO> List<CsvDTO> parseCsvFileToBeans(final Class<CsvDTO> beanClass, String fileName) throws IOException {
@@ -69,6 +72,10 @@ public class Util {
 			final CsvToBean<CsvDTO> csv = new CsvToBean<CsvDTO>();
 
 			return csv.parse(strategy, reader);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
 		} finally {
 			if (reader != null) {
 				try {
@@ -78,6 +85,8 @@ public class Util {
 				}
 			}
 		}
+
+		return null;
 
 	}
 

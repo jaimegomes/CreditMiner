@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.view.ViewScoped;
+import javax.faces.bean.SessionScoped;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
@@ -30,7 +30,7 @@ import br.com.mjsolutions.util.Util;
  * 
  */
 @ManagedBean(name = "navegadorMB")
-@ViewScoped
+@SessionScoped
 public class NavegadorMB {
 
 	private final static String URL_INICIAL_CONSIGNUM = "http://sc.consignum.com.br/wmc-sc/login/selecao_parceiro.faces";
@@ -71,7 +71,7 @@ public class NavegadorMB {
 	 */
 	public String getLinkImagemCaptcha() {
 
-		long start = System.currentTimeMillis();
+		// long start = System.currentTimeMillis();
 		StringBuilder linkImagem = new StringBuilder();
 
 		try {
@@ -91,8 +91,9 @@ public class NavegadorMB {
 			System.err.println("Erro ao capturar link do captcha.\n" + e.getMessage());
 			e.printStackTrace();
 		} finally {
-			long end = System.currentTimeMillis();
-			System.out.println("tempo execução método getLinkImagemCaptcha: " + Util.calculaTempoExecucao(start, end));
+			// long end = System.currentTimeMillis();
+			// System.out.println("tempo execução método getLinkImagemCaptcha: "
+			// + Util.calculaTempoExecucao(start, end));
 		}
 		return linkImagem.toString();
 	}
@@ -114,17 +115,19 @@ public class NavegadorMB {
 		String fileName = "";
 		try {
 
-			System.out.println("INICIO");
+			// System.out.println("INICIO");
 
-			long start = System.currentTimeMillis();
+			// long start = System.currentTimeMillis();
 
 			fileName = fileController.upload();
+			
 			processaCpfs(Util.parseCsvFileToBeans(CsvDTO.class, fileName));
 			PathPageMB.isLogin(true);
 
-			long end = System.currentTimeMillis();
+			// long end = System.currentTimeMillis();
 
-			System.out.println("tempo processamento total: " + Util.calculaTempoExecucao(start, end));
+			// System.out.println("tempo processamento total: " +
+			// Util.calculaTempoExecucao(start, end));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -192,7 +195,6 @@ public class NavegadorMB {
 		try {
 
 			total = list.size();
-			cont = 0;
 			int qtdResultados = 0;
 
 			goTo(URL_HISTORICO);
@@ -201,27 +203,29 @@ public class NavegadorMB {
 
 				String cpf = StringUtils.leftPad(csv.getCpf(), 11, "0");
 
-				long start = System.currentTimeMillis();
+				// long start = System.currentTimeMillis();
 
 				pesquisaCPF(cpf);
 
 				qtdResultados = getQtdResultados(cpf);
 
-				System.out.println("cpf: " + cpf);
-				System.out.println("qtd cpfs encontrados: " + qtdResultados);
+				// System.out.println("cpf: " + cpf);
+				// System.out.println("qtd cpfs encontrados: " + qtdResultados);
 
 				setMapJsoup(cpf, qtdResultados);
 
-				long end = System.currentTimeMillis();
+				// long end = System.currentTimeMillis();
 				cont++;
 
-				long totalTempoCpfs = Util.calculaTempoExecucao(start, end);
-				System.out.println("tempo processamento cpfs: " + totalTempoCpfs);
-				System.out.println("Status: " + cont + "/" + total);
+				// long totalTempoCpfs = Util.calculaTempoExecucao(start, end);
+				// System.out.println("tempo processamento cpfs: " +
+				// totalTempoCpfs);
+				// System.out.println("Status: " + cont + "/" + total);
 
 			}
 
 			finalizado = true;
+			atualizaStatusProcesso();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -235,6 +239,8 @@ public class NavegadorMB {
 		} else {
 			mensagemDoStatus = "CPFs Processados " + cont + " de " + total;
 		}
+
+		PathPageMB.isLogin(true);
 	}
 
 	public String getMensagemDoStatus() {
@@ -277,20 +283,18 @@ public class NavegadorMB {
 			try {
 				linkNome = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.id("j_id_jsp_248910084_1:tabelaListaCol:" + i + ":j_id_jsp_248910084_23")));
 				linkNome.click();
+
+				getInstanceHTMLJsoup().createObjectRecordHTML(SetupSelenium.getInstance().getWebDriver().getPageSource(), cpf + "-" + i);
+				goTo(URL_BYPASS);
+				getInstanceHTMLJsoup().createObjectRecordHTML(SetupSelenium.getInstance().getWebDriver().getPageSource(), cpf + "-" + i + "-margem");
+				goTo(URL_HISTORICO);
+
 			} catch (Exception e) {
 				goTo(URL_HISTORICO);
 				pesquisaCPF(cpf);
 				int qtdResults = getQtdResultados(cpf);
 				setMapJsoup(cpf, qtdResults);
 			}
-
-			getInstanceHTMLJsoup().createObjectRecordHTML(SetupSelenium.getInstance().getWebDriver().getPageSource(), cpf + "-" + i);
-
-			goTo(URL_BYPASS);
-
-			getInstanceHTMLJsoup().createObjectRecordHTML(SetupSelenium.getInstance().getWebDriver().getPageSource(), cpf + "-" + i + "-margem");
-
-			goTo(URL_HISTORICO);
 
 		}
 	}
@@ -309,24 +313,28 @@ public class NavegadorMB {
 			inputCpf = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_248910084_1:j_id_jsp_248910084_14']")));
 			btnPesquisar = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_248910084_1:j_id_jsp_248910084_15']")));
 
+			inputCpf.clear();
+			inputCpf.sendKeys(cpf);
+			btnPesquisar.click();
+
+			Util.pause(1000);
 		} catch (Exception e) {
 			goTo(URL_HISTORICO);
 			pesquisaCPF(cpf);
 		}
 
-		inputCpf.clear();
-		inputCpf.sendKeys(cpf);
-		btnPesquisar.click();
-
-		Util.pause(1000);
-
 	}
 
+	/**
+	 * Método para deslogar do sistema
+	 */
 	public void sair() {
+		goTo(URL_HISTORICO);
 		WebElement btnSair = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_252844863_0pc3:j_id_jsp_252844863_195pc3']")));
 		btnSair.click();
 		PathPageMB.isLogin(false);
-
+		mensagemDoStatus = "";
+		captcha = "";
 		getLinkImagemCaptcha();
 	}
 

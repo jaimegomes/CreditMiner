@@ -10,7 +10,8 @@
 		<p:toolbar>
 			<p:toolbarGroup align="right">
 				<p:menuButton value="Painel de Controle">
-					<p:menuitem value="Sair" action="#{navegadorMB.sair()}" onclick="pollStatus.stop()" ajax="false" />
+					<p:menuitem value="Sair" action="#{navegadorMB.sair()}"
+						onclick="pollStatus.stop()" ajax="false" />
 				</p:menuButton>
 			</p:toolbarGroup>
 		</p:toolbar>
@@ -35,13 +36,13 @@
 						<h:outputLabel value="Arquivo" styleClass="control-label col-md-2"
 							class="text-right" />
 						<h:inputFile id="file" value="#{navegadorMB.fileController.file}"
-							label="Arquivo" styleClass="form-control" />
+							label="Arquivo" styleClass="form-control" required="true"/>
 
 						<br></br>
 						<h:commandButton value="Iniciar"
 							action="#{navegadorMB.initMiner()}" onclick="pollStatus.start()"
 							styleClass="btn btn-sm btn-primary" render="tabela_downloads">
-							<f:ajax execute="@form" render="@form" />
+							<f:ajax execute="@form" render="@all"/>
 						</h:commandButton>
 					</h:form>
 
@@ -59,9 +60,7 @@
 									</h4>
 									<p:poll interval="2"
 										listener="#{navegadorMB.atualizaStatusProcesso}"
-										update="txt_count"
-										autoStart="false"
-										widgetVar="pollStatus" />
+										update="txt_count" widgetVar="pollStatus" autoStart="false"/>
 
 									<div class="table-responsive">
 
@@ -109,7 +108,7 @@
 									</div>
 								</div>
 							</h:form>
-						</div>	
+						</div>
 					</div>
 				</div>
 			</div>
