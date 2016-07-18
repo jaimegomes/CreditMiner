@@ -41,6 +41,10 @@ public class NavegadorMB {
 	private HTMLJsoup instanceHTMLJsoup;
 	private String captcha;
 	private Usuario usuario;
+	
+	private int cont = 0;
+	private int total = 0;
+	private String mensagemDoStatus = "";	
 
 	/**
 	 * Construtor
@@ -149,20 +153,22 @@ public class NavegadorMB {
 	 */
 	@SuppressWarnings("unused")
 	private void insereCredenciais() {
-		WebElement inputUsuarioController = null;
+		WebElement inputUsuario = null;
 		WebElement inputPassword = null;
 		WebElement inputCaptcha = null;
 		WebElement btnEntrar = null;
 		WebElement logado = null;
+		Usuario usuario = null;
 		try {
 
-			inputUsuarioController = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_1179747809_21']")));
+			usuario = usuarioController.findUsuarioById(usuarioController.getUsuarioSelecionado());
+			inputUsuario = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_1179747809_21']")));
 			inputPassword = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.name("j_id_jsp_1179747809_23")));
 			inputCaptcha = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='recaptcha_response_field']")));
 			btnEntrar = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_1179747809_27']")));
 
-			inputUsuarioController.sendKeys(getUsuarioSelecionado().getLogin());
-			inputPassword.sendKeys(getUsuarioSelecionado().getSenha());
+			inputUsuario.sendKeys(usuario.getLogin());
+			inputPassword.sendKeys(usuario.getSenha());
 			inputCaptcha.sendKeys(this.captcha);
 
 		} catch (Exception e) {
@@ -187,8 +193,8 @@ public class NavegadorMB {
 
 		try {
 
-			int total = list.size();
-			int cont = 0;
+			total = list.size();
+			cont = 0;
 			int qtdResultados = 0;
 
 			goTo(URL_HISTORICO);
@@ -222,6 +228,18 @@ public class NavegadorMB {
 		}
 
 	}
+	
+	public void atualizaStatusProcesso(){
+		mensagemDoStatus = "CPFs Processados " + cont + " de " + total;
+	}
+	
+	public String getMensagemDoStatus() {
+		return mensagemDoStatus;
+	}
+	
+	public void setMensagemDoStatus(String mensagemDoStatus) {
+		this.mensagemDoStatus = mensagemDoStatus;
+	}	
 
 	/**
 	 * Método que retorna a quantidade de resultados da pesquisa
@@ -379,17 +397,6 @@ public class NavegadorMB {
 	 */
 	public void setCaptcha(String captcha) {
 		this.captcha = captcha;
-	}
-
-	/**
-	 * @return the usuario
-	 */
-	public Usuario getUsuarioSelecionado() {
-		return this.usuario;
-	}
-
-	public void setUsuarioSelecionado(Usuario usuario) {
-		this.usuario = usuario;
 	}
 
 }

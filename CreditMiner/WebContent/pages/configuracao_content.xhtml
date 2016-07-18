@@ -3,7 +3,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
 
 	<main> <nav class="navbar navbar-default navbar-static-top">
 	<div class="container-fluid">
@@ -71,7 +72,10 @@
 
 							<h:form id="tabela_downloads">
 								<div class="col-md-12">
-									<h4>1 de 2500</h4>
+
+									<h4><h:outputText id="txt_count" value="#{navegadorMB.mensagemDoStatus}" /></h4>
+									<p:poll interval="2" listener="#{navegadorMB.atualizaStatusProcesso}" update="txt_count" />
+									
 									<div class="table-responsive">
 
 										<h:dataTable id="tableArquivosProcessados"
