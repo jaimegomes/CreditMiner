@@ -6,34 +6,22 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
-	<main> <nav class="navbar navbar-default navbar-static-top">
+	<main> <h:form id="barraDeFerramentas">
+		<p:toolbar>
+			<p:toolbarGroup align="right">
+				<p:menuButton value="Painel de Controle">
+					<p:menuitem value="Editar Usuário"  ajax="false" />
+					<p:menuitem value="Sair" action="#{navegadorMB.sair()}" ajax="false" />
+				</p:menuButton>
+			</p:toolbarGroup>
+		</p:toolbar>
+	</h:form> <nav class="navbar navbar-default navbar-static-top">
 	<div class="container-fluid">
 		<div class="navbar-header">
-			<button type="button" class="navbar-toggle collapsed"
-				data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-				<span class="sr-only">Toggle navigation</span> <span
-					class="icon-bar"></span> <span class="icon-bar"></span> <span
-					class="icon-bar"></span>
-			</button>
 			<a class="navbar-brand" style="height: auto" href="#"> <img
 				alt="SCconsig Promotora de Crédito"
 				src="resources/images/scconsig.png" />
 			</a>
-		</div>
-
-		<div class="collapse navbar-collapse"
-			id="bs-example-navbar-collapse-1">
-			<ul class="nav navbar-nav navbar-right">
-				<li class="dropdown "><a href="#" class="dropdown-toggle"
-					data-toggle="dropdown" role="button" aria-expanded="false">
-						Conta <span class="caret"></span>
-				</a>
-					<ul class="dropdown-menu" role="menu">
-						<li class="dropdown-header">Configurações</li>
-						<li class="divider"></li>
-						<li><a href="#">Logout</a></li>
-					</ul></li>
-			</ul>
 		</div>
 	</div>
 	</nav>
@@ -47,8 +35,7 @@
 
 						<h:outputLabel value="Arquivo" styleClass="control-label col-md-2"
 							class="text-right" />
-						<h:inputFile id="file"
-							value="#{navegadorMB.fileController.file}"
+						<h:inputFile id="file" value="#{navegadorMB.fileController.file}"
 							label="Arquivo" styleClass="form-control" />
 
 						<!-- 						<h:commandButton value="Upload" -->
@@ -56,13 +43,14 @@
 						<!-- 							styleClass="btn btn-sm btn-primary"> -->
 						<!-- 							<f:ajax execute="@form" render="@all" /> -->
 						<!-- 						</h:commandButton> -->
-						<div class="btn-group pull-right">
-							<h:commandButton value="Iniciar"
-								action="#{navegadorMB.initMiner()}"
-								styleClass="btn btn-sm btn-primary" render="tabela_downloads">
-								<f:ajax execute="@form" render="@all" />
-							</h:commandButton>
-						</div>
+						<!-- 						<div class="btn-group pull-right"> -->
+						<br></br>
+						<h:commandButton value="Iniciar"
+							action="#{navegadorMB.initMiner()}"
+							styleClass="btn btn-sm btn-primary" render="tabela_downloads">
+							<f:ajax execute="@form" render="@all" />
+						</h:commandButton>
+						<!-- 						</div> -->
 					</h:form>
 
 				</div>
@@ -73,9 +61,14 @@
 							<h:form id="tabela_downloads">
 								<div class="col-md-12">
 
-									<h4><h:outputText id="txt_count" value="#{navegadorMB.mensagemDoStatus}" /></h4>
-									<p:poll interval="2" listener="#{navegadorMB.atualizaStatusProcesso}" update="txt_count" />
-									
+									<h4>
+										<h:outputText id="txt_count"
+											value="#{navegadorMB.mensagemDoStatus}" />
+									</h4>
+									<p:poll interval="2"
+										listener="#{navegadorMB.atualizaStatusProcesso}"
+										update="txt_count" />
+
 									<div class="table-responsive">
 
 										<h:dataTable id="tableArquivosProcessados"
@@ -91,12 +84,15 @@
 												<f:facet name="header">Download	<span
 														class="glyphicon glyphicon-download-alt"></span>
 												</f:facet>
-												<p data-placement="top" data-toggle="tooltip" title="Download">													
-													<h:commandLink action="#{navegadorMB.fileController.download()}" 
-														styleClass="btn btn-success btn-xs" data-title="Download" data-toggle="modal">
+												<p data-placement="top" data-toggle="tooltip"
+													title="Download">
+													<h:commandLink
+														action="#{navegadorMB.fileController.download()}"
+														styleClass="btn btn-success btn-xs" data-title="Download"
+														data-toggle="modal">
 														<span class="glyphicon glyphicon-download-alt"></span>
-                           								<f:param name="file" value="#{arquivoProcessado}" />
-													</h:commandLink>														
+														<f:param name="file" value="#{arquivoProcessado}" />
+													</h:commandLink>
 												</p>
 											</h:column>
 
@@ -105,11 +101,13 @@
 														class="glyphicon glyphicon-trash"></span>
 												</f:facet>
 												<p data-placement="top" data-toggle="tooltip" title="Delete">
-													<h:commandLink action="#{navegadorMB.fileController.excluir(arquivoProcessado)}"
-														styleClass="btn btn-danger btn-xs" data-title="Excluir" data-toggle="modal" render="tabela_downloads" >
+													<h:commandLink
+														action="#{navegadorMB.fileController.excluir(arquivoProcessado)}"
+														styleClass="btn btn-danger btn-xs" data-title="Excluir"
+														data-toggle="modal" render="tabela_downloads">
 														<span class="glyphicon glyphicon-trash"></span>
 													</h:commandLink>
-												</p>						
+												</p>
 											</h:column>
 
 										</h:dataTable>

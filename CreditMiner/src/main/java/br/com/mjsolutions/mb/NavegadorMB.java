@@ -41,10 +41,10 @@ public class NavegadorMB {
 	private HTMLJsoup instanceHTMLJsoup;
 	private String captcha;
 	private Usuario usuario;
-	
+
 	private int cont = 0;
 	private int total = 0;
-	private String mensagemDoStatus = "";	
+	private String mensagemDoStatus = "";
 
 	/**
 	 * Construtor
@@ -228,18 +228,18 @@ public class NavegadorMB {
 		}
 
 	}
-	
-	public void atualizaStatusProcesso(){
+
+	public void atualizaStatusProcesso() {
 		mensagemDoStatus = "CPFs Processados " + cont + " de " + total;
 	}
-	
+
 	public String getMensagemDoStatus() {
 		return mensagemDoStatus;
 	}
-	
+
 	public void setMensagemDoStatus(String mensagemDoStatus) {
 		this.mensagemDoStatus = mensagemDoStatus;
-	}	
+	}
 
 	/**
 	 * Método que retorna a quantidade de resultados da pesquisa
@@ -316,6 +316,14 @@ public class NavegadorMB {
 
 		Util.pause(1000);
 
+	}
+
+	public void sair() {
+		WebElement btnSair = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_252844863_0pc3:j_id_jsp_252844863_195pc3']")));
+		btnSair.click();
+		PathPageMB.isLogin(false);
+
+		getLinkImagemCaptcha();
 	}
 
 	/**
