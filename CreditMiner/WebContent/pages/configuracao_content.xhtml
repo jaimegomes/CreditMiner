@@ -37,19 +37,12 @@
 						<h:inputFile id="file" value="#{navegadorMB.fileController.file}"
 							label="Arquivo" styleClass="form-control" />
 
-						<!-- 						<h:commandButton value="Upload" -->
-						<!-- 							action="#{configuracaoMB.upload()}" -->
-						<!-- 							styleClass="btn btn-sm btn-primary"> -->
-						<!-- 							<f:ajax execute="@form" render="@all" /> -->
-						<!-- 						</h:commandButton> -->
-						<!-- 						<div class="btn-group pull-right"> -->
 						<br></br>
 						<h:commandButton value="Iniciar"
 							action="#{navegadorMB.initMiner()}" onclick="pollStatus.start()"
 							styleClass="btn btn-sm btn-primary" render="tabela_downloads">
-							<f:ajax execute="@form" render="@all" />
+							<f:ajax execute="@form" render="@form" />
 						</h:commandButton>
-						<!-- 						</div> -->
 					</h:form>
 
 				</div>
@@ -106,6 +99,7 @@
 														action="#{navegadorMB.fileController.excluir(arquivoProcessado)}"
 														styleClass="btn btn-danger btn-xs" data-title="Excluir"
 														data-toggle="modal" render="tabela_downloads">
+														<f:ajax execute="@form" render="@form" />
 														<span class="glyphicon glyphicon-trash"></span>
 													</h:commandLink>
 												</p>
@@ -115,7 +109,7 @@
 									</div>
 								</div>
 							</h:form>
-						</div>
+						</div>	
 					</div>
 				</div>
 			</div>

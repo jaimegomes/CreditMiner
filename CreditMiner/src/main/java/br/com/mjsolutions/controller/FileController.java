@@ -14,6 +14,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;  
 import javax.servlet.http.Part;
 
+import br.com.mjsolutions.mb.PathPageMB;
 import br.com.mjsolutions.util.Util;
 
 public class FileController {
@@ -104,6 +105,7 @@ public class FileController {
 			
 			System.out.println("item excluido");
 			listCSVDir();
+			PathPageMB.isLogin(true);
 			return true;
 		}
 
