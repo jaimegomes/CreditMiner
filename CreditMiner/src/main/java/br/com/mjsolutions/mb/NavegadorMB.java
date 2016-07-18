@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.view.ViewScoped;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
@@ -30,7 +30,7 @@ import br.com.mjsolutions.util.Util;
  * 
  */
 @ManagedBean(name = "navegadorMB")
-@SessionScoped
+@ViewScoped
 public class NavegadorMB {
 
 	private final static String URL_INICIAL_CONSIGNUM = "http://sc.consignum.com.br/wmc-sc/login/selecao_parceiro.faces";
@@ -43,6 +43,7 @@ public class NavegadorMB {
 	private Usuario usuario;
 
 	private int cont = 0;
+	private boolean finalizado = false;
 	private int total = 0;
 	private String mensagemDoStatus = "";
 
@@ -76,6 +77,7 @@ public class NavegadorMB {
 		try {
 			goTo(URL_INICIAL_CONSIGNUM);
 
+			Util.pause(1000);
 			WebElement element = SetupSelenium.getInstance().getWait()
 					.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_1088422203_1:j_id_jsp_1088422203_8:tbody_element']/tr/td[2]/a")));
 
@@ -104,13 +106,7 @@ public class NavegadorMB {
 	 */
 	public void executeLogin() throws IOException {
 
-		try {
-
-			insereCredenciais();
-
-		} catch (Exception e) {
-			getLinkImagemCaptcha();
-		}
+		insereCredenciais();
 
 	}
 
@@ -171,14 +167,16 @@ public class NavegadorMB {
 			inputPassword.sendKeys(usuario.getSenha());
 			inputCaptcha.sendKeys(this.captcha);
 
+			btnEntrar.click();
+
+			logado = new WebDriverWait(SetupSelenium.getInstance().getWebDriver(), 3).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(./@id, 'j_id_jsp_252844863_0pc3')]")));
+			PathPageMB.isLogin(true);
+
 		} catch (Exception e) {
-			e.printStackTrace();
+			PathPageMB.isLogin(false);
+			getLinkImagemCaptcha();
+
 		}
-
-		btnEntrar.click();
-
-		logado = new WebDriverWait(SetupSelenium.getInstance().getWebDriver(), 5).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(./@id, 'j_id_jsp_252844863_0pc3')]")));
-		PathPageMB.isLogin(true);
 
 	}
 
@@ -223,6 +221,8 @@ public class NavegadorMB {
 
 			}
 
+			finalizado = true;
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -230,7 +230,11 @@ public class NavegadorMB {
 	}
 
 	public void atualizaStatusProcesso() {
-		mensagemDoStatus = "CPFs Processados " + cont + " de " + total;
+		if (finalizado) {
+			mensagemDoStatus = "Arquivo criado com sucesso!";
+		} else {
+			mensagemDoStatus = "CPFs Processados " + cont + " de " + total;
+		}
 	}
 
 	public String getMensagemDoStatus() {
@@ -405,6 +409,21 @@ public class NavegadorMB {
 	 */
 	public void setCaptcha(String captcha) {
 		this.captcha = captcha;
+	}
+
+	/**
+	 * @return the finalizado
+	 */
+	public boolean isFinalizado() {
+		return finalizado;
+	}
+
+	/**
+	 * @param finalizado
+	 *            the finalizado to set
+	 */
+	public void setFinalizado(boolean finalizado) {
+		this.finalizado = finalizado;
 	}
 
 }

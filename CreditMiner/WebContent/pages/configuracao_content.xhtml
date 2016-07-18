@@ -10,8 +10,7 @@
 		<p:toolbar>
 			<p:toolbarGroup align="right">
 				<p:menuButton value="Painel de Controle">
-					<p:menuitem value="Editar Usuário"  ajax="false" />
-					<p:menuitem value="Sair" action="#{navegadorMB.sair()}" ajax="false" />
+					<p:menuitem value="Sair" action="#{navegadorMB.sair()}" onclick="pollStatus.stop()" ajax="false" />
 				</p:menuButton>
 			</p:toolbarGroup>
 		</p:toolbar>
@@ -46,7 +45,7 @@
 						<!-- 						<div class="btn-group pull-right"> -->
 						<br></br>
 						<h:commandButton value="Iniciar"
-							action="#{navegadorMB.initMiner()}"
+							action="#{navegadorMB.initMiner()}" onclick="pollStatus.start()"
 							styleClass="btn btn-sm btn-primary" render="tabela_downloads">
 							<f:ajax execute="@form" render="@all" />
 						</h:commandButton>
@@ -67,7 +66,9 @@
 									</h4>
 									<p:poll interval="2"
 										listener="#{navegadorMB.atualizaStatusProcesso}"
-										update="txt_count" />
+										update="txt_count"
+										autoStart="false"
+										widgetVar="pollStatus" />
 
 									<div class="table-responsive">
 

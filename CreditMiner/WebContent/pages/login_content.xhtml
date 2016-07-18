@@ -31,26 +31,15 @@
 					<div class="panel-body">
 						<h:form styleClass="form-horizontal">
 							<div class="form-group">
-								<!-- 									<div class="col-md-10"> -->
-								<!-- 										<h:inputText id="lonhggin" name="txtLogin" value="#{navegadorMB.usuario.login}" styleClass="form-control" /> -->
-								<!-- 									</div> -->
-								<!-- 								</div> -->
-								<!-- 								<div class="form-group"> -->
-								<!-- 									<h:outputLabel value="Senha:" styleClass="control-label col-md-2"/> -->
-								<!-- 									<div class="col-md-10"> -->
-								<!-- 										<h:inputSecret id="panhnsswd" name="txtPassword" value="#{navegadorMB.usuario.senha}" styleClass="form-control" /> -->
-								<!-- 									</div> -->
-								<!-- 								</div>	 -->
-
 								<div class="form-group">
 									<h:outputLabel value="Banco:"
 										styleClass="control-label col-md-2" />
 									<div class="col-md-10">
-										<h:selectOneMenu value="#{navegadorMB.usuarioController.usuarioSelecionado}"
+										<h:selectOneMenu
+											value="#{navegadorMB.usuarioController.usuarioSelecionado}"
 											styleClass="form-control">
 											<f:selectItem itemValue="" itemLabel="Selecione..." />
-											<f:selectItems
-												value="#{navegadorMB.usuarioController.combo}"/>
+											<f:selectItems value="#{navegadorMB.usuarioController.combo}" />
 										</h:selectOneMenu>
 									</div>
 								</div>
@@ -59,8 +48,8 @@
 										styleClass="control-label col-md-2" />
 									<div class="col-md-10">
 										<h:inputText id="capnhnhtcha" name="txtCaptcha"
-											value="#{navegadorMB.captcha}"
-											placeholder="Digite a imagem" styleClass="form-control" />
+											value="#{navegadorMB.captcha}" placeholder="Digite a imagem"
+											styleClass="form-control" />
 									</div>
 								</div>
 								<div class="center-block">
