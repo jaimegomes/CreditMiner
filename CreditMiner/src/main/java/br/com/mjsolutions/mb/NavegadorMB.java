@@ -14,6 +14,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import br.com.mjsolutions.controller.FileController;
+import br.com.mjsolutions.controller.UsuarioController;
 import br.com.mjsolutions.dto.CsvDTO;
 import br.com.mjsolutions.model.Usuario;
 import br.com.mjsolutions.processing.Cache;
@@ -28,16 +29,18 @@ import br.com.mjsolutions.util.Util;
  * @author Jaime Gomes
  * 
  */
-@ManagedBean(name = "navegadorSeleniumPhantomJsBean")
+@ManagedBean(name = "navegadorMB")
 @SessionScoped
 public class NavegadorMB {
 
 	private final static String URL_INICIAL_CONSIGNUM = "http://sc.consignum.com.br/wmc-sc/login/selecao_parceiro.faces";
 	private final static String URL_HISTORICO = "http://sc.consignum.com.br/wmc-sc/pages/consultas/historico/pesquisa_colaborador.faces";
 	private final static String URL_BYPASS = "http://sc.consignum.com.br/wmc-sc/pages/consultas/disponibilidade_margem/visualiza_margem_colaborador.faces";
-	private Usuario usuario;
+	private UsuarioController usuarioController;
 	private FileController fileController;
 	private HTMLJsoup instanceHTMLJsoup;
+	private String captcha;
+	private Usuario usuario;
 
 	/**
 	 * Construtor
@@ -48,7 +51,8 @@ public class NavegadorMB {
 
 	@PostConstruct
 	public void init() {
-		this.usuario = new Usuario();
+		this.setUsuario(new Usuario());
+		this.usuarioController = new UsuarioController();
 		this.fileController = new FileController();
 		PathPageMB.isLogin(false);
 		this.fileController.listCSVDir();
@@ -90,8 +94,8 @@ public class NavegadorMB {
 	/**
 	 * Método que representa o action do botão entrar da nossa tela de login.
 	 * 
-	 * Este método injeta as usuario digitadas em nossa tela de login na tela de
-	 * login do consignum e se loga no sistema.
+	 * Este método injeta as usuarioController digitadas em nossa tela de login
+	 * na tela de login do consignum e se loga no sistema.
 	 * 
 	 */
 	public void executeLogin() throws IOException {
@@ -145,25 +149,25 @@ public class NavegadorMB {
 	 */
 	@SuppressWarnings("unused")
 	private void insereCredenciais() {
-		WebElement inputUsuario = null;
+		WebElement inputUsuarioController = null;
 		WebElement inputPassword = null;
 		WebElement inputCaptcha = null;
 		WebElement btnEntrar = null;
 		WebElement logado = null;
-
 		try {
-			inputUsuario = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_1179747809_21']")));
+
+			inputUsuarioController = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_1179747809_21']")));
 			inputPassword = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.name("j_id_jsp_1179747809_23")));
 			inputCaptcha = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='recaptcha_response_field']")));
 			btnEntrar = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_1179747809_27']")));
 
-		} catch (Exception e) {
-			insereCredenciais();
-		}
+			inputUsuarioController.sendKeys(getUsuarioSelecionado().getLogin());
+			inputPassword.sendKeys(getUsuarioSelecionado().getSenha());
+			inputCaptcha.sendKeys(this.captcha);
 
-		inputUsuario.sendKeys(usuario.getLogin());
-		inputPassword.sendKeys(usuario.getSenha());
-		inputCaptcha.sendKeys(usuario.getCaptcha());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		btnEntrar.click();
 
@@ -318,18 +322,18 @@ public class NavegadorMB {
 	}
 
 	/**
-	 * @return the usuario
+	 * @return the usuarioController
 	 */
-	public Usuario getUsuario() {
-		return usuario;
+	public UsuarioController getUsuarioController() {
+		return usuarioController;
 	}
 
 	/**
-	 * @param usuario
-	 *            the usuario to set
+	 * @param usuarioController
+	 *            the usuarioController to set
 	 */
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
+	public void setUsuarioController(UsuarioController usuarioController) {
+		this.usuarioController = usuarioController;
 	}
 
 	/**
@@ -345,6 +349,47 @@ public class NavegadorMB {
 	 */
 	public void setFileController(FileController fileController) {
 		this.fileController = fileController;
+	}
+
+	/**
+	 * @return the usuario
+	 */
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	/**
+	 * @param usuario
+	 *            the usuario to set
+	 */
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	/**
+	 * @return the captcha
+	 */
+	public String getCaptcha() {
+		return captcha;
+	}
+
+	/**
+	 * @param captcha
+	 *            the captcha to set
+	 */
+	public void setCaptcha(String captcha) {
+		this.captcha = captcha;
+	}
+
+	/**
+	 * @return the usuario
+	 */
+	public Usuario getUsuarioSelecionado() {
+		return this.usuario;
+	}
+
+	public void setUsuarioSelecionado(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 }

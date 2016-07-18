@@ -47,7 +47,7 @@
 						<h:outputLabel value="Arquivo" styleClass="control-label col-md-2"
 							class="text-right" />
 						<h:inputFile id="file"
-							value="#{navegadorSeleniumPhantomJsBean.fileController.file}"
+							value="#{navegadorMB.fileController.file}"
 							label="Arquivo" styleClass="form-control" />
 
 						<!-- 						<h:commandButton value="Upload" -->
@@ -57,7 +57,7 @@
 						<!-- 						</h:commandButton> -->
 						<div class="btn-group pull-right">
 							<h:commandButton value="Iniciar"
-								action="#{navegadorSeleniumPhantomJsBean.initMiner()}"
+								action="#{navegadorMB.initMiner()}"
 								styleClass="btn btn-sm btn-primary" render="tabela_downloads">
 								<f:ajax execute="@form" render="@all" />
 							</h:commandButton>
@@ -75,7 +75,7 @@
 									<div class="table-responsive">
 
 										<h:dataTable id="tableArquivosProcessados"
-											value="#{navegadorSeleniumPhantomJsBean.fileController.listArquivosProcessados}"
+											value="#{navegadorMB.fileController.listArquivosProcessados}"
 											var="arquivoProcessado"
 											styleClass="table table-bordred table-striped">
 											<h:column>
@@ -88,7 +88,7 @@
 														class="glyphicon glyphicon-download-alt"></span>
 												</f:facet>
 												<p data-placement="top" data-toggle="tooltip" title="Download">													
-													<h:commandLink action="#{navegadorSeleniumPhantomJsBean.fileController.download()}" 
+													<h:commandLink action="#{navegadorMB.fileController.download()}" 
 														styleClass="btn btn-success btn-xs" data-title="Download" data-toggle="modal">
 														<span class="glyphicon glyphicon-download-alt"></span>
                            								<f:param name="file" value="#{arquivoProcessado}" />
@@ -101,7 +101,7 @@
 														class="glyphicon glyphicon-trash"></span>
 												</f:facet>
 												<p data-placement="top" data-toggle="tooltip" title="Delete">
-													<h:commandLink action="#{navegadorSeleniumPhantomJsBean.fileController.excluir(arquivoProcessado)}"
+													<h:commandLink action="#{navegadorMB.fileController.excluir(arquivoProcessado)}"
 														styleClass="btn btn-danger btn-xs" data-title="Excluir" data-toggle="modal" render="tabela_downloads" >
 														<span class="glyphicon glyphicon-trash"></span>
 													</h:commandLink>

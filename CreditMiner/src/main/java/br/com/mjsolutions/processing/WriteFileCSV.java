@@ -2,6 +2,7 @@ package br.com.mjsolutions.processing;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import br.com.mjsolutions.dto.ClienteDTO;
@@ -88,7 +89,7 @@ public class WriteFileCSV {
 		} else {
 			fileWriter.append("");
 		}
-		
+
 		fileWriter.append(COMMA_DELIMITER);
 		fileWriter.append(banco);
 		fileWriter.append(COMMA_DELIMITER);

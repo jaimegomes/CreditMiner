@@ -1,6 +1,7 @@
 package br.com.mjsolutions.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -18,46 +19,43 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "cliente")
-@NamedQueries({
-    @NamedQuery(name = "Cliente.findAll", query = "SELECT c FROM Cliente c")})
+@NamedQueries({@NamedQuery(name = "Cliente.findAll", query = "SELECT c FROM Cliente c")})
 public class Cliente extends Entidade implements Serializable {
-	
-    private static final long serialVersionUID = 1L;
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Basic(optional = false)
 	@Column(name = "id", nullable = false, unique = true)
 	private Long id;
 
 	@Column(name = "cpf")
 	private String cpf;
-	
+
 	@Column(name = "colaborador")
 	private String colaborador;
-	
+
 	@Column(name = "matricula")
 	private String matricula;
-	
+
 	@Column(name = "secretaria")
 	private String secretaria;
-	
+
 	@Column(name = "nascimento")
-	private String nascimento;
-	
+	private Date nascimento;
+
 	@Column(name = "margem")
 	private String margem;
-	
+
 	@OneToMany(mappedBy = "cliente", targetEntity = Solicitacao.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Solicitacao> solicitacaes;	
+	private List<Solicitacao> solicitacaes;
 
 	public Cliente() {
 		super();
 	}
 
-	public Cliente(Long id, String cpf, String colaborador, String matricula,
-			String secretaria, String nascimento, String margem, String banco,
-			String valorAutorizado, String parcelas, String pagas,
+	public Cliente(Long id, String cpf, String colaborador, String matricula, String secretaria, Date nascimento, String margem, String banco, String valorAutorizado, String parcelas, String pagas,
 			String pesquisado) {
 		super();
 		this.id = id;
@@ -147,7 +145,7 @@ public class Cliente extends Entidade implements Serializable {
 	/**
 	 * @return the nascimento
 	 */
-	public String getNascimento() {
+	public Date getNascimento() {
 		return nascimento;
 	}
 
@@ -155,7 +153,7 @@ public class Cliente extends Entidade implements Serializable {
 	 * @param nascimento
 	 *            the nascimento to set
 	 */
-	public void setNascimento(String nascimento) {
+	public void setNascimento(Date nascimento) {
 		this.nascimento = nascimento;
 	}
 
