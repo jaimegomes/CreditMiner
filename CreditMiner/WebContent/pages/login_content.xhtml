@@ -46,11 +46,11 @@
 									<h:outputLabel value="Banco:"
 										styleClass="control-label col-md-2" />
 									<div class="col-md-10">
-										<h:selectOneMenu value="#{navegadorMB.usuarioSelecionado.banco}"
+										<h:selectOneMenu value="#{navegadorMB.usuarioController.usuarioSelecionado}"
 											styleClass="form-control">
 											<f:selectItem itemValue="" itemLabel="Selecione..." />
 											<f:selectItems
-												value="#{navegadorMB.usuarioController.listUsuarios}" var="usuario" itemLabel="#{usuario.banco}" itemValue="#{usuario}"/>
+												value="#{navegadorMB.usuarioController.combo}"/>
 										</h:selectOneMenu>
 									</div>
 								</div>
@@ -69,7 +69,7 @@
 								</div>
 
 								<h:commandLink value="Login"
-									action="#{navegadorMB.executeLogin(usuario.banco)}"
+									action="#{navegadorMB.executeLogin()}"
 									styleClass="btn btn-sm btn-primary" rerender="panel_main">
 									<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
 								</h:commandLink>
