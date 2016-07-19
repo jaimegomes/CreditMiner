@@ -61,7 +61,7 @@ public class UsuarioController {
 		List<Usuario> listUsuarios = new ArrayList<Usuario>();
 		Usuario u1 = new Usuario(0L, "SC01R021432", "joaonunes01", "Paraná Banco");
 		listUsuarios.add(u1);
-		Usuario u2 = new Usuario(1L, "SC01C02775067", "joaonunes55", "Pan");
+		Usuario u2 = new Usuario(1L, "SC01C0277506704", "joaonunes55", "Pan");
 		listUsuarios.add(u2);
 		Usuario u3 = new Usuario(2L, "SC01R02385", "joaonunes02", "BMG");
 		listUsuarios.add(u3);

@@ -43,7 +43,7 @@ public class NavegadorMB {
 	private Usuario usuario;
 
 	private int cont = 0;
-	private boolean finalizado = false;
+	private boolean finalizado;
 	private int total = 0;
 	private String mensagemDoStatus = "";
 
@@ -120,7 +120,7 @@ public class NavegadorMB {
 			// long start = System.currentTimeMillis();
 
 			fileName = fileController.upload();
-			
+
 			processaCpfs(Util.parseCsvFileToBeans(CsvDTO.class, fileName));
 			PathPageMB.isLogin(true);
 
@@ -176,8 +176,9 @@ public class NavegadorMB {
 			PathPageMB.isLogin(true);
 
 		} catch (Exception e) {
+			captcha = "";
+			goTo(URL_INICIAL_CONSIGNUM);
 			PathPageMB.isLogin(false);
-			getLinkImagemCaptcha();
 
 		}
 
@@ -193,6 +194,8 @@ public class NavegadorMB {
 	private void processaCpfs(List<br.com.mjsolutions.dto.CsvDTO> list) {
 
 		try {
+			
+			finalizado = false;
 
 			total = list.size();
 			int qtdResultados = 0;
@@ -332,10 +335,10 @@ public class NavegadorMB {
 		goTo(URL_HISTORICO);
 		WebElement btnSair = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_252844863_0pc3:j_id_jsp_252844863_195pc3']")));
 		btnSair.click();
-		PathPageMB.isLogin(false);
 		mensagemDoStatus = "";
 		captcha = "";
-		getLinkImagemCaptcha();
+		PathPageMB.isLogin(false);
+		// getLinkImagemCaptcha();
 	}
 
 	/**
