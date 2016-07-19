@@ -194,8 +194,9 @@ public class NavegadorMB {
 	private void processaCpfs(List<br.com.mjsolutions.dto.CsvDTO> list) {
 
 		try {
-			
+
 			finalizado = false;
+			cont = 0;
 
 			total = list.size();
 			int qtdResultados = 0;
@@ -206,24 +207,23 @@ public class NavegadorMB {
 
 				String cpf = StringUtils.leftPad(csv.getCpf(), 11, "0");
 
-				// long start = System.currentTimeMillis();
+				long start = System.currentTimeMillis();
 
 				pesquisaCPF(cpf);
 
 				qtdResultados = getQtdResultados(cpf);
 
-				// System.out.println("cpf: " + cpf);
-				// System.out.println("qtd cpfs encontrados: " + qtdResultados);
+				System.out.println("cpf: " + cpf);
+				System.out.println("matrículas encontradas: " + qtdResultados);
 
 				setMapJsoup(cpf, qtdResultados);
 
-				// long end = System.currentTimeMillis();
+				long end = System.currentTimeMillis();
 				cont++;
 
-				// long totalTempoCpfs = Util.calculaTempoExecucao(start, end);
-				// System.out.println("tempo processamento cpfs: " +
-				// totalTempoCpfs);
-				// System.out.println("Status: " + cont + "/" + total);
+				long totalTempoCpfs = Util.calculaTempoExecucao(start, end);
+				System.out.println("tempo processamento cpfs: " + totalTempoCpfs);
+				System.out.println("Status: " + cont + "/" + total);
 
 			}
 
