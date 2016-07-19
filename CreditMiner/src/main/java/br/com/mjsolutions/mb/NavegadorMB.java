@@ -194,7 +194,7 @@ public class NavegadorMB {
 	private void processaCpfs(List<br.com.mjsolutions.dto.CsvDTO> list) {
 
 		try {
-			
+
 			finalizado = false;
 
 			total = list.size();
@@ -239,10 +239,11 @@ public class NavegadorMB {
 	public void atualizaStatusProcesso() {
 		if (finalizado) {
 			mensagemDoStatus = "Arquivo criado com sucesso!";
+
 		} else {
 			mensagemDoStatus = "CPFs Processados " + cont + " de " + total;
 		}
-
+		System.out.println(mensagemDoStatus);
 		PathPageMB.isLogin(true);
 	}
 
