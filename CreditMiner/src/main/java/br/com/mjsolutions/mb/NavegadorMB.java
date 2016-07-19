@@ -196,6 +196,7 @@ public class NavegadorMB {
 		try {
 
 			finalizado = false;
+			cont = 0;	
 
 			total = list.size();
 			int qtdResultados = 0;
