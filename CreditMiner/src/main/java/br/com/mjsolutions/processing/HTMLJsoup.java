@@ -145,16 +145,12 @@ public class HTMLJsoup {
 		Element table = null;
 		Elements rows = null;
 
-		// try catch para evitar que dê o erro em log ao buscar a tabela,
-		// gambiarra para fazer funcionar o paraná banco
-		try {
-			headerTable = doc.select("table.headerTable").get(0);
-		} catch (Exception e) {
-		}
+		int verificaTamanhoHeaderTable = doc.select("table.headerTable").size();
 
 		Map<String, String> map = new HashMap<String, String>();
 
-		if (headerTable != null) {
+		if (verificaTamanhoHeaderTable > 0) {
+			headerTable = doc.select("table.headerTable").get(0);
 			table = headerTable.parent().select("table").get(2);
 			rows = table.select("tr");
 
