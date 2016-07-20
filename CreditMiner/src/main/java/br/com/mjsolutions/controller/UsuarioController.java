@@ -42,6 +42,8 @@ public class UsuarioController {
 			combo.add(new SelectItem(1, "Pan"));
 			combo.add(new SelectItem(2, "BMG"));
 			combo.add(new SelectItem(3, "Bom Sucesso"));
+			combo.add(new SelectItem(4, "Daycoval"));
+			combo.add(new SelectItem(5, "Safra"));
 		}
 		return combo;
 	}
@@ -67,6 +69,11 @@ public class UsuarioController {
 		listUsuarios.add(u3);
 		Usuario u4 = new Usuario(3L, "SC01C0290506708", "joaonunes01", "Bom Sucesso");
 		listUsuarios.add(u4);
+		Usuario u5 = new Usuario(4L, "SC01C0305220", "joaonunes02", "Daycoval");
+		listUsuarios.add(u5);
+		Usuario u6 = new Usuario(5L, "SC01C0328506613", "joaonunes01", "Safra");
+		listUsuarios.add(u6);
+		
 
 		return listUsuarios;
 
