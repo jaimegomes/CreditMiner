@@ -43,7 +43,7 @@ public class HTMLJsoup {
 
 			// Extrai os dados do header da tabela do HTML e seta no Objeto
 
-			Map<String, String> mapDadosDoCliente = getHeaderDadosDoCliente(doc);
+			Map<String, String> mapDadosDoCliente = getHeaderDadosDoCliente(doc, name);
 
 			if (mapDadosDoCliente.size() > 0) {
 
@@ -61,6 +61,9 @@ public class HTMLJsoup {
 				if (mapDadosDoCliente.containsKey(Parametros.LABEL_MARGEM)) {
 					clienteDTO.setMargem(mapDadosDoCliente.get(Parametros.LABEL_MARGEM));
 				}
+				if (mapDadosDoCliente.containsKey(Parametros.ULTIMA_FOLHA_MOVIMENTADA_DO_SERVIDOR)) {
+					clienteDTO.setUltimaFolhaMovimentada(mapDadosDoCliente.get(Parametros.ULTIMA_FOLHA_MOVIMENTADA_DO_SERVIDOR));
+				}				
 				if (mapDadosDoCliente.containsKey(Parametros.LABEL_INFO_EXTRA)) {
 					String[] retornoSplit = mapDadosDoCliente.get(Parametros.LABEL_INFO_EXTRA).split("-");
 					if (retornoSplit.length >= 1) {
@@ -73,7 +76,13 @@ public class HTMLJsoup {
 							clienteDTO.setNascimento(retornoSplit[2].substring(10, 21).trim());
 						}
 					}
-
+					if (retornoSplit.length >= 3) {
+						if (retornoSplit[2].contains(Parametros.CARGO_FUNCAO)) {
+							clienteDTO.setCargoFuncao(retornoSplit[2].substring(15).trim());
+						} else if (retornoSplit[3].contains(Parametros.CARGO_FUNCAO)) {
+							clienteDTO.setCargoFuncao(retornoSplit[3].substring(15).trim());
+						}
+					}
 				}
 
 				if (!name.contains("margem")) {
@@ -100,6 +109,8 @@ public class HTMLJsoup {
 								Elements colsTbody = rowTbody.select("td");
 
 								SolicitacaoDTO solicitacaoDTO = new SolicitacaoDTO();
+								solicitacaoDTO.setControleConsignataria(colsTbody.get(1).text().trim());
+								solicitacaoDTO.setTipo(colsTbody.get(2).text().trim());
 								solicitacaoDTO.setBanco(colsTbody.get(3).text().trim());
 								solicitacaoDTO.setParcelas(colsTbody.get(8).text().trim());
 								solicitacaoDTO.setPagas(colsTbody.get(9).text().trim());
@@ -140,17 +151,19 @@ public class HTMLJsoup {
 	 * @param doc
 	 * @return Map<String, String>
 	 */
-	private static Map<String, String> getHeaderDadosDoCliente(Document doc) {
+	private static Map<String, String> getHeaderDadosDoCliente(Document doc, String name) {
 		Element headerTable = null;
 		Element table = null;
+		Element tableMovimento = null;
 		Elements rows = null;
+		Elements rowsMovimento = null;
 
 		int verificaTamanhoHeaderTable = doc.select("table.headerTable").size();
 
 		Map<String, String> map = new HashMap<String, String>();
 
 		if (verificaTamanhoHeaderTable > 0) {
-			headerTable = doc.select("table.headerTable").get(0);
+			headerTable = doc.select("table.headerTable").get(0);			
 			table = headerTable.parent().select("table").get(2);
 			rows = table.select("tr");
 
@@ -171,7 +184,28 @@ public class HTMLJsoup {
 				String value = cols.get(1).text().trim();
 				map.put(key, value);
 			}
+			
+			if (!name.contains("margem")) {
+				tableMovimento = headerTable.parent().select("table").get(3);
+				rowsMovimento = tableMovimento.select("tr");
+
+				forMovimento: for (int i = 0; i < rowsMovimento.size(); i++) {
+					Element row = rowsMovimento.get(i);
+					Elements cols = row.select("td");
+
+					String key = cols.get(0).text().trim();
+					if (key.contains(Parametros.ULTIMA_FOLHA_MOVIMENTADA_DO_SERVIDOR)) {
+						key = Parametros.ULTIMA_FOLHA_MOVIMENTADA_DO_SERVIDOR;
+						String value = cols.get(1).text().trim();
+
+						map.put(key, value);
+
+						break forMovimento;
+					}
+				}
+			}
 		}
+			
 		return map;
 	}
 

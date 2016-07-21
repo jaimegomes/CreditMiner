@@ -16,6 +16,8 @@ public interface Parametros {
     public static final String LABEL_INFO_EXTRA = "Info.Extra";
     public static final String LABEL_MARGEM = "Margem";
     public static final String LABEL_DT_NASC = "Dt Nasc:";
+    public static final String CARGO_FUNCAO = "Cargo/Funcao:";
     public static final String LISTAGEM_SOLICITACOES_ATIVAS = "ATIVAS";
+    public static final String ULTIMA_FOLHA_MOVIMENTADA_DO_SERVIDOR = "folha movimento do servidor";
     
 }

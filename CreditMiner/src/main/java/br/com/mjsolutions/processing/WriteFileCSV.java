@@ -2,7 +2,6 @@ package br.com.mjsolutions.processing;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import br.com.mjsolutions.dto.ClienteDTO;
@@ -19,7 +18,7 @@ public class WriteFileCSV {
 
 	private static final String COMMA_DELIMITER = ";";
 	private static final String NEW_LINE_SEPARATOR = "\n";
-	private static final String FILE_HEADER = "cpf;matricula;colaborador;secretaria;nascimento;margem;banco;valorautorizado;parcelas;parcelaspagas";
+	private static final String FILE_HEADER = "cpf;matricula;colaborador;secretaria;nascimento;cargo;ultimafolhamovimentada;margem;controleconsignataria;tipo;banco;valorautorizado;parcelas;parcelaspagas";
 
 	public static void createCsvFile(Map<String, ClienteDTO> clientes, String fileName) {
 
@@ -61,12 +60,16 @@ public class WriteFileCSV {
 	}
 
 	private static void writeLine(FileWriter fileWriter, ClienteDTO clienteDTO, SolicitacaoDTO solicitacaoDTO) throws IOException {
+		String controleConsignataria = "";
+		String tipo = "";
 		String banco = "";
 		String valorAutorizado = "";
 		String parcelas = "";
 		String pagas = "";
 
 		if (solicitacaoDTO != null) {
+			controleConsignataria = solicitacaoDTO.getControleConsignataria() != null ? solicitacaoDTO.getControleConsignataria() : "";
+			tipo = solicitacaoDTO.getTipo() != null ? solicitacaoDTO.getTipo() : "";
 			banco = solicitacaoDTO.getBanco() != null ? solicitacaoDTO.getBanco() : "";
 			valorAutorizado = solicitacaoDTO.getValorAutorizado() != null ? solicitacaoDTO.getValorAutorizado() : "";
 			parcelas = solicitacaoDTO.getParcelas() != null ? solicitacaoDTO.getParcelas() : "";
@@ -83,6 +86,10 @@ public class WriteFileCSV {
 		fileWriter.append(COMMA_DELIMITER);
 		fileWriter.append(clienteDTO.getNascimento());
 		fileWriter.append(COMMA_DELIMITER);
+		fileWriter.append(clienteDTO.getCargoFuncao());
+		fileWriter.append(COMMA_DELIMITER);		
+		fileWriter.append(clienteDTO.getUltimaFolhaMovimentada());
+		fileWriter.append(COMMA_DELIMITER);		
 
 		if (clienteDTO.getMargem() != null) {
 			fileWriter.append(clienteDTO.getMargem());
@@ -90,6 +97,10 @@ public class WriteFileCSV {
 			fileWriter.append("");
 		}
 
+		fileWriter.append(COMMA_DELIMITER);
+		fileWriter.append(controleConsignataria);
+		fileWriter.append(COMMA_DELIMITER);
+		fileWriter.append(tipo);		
 		fileWriter.append(COMMA_DELIMITER);
 		fileWriter.append(banco);
 		fileWriter.append(COMMA_DELIMITER);

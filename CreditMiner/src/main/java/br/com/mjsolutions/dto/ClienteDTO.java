@@ -10,6 +10,8 @@ public class ClienteDTO {
 	private String secretaria;
 	private String nascimento;
 	private String margem;
+	private String ultimaFolhaMovimentada;
+	private String cargoFuncao;
 	private List<SolicitacaoDTO> solicitacaes;	
 
 	public ClienteDTO() {
@@ -17,9 +19,7 @@ public class ClienteDTO {
 	}
 
 	public ClienteDTO(String cpf, String colaborador, String matricula,
-			String secretaria, String nascimento, String margem, String banco,
-			String valorAutorizado, String parcelas, String pagas,
-			String pesquisado) {
+			String secretaria, String nascimento, String margem, String ultimaFolhaMovimentada,String cargoFuncao) {
 		super();
 		this.cpf = cpf;
 		this.colaborador = colaborador;
@@ -27,6 +27,8 @@ public class ClienteDTO {
 		this.secretaria = secretaria;
 		this.nascimento = nascimento;
 		this.margem = margem;
+		this.ultimaFolhaMovimentada = ultimaFolhaMovimentada;
+		this.cargoFuncao = cargoFuncao;
 	}
 
 	public String getCpf() {
@@ -77,10 +79,26 @@ public class ClienteDTO {
 		this.margem = margem;
 	}
 	
+	public String getUltimaFolhaMovimentada() {
+		return ultimaFolhaMovimentada;
+	}
+	
+	public void setUltimaFolhaMovimentada(String ultimaFolhaMovimentada) {
+		this.ultimaFolhaMovimentada = ultimaFolhaMovimentada;
+	}
+	
 	public List<SolicitacaoDTO> getSolicitacaes() {
 		return solicitacaes;
 	}
 	
+	public String getCargoFuncao() {
+		return cargoFuncao;
+	}
+
+	public void setCargoFuncao(String cargoFuncao) {
+		this.cargoFuncao = cargoFuncao;
+	}
+
 	public void setSolicitacaes(List<SolicitacaoDTO> solicitacaes) {
 		this.solicitacaes = solicitacaes;
 	}
