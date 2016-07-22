@@ -111,6 +111,11 @@ public class NavegadorMB {
 
 	}
 
+	/**
+	 * Método que iniciar o coletor de dados
+	 * 
+	 * @throws IOException
+	 */
 	public void initMiner() throws IOException {
 		String fileName = "";
 		try {
@@ -199,43 +204,55 @@ public class NavegadorMB {
 			cont = 0;
 
 			total = list.size();
-			int qtdResultados = 0;
 
-			goTo(URL_HISTORICO);
-
-			for (CsvDTO csv : list) {
-
-				String cpf = StringUtils.leftPad(csv.getCpf(), 11, "0");
-
-				long start = System.currentTimeMillis();
-
-				pesquisaCPF(cpf);
-
-				qtdResultados = getQtdResultados(cpf);
-
-				System.out.println("cpf: " + cpf);
-				System.out.println("matrículas encontradas: " + qtdResultados);
-
-				setMapJsoup(cpf, qtdResultados);
-
-				long end = System.currentTimeMillis();
-				cont++;
-
-				long totalTempoCpfs = Util.calculaTempoExecucao(start, end);
-				System.out.println("tempo processamento cpfs: " + totalTempoCpfs);
-				System.out.println("Status: " + cont + "/" + total);
-
-			}
+			percorreCpfs(list);
 
 			finalizado = true;
 			atualizaStatusProcesso();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			percorreCpfs(list);
 		}
 
 	}
 
+	/**
+	 * Método que contém o laço para percorrer todos os cpfs do arquivo
+	 * 
+	 * @param list
+	 */
+	private void percorreCpfs(List<br.com.mjsolutions.dto.CsvDTO> list) {
+		int qtdResultados = 0;
+		goTo(URL_HISTORICO);
+
+		for (CsvDTO csv : list) {
+
+			String cpf = StringUtils.leftPad(csv.getCpf(), 11, "0");
+
+			long start = System.currentTimeMillis();
+
+			pesquisaCPF(cpf);
+
+			qtdResultados = getQtdResultados(cpf);
+
+			System.out.println("cpf: " + cpf);
+			System.out.println("matrículas encontradas: " + qtdResultados);
+
+			setMapJsoup(cpf, qtdResultados);
+
+			long end = System.currentTimeMillis();
+			cont++;
+
+			long totalTempoCpfs = Util.calculaTempoExecucao(start, end);
+			System.out.println("tempo processamento cpfs: " + totalTempoCpfs);
+			System.out.println("Status: " + cont + "/" + total);
+
+		}
+	}
+
+	/**
+	 * Método que atualiza a mensagem de status da tela
+	 */
 	public void atualizaStatusProcesso() {
 		if (finalizado) {
 			mensagemDoStatus = "Arquivo criado com sucesso!";
