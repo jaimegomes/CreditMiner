@@ -71,10 +71,10 @@ public class NavegadorMB {
 	 */
 	public String getLinkImagemCaptcha() {
 
-		// long start = System.currentTimeMillis();
 		StringBuilder linkImagem = new StringBuilder();
 
 		try {
+
 			goTo(URL_INICIAL_CONSIGNUM);
 
 			Util.pause(1000);
@@ -88,12 +88,7 @@ public class NavegadorMB {
 			linkImagem.append(imgElement.getAttribute("src"));
 
 		} catch (Exception e) {
-			System.err.println("Erro ao capturar link do captcha.\n" + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			// long end = System.currentTimeMillis();
-			// System.out.println("tempo execução método getLinkImagemCaptcha: "
-			// + Util.calculaTempoExecucao(start, end));
+			getLinkImagemCaptcha();
 		}
 		return linkImagem.toString();
 	}
@@ -118,21 +113,11 @@ public class NavegadorMB {
 	 */
 	public void initMiner() throws IOException {
 		String fileName = "";
+		mensagemDoStatus = "Iniciando...";
 		try {
-
-			// System.out.println("INICIO");
-
-			// long start = System.currentTimeMillis();
-
 			fileName = fileController.upload();
-
 			processaCpfs(Util.parseCsvFileToBeans(CsvDTO.class, fileName));
 			PathPageMB.isLogin(true);
-
-			// long end = System.currentTimeMillis();
-
-			// System.out.println("tempo processamento total: " +
-			// Util.calculaTempoExecucao(start, end));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -198,55 +183,67 @@ public class NavegadorMB {
 	 */
 	private void processaCpfs(List<br.com.mjsolutions.dto.CsvDTO> list) {
 
-		try {
+		finalizado = false;
+		cont = 0;
 
-			finalizado = false;
-			cont = 0;
+		total = list.size();
 
-			total = list.size();
+		percorreCpfs(list, 0);
 
-			percorreCpfs(list);
-
-			finalizado = true;
-			atualizaStatusProcesso();
-
-		} catch (Exception e) {
-			percorreCpfs(list);
-		}
+		finalizado = true;
+		atualizaStatusProcesso();
 
 	}
 
 	/**
-	 * Método que contém o laço para percorrer todos os cpfs do arquivo
+	 * Método que contém o laço para percorrer todos os cpfs do arquivo, caso dê
+	 * algum problema e o método reprocessar, ele vai verificar se a linha de
+	 * inicio é maior que zero, se for ele vai excluir os elementos da lista que
+	 * já foram processados.
 	 * 
 	 * @param list
+	 * @param linhaInicio
 	 */
-	private void percorreCpfs(List<br.com.mjsolutions.dto.CsvDTO> list) {
+	private void percorreCpfs(List<br.com.mjsolutions.dto.CsvDTO> list, int linhaInicio) {
+
 		int qtdResultados = 0;
-		goTo(URL_HISTORICO);
+		cont = linhaInicio;
 
-		for (CsvDTO csv : list) {
+		try {
 
-			String cpf = StringUtils.leftPad(csv.getCpf(), 11, "0");
+			goTo(URL_HISTORICO);
 
-			long start = System.currentTimeMillis();
+			if (linhaInicio > 0) {
+				list.subList(0, linhaInicio).clear();
+			}
 
-			pesquisaCPF(cpf);
+			for (CsvDTO csv : list) {
 
-			qtdResultados = getQtdResultados(cpf);
+				String cpf = StringUtils.leftPad(csv.getCpf(), 11, "0");
 
-			System.out.println("cpf: " + cpf);
-			System.out.println("matrículas encontradas: " + qtdResultados);
+				long start = System.currentTimeMillis();
 
-			setMapJsoup(cpf, qtdResultados);
+				pesquisaCPF(cpf);
 
-			long end = System.currentTimeMillis();
-			cont++;
+				qtdResultados = getQtdResultados(cpf);
 
-			long totalTempoCpfs = Util.calculaTempoExecucao(start, end);
-			System.out.println("tempo processamento cpfs: " + totalTempoCpfs);
-			System.out.println("Status: " + cont + "/" + total);
+				System.out.println("cpf: " + cpf);
+				System.out.println("matrículas encontradas: " + qtdResultados);
 
+				setMapJsoup(cpf, qtdResultados);
+
+				long end = System.currentTimeMillis();
+				cont++;
+				linhaInicio++;
+
+				long totalTempoCpfs = Util.calculaTempoExecucao(start, end);
+				System.out.println("tempo processamento cpfs: " + totalTempoCpfs);
+				System.out.println("Status: " + cont + "/" + total);
+
+			}
+
+		} catch (Exception e) {
+			percorreCpfs(list, linhaInicio);
 		}
 	}
 
@@ -263,12 +260,57 @@ public class NavegadorMB {
 		PathPageMB.isLogin(true);
 	}
 
+	/**
+	 * @return the cont
+	 */
+	public int getCont() {
+		return cont;
+	}
+
+	/**
+	 * @param cont
+	 *            the cont to set
+	 */
+	public void setCont(int cont) {
+		this.cont = cont;
+	}
+
+	/**
+	 * @return the total
+	 */
+	public int getTotal() {
+		return total;
+	}
+
+	/**
+	 * @param total
+	 *            the total to set
+	 */
+	public void setTotal(int total) {
+		this.total = total;
+	}
+
+	/**
+	 * @return the mensagemDoStatus
+	 */
 	public String getMensagemDoStatus() {
 		return mensagemDoStatus;
 	}
 
+	/**
+	 * @param mensagemDoStatus
+	 *            the mensagemDoStatus to set
+	 */
 	public void setMensagemDoStatus(String mensagemDoStatus) {
 		this.mensagemDoStatus = mensagemDoStatus;
+	}
+
+	/**
+	 * @param instanceHTMLJsoup
+	 *            the instanceHTMLJsoup to set
+	 */
+	public void setInstanceHTMLJsoup(HTMLJsoup instanceHTMLJsoup) {
+		this.instanceHTMLJsoup = instanceHTMLJsoup;
 	}
 
 	/**
@@ -358,7 +400,6 @@ public class NavegadorMB {
 		mensagemDoStatus = "";
 		captcha = "";
 		PathPageMB.isLogin(false);
-		// getLinkImagemCaptcha();
 	}
 
 	/**
