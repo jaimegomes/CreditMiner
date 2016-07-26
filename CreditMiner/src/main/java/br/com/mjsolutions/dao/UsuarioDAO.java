@@ -4,7 +4,7 @@ import java.util.List;
 
 import br.com.mjsolutions.model.Entidade;
 
-public class UsuarioDAO implements GenericDAO {
+public class UsuarioDAO implements GenericoDAO {
 
 	private static final long serialVersionUID = 1L;
 	private BaseDAO baseDAO = new BaseDAO();

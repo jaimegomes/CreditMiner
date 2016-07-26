@@ -10,17 +10,18 @@
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 
 		<!-- entidade mapeada -->
-		<class>br.com.mjsolutions.model.Cliente</class>
+<!-- 		<class>br.com.mjsolutions.model.Cliente</class> -->
 <!-- 		<class>br.com.mjsolutions.model.Solicitacao</class> -->
 		<class>br.com.mjsolutions.model.Usuario</class>
+		<class>br.com.mjsolutions.model.Processamento</class>
 
 		<properties>
 
 			<!-- dados da conexao -->
 			<property name="hibernate.connection.driver_class" value="org.postgresql.Driver" />
 			<property name="hibernate.connection.username" value="postgres" />
-			<property name="hibernate.connection.password" value="1q2w3e" />
-			<property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5434/creditminer" />
+			<property name="hibernate.connection.password" value="" />
+			<property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5434/botcreditminer" />
 
 			<!-- propriedades do hibernate -->
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
