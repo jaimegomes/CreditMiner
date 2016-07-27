@@ -188,7 +188,7 @@ public class NavegadorMB {
 
 		total = list.size();
 
-		percorreCpfs(list, 0);
+		percorreCpfs(list);
 
 		finalizado = true;
 		atualizaStatusProcesso();
@@ -204,18 +204,18 @@ public class NavegadorMB {
 	 * @param list
 	 * @param linhaInicio
 	 */
-	private void percorreCpfs(List<br.com.mjsolutions.dto.CsvDTO> list, int linhaInicio) {
+	private void percorreCpfs(List<br.com.mjsolutions.dto.CsvDTO> list) {
 
 		int qtdResultados = 0;
-		cont = linhaInicio;
+//		cont = linhaInicio;
 
 		try {
 
 			goTo(URL_HISTORICO);
 
-			if (linhaInicio > 0) {
-				list.subList(0, linhaInicio).clear();
-			}
+//			if (linhaInicio > 0) {
+//				list.subList(0, linhaInicio).clear();
+//			}
 
 			for (CsvDTO csv : list) {
 
@@ -234,7 +234,7 @@ public class NavegadorMB {
 
 				long end = System.currentTimeMillis();
 				cont++;
-				linhaInicio++;
+//				linhaInicio++;
 
 				long totalTempoCpfs = Util.calculaTempoExecucao(start, end);
 				System.out.println("tempo processamento cpfs: " + totalTempoCpfs);
@@ -243,7 +243,7 @@ public class NavegadorMB {
 			}
 
 		} catch (Exception e) {
-			percorreCpfs(list, linhaInicio);
+			percorreCpfs(list);
 		}
 	}
 
