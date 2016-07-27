@@ -6,7 +6,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
-	<main> <h:form id="barraDeFerramentas">
+	<main> 
+	<h:form id="barraDeFerramentas">
 		<p:toolbar>
 			<p:toolbarGroup align="right">
 				<p:menuButton value="Painel de Controle">
@@ -15,7 +16,7 @@
 				</p:menuButton>
 			</p:toolbarGroup>
 		</p:toolbar>
-	</h:form> <nav class="navbar navbar-default navbar-static-top">
+	<nav class="navbar navbar-default navbar-static-top">
 	<div class="container-fluid">
 		<div class="navbar-header">
 			<a class="navbar-brand" style="height: auto" href="#"> <img
@@ -23,8 +24,16 @@
 				src="resources/images/scconsig.png" />
 			</a>
 		</div>
+		  <div class="navbar-collapse collapse">
+		    <ul class="nav navbar-nav navbar-right">
+		      <li><a href="#"></a></li>
+		      <li><a href="#"><h:outputLabel value="#{navegadorMB.usuarioController.bancoSelecionado}"/></a></li>
+		    </ul>
+		  </div>		
 	</div>
 	</nav>
+	</h:form> 
+	
 	<div class="container-fluid main-container">
 		<div class="col-md-12 content">
 			<div class="panel panel-default">

@@ -11,21 +11,7 @@ public class UsuarioController {
 
 	private List<SelectItem> combo;
 	private String usuarioSelecionado;
-
-	/**
-	 * @return the usuarioSelecionado
-	 */
-	public String getUsuarioSelecionado() {
-		return usuarioSelecionado;
-	}
-
-	/**
-	 * @param usuarioSelecionado
-	 *            the usuarioSelecionado to set
-	 */
-	public void setUsuarioSelecionado(String usuarioSelecionado) {
-		this.usuarioSelecionado = usuarioSelecionado;
-	}
+	private String bancoSelecionado;
 
 	public UsuarioController() {
 		super();
@@ -74,9 +60,27 @@ public class UsuarioController {
 		Usuario u6 = new Usuario(5L, "SC01C0328506613", "joaonunes01", "Safra");
 		listUsuarios.add(u6);
 		
-
 		return listUsuarios;
+	}
+	
+	public String getBancoSelecionado() {
+		return bancoSelecionado;
+	}
 
+	public void setBancoSelecionado(String bancoSelecionado) {
+		this.bancoSelecionado = bancoSelecionado;
+	}
+	
+	public String getUsuarioSelecionado() {
+		return usuarioSelecionado;
+	}
+
+	public void setUsuarioSelecionado(String usuarioSelecionado) {
+		if (usuarioSelecionado != null && !usuarioSelecionado.equals("")){
+			Usuario usuarioBanco = findUsuarioById(usuarioSelecionado);
+			setBancoSelecionado(usuarioBanco.getBanco());
+		}
+		this.usuarioSelecionado = usuarioSelecionado;
 	}
 
 }
