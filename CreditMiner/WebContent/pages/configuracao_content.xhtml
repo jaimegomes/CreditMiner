@@ -31,10 +31,9 @@
 			<!-- 		  </div>		 -->
 		</div>
 		</nav>
-	</h:form> 
-	<h:outputLabel
+	</h:form> <h:outputLabel
 		value="Você está logado com o Banco: #{navegadorMB.usuarioController.bancoSelecionado}"
-		styleClass="control-label col-md-2 .text-muted"  />
+		styleClass="control-label col-md-2 .text-muted" />
 
 	<div class="container-fluid main-container">
 		<div class="col-md-12 content">
@@ -45,7 +44,7 @@
 						styleClass="form-horizontal">
 
 
-						 <h:outputLabel value="Arquivo" styleClass="control-label col-md-2"
+						<h:outputLabel value="Arquivo" styleClass="control-label col-md-2"
 							class="text-right" />
 						<h:inputFile id="file" value="#{navegadorMB.fileController.file}"
 							label="Arquivo" styleClass="form-control" required="true" />
@@ -72,7 +71,8 @@
 									</h4>
 									<p:poll interval="2"
 										listener="#{navegadorMB.atualizaStatusProcesso}"
-										update="txt_count" imediate="true" widgetVar="pollStatus" autoStart="false" />
+										update="txt_count" imediate="true" widgetVar="pollStatus"
+										autoStart="false" />
 
 									<div class="table-responsive">
 

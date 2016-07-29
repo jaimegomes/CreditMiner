@@ -47,6 +47,7 @@ public class NavegadorMB {
 	private int total = 0;
 	private String mensagemDoStatus = "";
 	int qtdErros = 0;
+	boolean flagContinue = true;
 
 	/**
 	 * Construtor
@@ -115,6 +116,7 @@ public class NavegadorMB {
 	public void initMiner() throws IOException {
 		String fileName = "";
 		mensagemDoStatus = "Iniciando...";
+		flagContinue = true;
 		try {
 			fileName = fileController.upload();
 			processaCpfs(Util.parseCsvFileToBeans(CsvDTO.class, fileName));
@@ -132,6 +134,17 @@ public class NavegadorMB {
 				this.fileController.listCSVDir();
 			}
 		}
+
+	}
+
+	/**
+	 * Método utilizado para parar o processamento
+	 * @throws InterruptedException 
+	 * 
+	 */
+	public void stopMiner() throws InterruptedException {
+		SetupSelenium.getInstance().getWebDriver().wait(1000);
+		this.flagContinue = false;
 
 	}
 
@@ -202,6 +215,7 @@ public class NavegadorMB {
 	 */
 	private void percorreCpfs(List<br.com.mjsolutions.dto.CsvDTO> list) {
 
+		long start = System.currentTimeMillis();
 		int qtdResultados = 0;
 		qtdErros = 0;
 
@@ -209,27 +223,30 @@ public class NavegadorMB {
 
 		for (int i = 0; i < total; i++) {
 
-			String cpf = StringUtils.leftPad(list.get(0).getCpf(), 11, "0");
+			if (flagContinue) {
 
-			long start = System.currentTimeMillis();
+				String cpf = StringUtils.leftPad(list.get(0).getCpf(), 11, "0");
 
-			try {
-				pesquisaCPF(cpf);
-				qtdResultados = getQtdResultados(cpf);
-
-				System.out.println("cpf: " + cpf);
-				System.out.println("matrículas encontradas: " + qtdResultados);
-
-				setMapJsoup(cpf, qtdResultados);
-				cont++;
-			} catch (Exception e) {
-				if(qtdErros > 9) {
-					break;
-				} else {
-					qtdErros++;
+				try {
 					pesquisaCPF(cpf);
+					qtdResultados = getQtdResultados(cpf);
+
+					System.out.println("cpf: " + cpf);
+					System.out.println("matrículas encontradas: " + qtdResultados);
+
+					setMapJsoup(cpf, qtdResultados);
+					cont++;
+				} catch (Exception e) {
+					if (qtdErros > 9) {
+						break;
+					} else {
+						qtdErros++;
+						pesquisaCPF(cpf);
+					}
+
 				}
-				
+			} else {
+				mensagemDoStatus = "Captura de dados encerrada.";
 			}
 
 			long end = System.currentTimeMillis();
@@ -252,59 +269,6 @@ public class NavegadorMB {
 		}
 
 		PathPageMB.isLogin(true);
-	}
-
-	/**
-	 * @return the cont
-	 */
-	public int getCont() {
-		return cont;
-	}
-
-	/**
-	 * @param cont
-	 *            the cont to set
-	 */
-	public void setCont(int cont) {
-		this.cont = cont;
-	}
-
-	/**
-	 * @return the total
-	 */
-	public int getTotal() {
-		return total;
-	}
-
-	/**
-	 * @param total
-	 *            the total to set
-	 */
-	public void setTotal(int total) {
-		this.total = total;
-	}
-
-	/**
-	 * @return the mensagemDoStatus
-	 */
-	public String getMensagemDoStatus() {
-		return mensagemDoStatus;
-	}
-
-	/**
-	 * @param mensagemDoStatus
-	 *            the mensagemDoStatus to set
-	 */
-	public void setMensagemDoStatus(String mensagemDoStatus) {
-		this.mensagemDoStatus = mensagemDoStatus;
-	}
-
-	/**
-	 * @param instanceHTMLJsoup
-	 *            the instanceHTMLJsoup to set
-	 */
-	public void setInstanceHTMLJsoup(HTMLJsoup instanceHTMLJsoup) {
-		this.instanceHTMLJsoup = instanceHTMLJsoup;
 	}
 
 	/**
@@ -389,6 +353,59 @@ public class NavegadorMB {
 	}
 
 	/**
+	 * @return the cont
+	 */
+	public int getCont() {
+		return cont;
+	}
+
+	/**
+	 * @param cont
+	 *            the cont to set
+	 */
+	public void setCont(int cont) {
+		this.cont = cont;
+	}
+
+	/**
+	 * @return the total
+	 */
+	public int getTotal() {
+		return total;
+	}
+
+	/**
+	 * @param total
+	 *            the total to set
+	 */
+	public void setTotal(int total) {
+		this.total = total;
+	}
+
+	/**
+	 * @return the mensagemDoStatus
+	 */
+	public String getMensagemDoStatus() {
+		return mensagemDoStatus;
+	}
+
+	/**
+	 * @param mensagemDoStatus
+	 *            the mensagemDoStatus to set
+	 */
+	public void setMensagemDoStatus(String mensagemDoStatus) {
+		this.mensagemDoStatus = mensagemDoStatus;
+	}
+
+	/**
+	 * @param instanceHTMLJsoup
+	 *            the instanceHTMLJsoup to set
+	 */
+	public void setInstanceHTMLJsoup(HTMLJsoup instanceHTMLJsoup) {
+		this.instanceHTMLJsoup = instanceHTMLJsoup;
+	}
+
+	/**
 	 * Singleton Jsoup
 	 * 
 	 * @return
@@ -399,7 +416,6 @@ public class NavegadorMB {
 		}
 		return instanceHTMLJsoup;
 	}
-
 	/**
 	 * Método que redireciona para a url passada como parâmetro
 	 * 
@@ -482,6 +498,36 @@ public class NavegadorMB {
 	 */
 	public void setFinalizado(boolean finalizado) {
 		this.finalizado = finalizado;
+	}
+
+	/**
+	 * @return the qtdErros
+	 */
+	public int getQtdErros() {
+		return qtdErros;
+	}
+
+	/**
+	 * @param qtdErros
+	 *            the qtdErros to set
+	 */
+	public void setQtdErros(int qtdErros) {
+		this.qtdErros = qtdErros;
+	}
+
+	/**
+	 * @return the flagContinue
+	 */
+	public boolean isFlagContinue() {
+		return flagContinue;
+	}
+
+	/**
+	 * @param flagContinue
+	 *            the flagContinue to set
+	 */
+	public void setFlagContinue(boolean flagContinue) {
+		this.flagContinue = flagContinue;
 	}
 
 }
