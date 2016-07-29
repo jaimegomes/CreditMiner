@@ -101,7 +101,7 @@ public class NavegadorMB {
 	 * 
 	 */
 	public void executeLogin() throws IOException {
-		
+
 		insereCredenciais();
 
 	}
@@ -196,55 +196,44 @@ public class NavegadorMB {
 	}
 
 	/**
-	 * Método que contém o laço para percorrer todos os cpfs do arquivo, caso dê
-	 * algum problema e o método reprocessar, ele vai verificar se a linha de
-	 * inicio é maior que zero, se for ele vai excluir os elementos da lista que
-	 * já foram processados.
+	 * Método que contém o laço para percorrer todos os cpfs do arquivo
 	 * 
 	 * @param list
-	 * @param linhaInicio
 	 */
 	private void percorreCpfs(List<br.com.mjsolutions.dto.CsvDTO> list) {
 
 		int qtdResultados = 0;
-		// cont = linhaInicio;
 
-		try {
+		goTo(URL_HISTORICO);
 
-			goTo(URL_HISTORICO);
+		for (CsvDTO csv : list) {
 
-			// if (linhaInicio > 0) {
-			// list.subList(0, linhaInicio).clear();
-			// }
+			String cpf = StringUtils.leftPad(csv.getCpf(), 11, "0");
 
-			for (CsvDTO csv : list) {
+			long start = System.currentTimeMillis();
 
-				String cpf = StringUtils.leftPad(csv.getCpf(), 11, "0");
-
-				long start = System.currentTimeMillis();
-
+			try {
 				pesquisaCPF(cpf);
-
-				qtdResultados = getQtdResultados(cpf);
-
-				System.out.println("cpf: " + cpf);
-				System.out.println("matrículas encontradas: " + qtdResultados);
-
-				setMapJsoup(cpf, qtdResultados);
-
-				long end = System.currentTimeMillis();
-				cont++;
-				// linhaInicio++;
-
-				long totalTempoCpfs = Util.calculaTempoExecucao(start, end);
-				System.out.println("tempo processamento cpfs: " + totalTempoCpfs);
-				System.out.println("Status: " + cont + "/" + total);
-
+			} catch (Exception e) {
+				percorreCpfs(list);
 			}
 
-		} catch (Exception e) {
-			percorreCpfs(list);
+			qtdResultados = getQtdResultados(cpf);
+
+			System.out.println("cpf: " + cpf);
+			System.out.println("matrículas encontradas: " + qtdResultados);
+
+			setMapJsoup(cpf, qtdResultados);
+
+			long end = System.currentTimeMillis();
+			cont++;
+
+			long totalTempoCpfs = Util.calculaTempoExecucao(start, end);
+			System.out.println("tempo processamento cpfs: " + totalTempoCpfs);
+			System.out.println("Status: " + cont + "/" + total);
+
 		}
+
 	}
 
 	/**
