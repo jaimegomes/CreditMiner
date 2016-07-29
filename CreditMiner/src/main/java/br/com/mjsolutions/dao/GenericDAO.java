@@ -3,27 +3,36 @@ package br.com.mjsolutions.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 
 import br.com.mjsolutions.model.Entidade;
 
-public abstract class GenericDAO<E extends Entidade> {
+public class GenericDAO<E extends Entidade> {
 	
 	private final static String UNIT_NAME = "CreditMiner";
 
-	@PersistenceContext(unitName = UNIT_NAME)
 	private EntityManager manager;
+	
+	public GenericDAO() {
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory(UNIT_NAME);
+		manager = factory.createEntityManager();
+	}
 
 	public void save(E entity) throws Exception {
 		try {
+			manager.getTransaction().begin();  
 			if (entity.getId() == null) {
 				manager.persist(entity);
 			} else {
 				manager.merge(entity);
 			}
+            manager.getTransaction().commit();  
+            manager.refresh(entity);  
 		} catch (Exception e) {
+			manager.getTransaction().rollback();  
 			throw new Exception("Falha ao salvar", e);
 		}
 	}
@@ -56,8 +65,8 @@ public abstract class GenericDAO<E extends Entidade> {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected List<E> load(String clazzName, int firstItem, int pageSize) {
-		String sql = "SELECT C FROM " + clazzName + " C ";
+	protected List<E> load(Class<E> clazz, int firstItem, int pageSize) {
+		String sql = "SELECT C FROM " + clazz.getName() + " C ";
 
 		Query query = manager.createQuery(sql);
 		query.setFirstResult(firstItem);
