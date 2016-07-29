@@ -1,10 +1,9 @@
 package br.com.mjsolutions.processing;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -38,7 +37,7 @@ public class HTMLJsoup {
 			// System.out.println(doc.html());
 
 			if (Cache.clientesDTOCache == null) {
-				Cache.clientesDTOCache = new TreeMap<String, ClienteDTO>();
+				Cache.clientesDTOCache = new LinkedHashMap<String, ClienteDTO>();
 			}
 
 			// Extrai os dados do header da tabela do HTML e seta no Objeto
@@ -63,7 +62,7 @@ public class HTMLJsoup {
 				}
 				if (mapDadosDoCliente.containsKey(Parametros.ULTIMA_FOLHA_MOVIMENTADA_DO_SERVIDOR)) {
 					clienteDTO.setUltimaFolhaMovimentada(mapDadosDoCliente.get(Parametros.ULTIMA_FOLHA_MOVIMENTADA_DO_SERVIDOR));
-				}				
+				}
 				if (mapDadosDoCliente.containsKey(Parametros.LABEL_INFO_EXTRA)) {
 					String[] retornoSplit = mapDadosDoCliente.get(Parametros.LABEL_INFO_EXTRA).split("-");
 					if (retornoSplit.length >= 1) {
@@ -160,10 +159,10 @@ public class HTMLJsoup {
 
 		int verificaTamanhoHeaderTable = doc.select("table.headerTable").size();
 
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map = new LinkedHashMap<String, String>();
 
 		if (verificaTamanhoHeaderTable > 0) {
-			headerTable = doc.select("table.headerTable").get(0);			
+			headerTable = doc.select("table.headerTable").get(0);
 			table = headerTable.parent().select("table").get(2);
 			rows = table.select("tr");
 
@@ -184,7 +183,7 @@ public class HTMLJsoup {
 				String value = cols.get(1).text().trim();
 				map.put(key, value);
 			}
-			
+
 			if (!name.contains("margem")) {
 				tableMovimento = headerTable.parent().select("table").get(3);
 				rowsMovimento = tableMovimento.select("tr");
@@ -205,7 +204,7 @@ public class HTMLJsoup {
 				}
 			}
 		}
-			
+
 		return map;
 	}
 

@@ -6,8 +6,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
-	<main> 
-	<h:form id="barraDeFerramentas">
+	<main> <h:form id="barraDeFerramentas">
 		<p:toolbar>
 			<p:toolbarGroup align="right">
 				<p:menuButton value="Painel de Controle">
@@ -16,24 +15,27 @@
 				</p:menuButton>
 			</p:toolbarGroup>
 		</p:toolbar>
-	<nav class="navbar navbar-default navbar-static-top">
-	<div class="container-fluid">
-		<div class="navbar-header">
-			<a class="navbar-brand" style="height: auto" href="#"> <img
-				alt="SCconsig Promotora de Crédito"
-				src="resources/images/scconsig.png" />
-			</a>
+		<nav class="navbar navbar-default navbar-static-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" style="height: auto" href="#"> <img
+					alt="SCconsig Promotora de Crédito"
+					src="resources/images/scconsig.png" />
+				</a>
+			</div>
+			<!-- 		  <div class="navbar-collapse collapse"> -->
+			<!-- 		    <ul class="nav navbar-nav navbar-right"> -->
+			<!-- 		      <li><a href="#"></a></li> -->
+			<!-- 		      <li><a href="#"><h:outputLabel value="Você está logado com o Banco: #{navegadorMB.usuarioController.bancoSelecionado}"/></a></li> -->
+			<!-- 		    </ul> -->
+			<!-- 		  </div>		 -->
 		</div>
-		  <div class="navbar-collapse collapse">
-		    <ul class="nav navbar-nav navbar-right">
-		      <li><a href="#"></a></li>
-		      <li><a href="#"><h:outputLabel value="#{navegadorMB.usuarioController.bancoSelecionado}"/></a></li>
-		    </ul>
-		  </div>		
-	</div>
-	</nav>
+		</nav>
 	</h:form> 
-	
+	<h:outputLabel
+		value="Você está logado com o Banco: #{navegadorMB.usuarioController.bancoSelecionado}"
+		styleClass="control-label col-md-2 .text-muted"  />
+
 	<div class="container-fluid main-container">
 		<div class="col-md-12 content">
 			<div class="panel panel-default">
@@ -42,16 +44,17 @@
 					<h:form id="form" enctype="multipart/form-data"
 						styleClass="form-horizontal">
 
-						<h:outputLabel value="Arquivo" styleClass="control-label col-md-2"
+
+						 <h:outputLabel value="Arquivo" styleClass="control-label col-md-2"
 							class="text-right" />
 						<h:inputFile id="file" value="#{navegadorMB.fileController.file}"
-							label="Arquivo" styleClass="form-control" required="true"/>
+							label="Arquivo" styleClass="form-control" required="true" />
 
 						<br></br>
 						<h:commandButton value="Iniciar"
 							action="#{navegadorMB.initMiner()}" onclick="pollStatus.start()"
 							styleClass="btn btn-sm btn-primary" render="tabela_downloads">
-							<f:ajax execute="@form" render="@all"/>
+							<f:ajax execute="@form" render="@all" />
 						</h:commandButton>
 					</h:form>
 
@@ -69,7 +72,7 @@
 									</h4>
 									<p:poll interval="2"
 										listener="#{navegadorMB.atualizaStatusProcesso}"
-										update="txt_count" widgetVar="pollStatus" autoStart="false"/>
+										update="txt_count" imediate="true" widgetVar="pollStatus" autoStart="false" />
 
 									<div class="table-responsive">
 
