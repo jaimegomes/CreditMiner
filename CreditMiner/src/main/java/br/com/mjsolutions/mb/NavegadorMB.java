@@ -206,9 +206,9 @@ public class NavegadorMB {
 
 		goTo(URL_HISTORICO);
 
-		for (CsvDTO csv : list) {
+		for (int i = 0; i < list.size(); i++) {
 
-			String cpf = StringUtils.leftPad(csv.getCpf(), 11, "0");
+			String cpf = StringUtils.leftPad(list.get(0).getCpf(), 11, "0");
 
 			long start = System.currentTimeMillis();
 
