@@ -46,6 +46,7 @@ public class NavegadorMB {
 	private boolean finalizado;
 	private int total = 0;
 	private String mensagemDoStatus = "";
+	int qtdErros = 0;
 
 	/**
 	 * Construtor
@@ -202,6 +203,7 @@ public class NavegadorMB {
 	private void percorreCpfs(List<br.com.mjsolutions.dto.CsvDTO> list) {
 
 		int qtdResultados = 0;
+		qtdErros = 0;
 
 		goTo(URL_HISTORICO);
 
@@ -221,7 +223,13 @@ public class NavegadorMB {
 				setMapJsoup(cpf, qtdResultados);
 				cont++;
 			} catch (Exception e) {
-				pesquisaCPF(cpf);
+				if(qtdErros > 9) {
+					break;
+				} else {
+					qtdErros++;
+					pesquisaCPF(cpf);
+				}
+				
 			}
 
 			long end = System.currentTimeMillis();
