@@ -185,7 +185,6 @@ public class NavegadorMB {
 
 		finalizado = false;
 		cont = 0;
-
 		total = list.size();
 
 		percorreCpfs(list);
@@ -206,7 +205,7 @@ public class NavegadorMB {
 
 		goTo(URL_HISTORICO);
 
-		for (int i = 0; i < list.size(); i++) {
+		for (int i = 0; i < total; i++) {
 
 			String cpf = StringUtils.leftPad(list.get(0).getCpf(), 11, "0");
 
@@ -214,20 +213,18 @@ public class NavegadorMB {
 
 			try {
 				pesquisaCPF(cpf);
+				qtdResultados = getQtdResultados(cpf);
+
+				System.out.println("cpf: " + cpf);
+				System.out.println("matrículas encontradas: " + qtdResultados);
+
+				setMapJsoup(cpf, qtdResultados);
+				cont++;
 			} catch (Exception e) {
-				percorreCpfs(list);
+				pesquisaCPF(cpf);
 			}
 
-			qtdResultados = getQtdResultados(cpf);
-
-			System.out.println("cpf: " + cpf);
-			System.out.println("matrículas encontradas: " + qtdResultados);
-
-			setMapJsoup(cpf, qtdResultados);
-
 			long end = System.currentTimeMillis();
-			cont++;
-
 			long totalTempoCpfs = Util.calculaTempoExecucao(start, end);
 			System.out.println("tempo processamento cpfs: " + totalTempoCpfs);
 			System.out.println("Status: " + cont + "/" + total);
@@ -334,21 +331,13 @@ public class NavegadorMB {
 		WebElement linkNome = null;
 		for (int i = 0; i < qtdResultados; i++) {
 
-			try {
-				linkNome = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.id("j_id_jsp_248910084_1:tabelaListaCol:" + i + ":j_id_jsp_248910084_23")));
-				linkNome.click();
+			linkNome = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.id("j_id_jsp_248910084_1:tabelaListaCol:" + i + ":j_id_jsp_248910084_23")));
+			linkNome.click();
 
-				getInstanceHTMLJsoup().createObjectRecordHTML(SetupSelenium.getInstance().getWebDriver().getPageSource(), cpf + "-" + i);
-				goTo(URL_BYPASS);
-				getInstanceHTMLJsoup().createObjectRecordHTML(SetupSelenium.getInstance().getWebDriver().getPageSource(), cpf + "-" + i + "-margem");
-				goTo(URL_HISTORICO);
-
-			} catch (Exception e) {
-				goTo(URL_HISTORICO);
-				pesquisaCPF(cpf);
-				int qtdResults = getQtdResultados(cpf);
-				setMapJsoup(cpf, qtdResults);
-			}
+			getInstanceHTMLJsoup().createObjectRecordHTML(SetupSelenium.getInstance().getWebDriver().getPageSource(), cpf + "-" + i);
+			goTo(URL_BYPASS);
+			getInstanceHTMLJsoup().createObjectRecordHTML(SetupSelenium.getInstance().getWebDriver().getPageSource(), cpf + "-" + i + "-margem");
+			goTo(URL_HISTORICO);
 
 		}
 	}
