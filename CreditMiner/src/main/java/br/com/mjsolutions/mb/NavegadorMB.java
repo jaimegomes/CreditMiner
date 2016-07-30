@@ -217,13 +217,13 @@ public class NavegadorMB {
 	private void percorreCpfs(List<br.com.mjsolutions.dto.CsvDTO> list) {
 
 		int qtdResultados = 0;
-		qtdErros = 0;
 
 		goTo(URL_HISTORICO);
 
 		for (int i = 0; i < total; i++) {
 
 			long start = System.currentTimeMillis();
+			qtdErros = 0;
 
 			if (flagContinue) {
 
