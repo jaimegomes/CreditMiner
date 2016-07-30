@@ -139,7 +139,8 @@ public class NavegadorMB {
 
 	/**
 	 * Método utilizado para parar o processamento
-	 * @throws InterruptedException 
+	 * 
+	 * @throws InterruptedException
 	 * 
 	 */
 	public void stopMiner() throws InterruptedException {
@@ -215,13 +216,14 @@ public class NavegadorMB {
 	 */
 	private void percorreCpfs(List<br.com.mjsolutions.dto.CsvDTO> list) {
 
-		long start = System.currentTimeMillis();
 		int qtdResultados = 0;
 		qtdErros = 0;
 
 		goTo(URL_HISTORICO);
 
 		for (int i = 0; i < total; i++) {
+
+			long start = System.currentTimeMillis();
 
 			if (flagContinue) {
 
@@ -253,7 +255,6 @@ public class NavegadorMB {
 			long totalTempoCpfs = Util.calculaTempoExecucao(start, end);
 			System.out.println("tempo processamento cpfs: " + totalTempoCpfs);
 			System.out.println("Status: " + cont + "/" + total);
-
 		}
 
 	}
@@ -278,17 +279,19 @@ public class NavegadorMB {
 	 */
 	private int getQtdResultados(String cpf) {
 		int qtdResultados = 0;
-		
+
 		try {
-//			String linha = new WebDriverWait(SetupSelenium.getInstance().getWebDriver(), 4).until(
-//					ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_248910084_1:tabelaListaCol:tbody_element']/tr/td[1]"))).getText();
+			// String linha = new
+			// WebDriverWait(SetupSelenium.getInstance().getWebDriver(),
+			// 4).until(
+			// ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_248910084_1:tabelaListaCol:tbody_element']/tr/td[1]"))).getText();
 
 			qtdResultados = SetupSelenium.getInstance().getWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//*[contains(./@id, 'j_id_jsp_248910084_23')]"))).size();
 
 		} catch (Exception e) {
 			return 0;
 		}
-		
+
 		return qtdResultados;
 	}
 
