@@ -280,16 +280,14 @@ public class NavegadorMB {
 	private int getQtdResultados(String cpf) {
 		int qtdResultados = 0;
 
-		try {
-			// String linha = new
-			// WebDriverWait(SetupSelenium.getInstance().getWebDriver(),
-			// 4).until(
-			// ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_248910084_1:tabelaListaCol:tbody_element']/tr/td[1]"))).getText();
+		String linha = new WebDriverWait(SetupSelenium.getInstance().getWebDriver(), 4).until(
+				ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_248910084_1:tabelaListaCol:tbody_element']/tr/td[1]"))).getText();
 
+		if (linha.equals("") || linha == null) {
+			return qtdResultados;
+		} else {
 			qtdResultados = SetupSelenium.getInstance().getWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//*[contains(./@id, 'j_id_jsp_248910084_23')]"))).size();
 
-		} catch (Exception e) {
-			return 0;
 		}
 
 		return qtdResultados;
