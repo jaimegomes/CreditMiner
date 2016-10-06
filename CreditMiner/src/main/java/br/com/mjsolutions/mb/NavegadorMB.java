@@ -237,8 +237,7 @@ public class NavegadorMB {
 					System.out.println("matrículas encontradas: " + qtdResultados);
 
 					setMapJsoup(cpf, qtdResultados);
-					contador++;
-					cont = contador;
+					
 				} catch (Exception e) {
 					if (qtdErros > 9) {
 						break;
@@ -248,6 +247,8 @@ public class NavegadorMB {
 					}
 
 				}
+				contador++;
+				cont = contador;
 			} else {
 				mensagemDoStatus = "Captura de dados encerrada.";
 			}
