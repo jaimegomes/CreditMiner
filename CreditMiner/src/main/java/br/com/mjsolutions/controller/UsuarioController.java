@@ -47,17 +47,17 @@ public class UsuarioController {
 
 	public List<Usuario> getListUsuarios() {
 		List<Usuario> listUsuarios = new ArrayList<Usuario>();
-		Usuario u1 = new Usuario(0L, "SC01R021432", "joaonunes01", "Paraná Banco");
+		Usuario u1 = new Usuario(0L, "SC01R021432", "joaonunes02", "Paraná Banco");
 		listUsuarios.add(u1);
-		Usuario u2 = new Usuario(1L, "SC01C0277506704", "joaonunes55", "Pan");
+		Usuario u2 = new Usuario(1L, "SC01C0277506704", "joaonunes03", "Pan");
 		listUsuarios.add(u2);
-		Usuario u3 = new Usuario(2L, "SC01R02385", "joaonunes02", "BMG");
+		Usuario u3 = new Usuario(2L, "SC01R02385", "joaonunes03", "BMG");
 		listUsuarios.add(u3);
-		Usuario u4 = new Usuario(3L, "SC01C0290506708", "joaonunes01", "Bom Sucesso");
+		Usuario u4 = new Usuario(3L, "SC01C0290506708", "joaonunes03", "Bom Sucesso");
 		listUsuarios.add(u4);
-		Usuario u5 = new Usuario(4L, "SC01C0305220", "joaonunes02", "Daycoval");
+		Usuario u5 = new Usuario(4L, "SC01C0305220", "joaonunes03", "Daycoval");
 		listUsuarios.add(u5);
-		Usuario u6 = new Usuario(5L, "SC01C0328506613", "joaonunes01", "Safra");
+		Usuario u6 = new Usuario(5L, "SC01C0328506613", "joaonunes02", "Safra");
 		listUsuarios.add(u6);
 		
 		return listUsuarios;

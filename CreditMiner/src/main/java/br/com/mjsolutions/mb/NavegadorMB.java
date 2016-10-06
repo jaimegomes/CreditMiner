@@ -84,13 +84,13 @@ public class NavegadorMB {
 					.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='j_id_jsp_1088422203_1:j_id_jsp_1088422203_8:tbody_element']/tr/td[2]/a")));
 
 			element.click();
-
-			WebElement imgElement = SetupSelenium.getInstance().getWait().until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='recaptcha_challenge_image']")));
+			Util.pause(1000);
+			WebElement imgElement = SetupSelenium.getInstance().getWebDriver().findElement(By.xpath(".//*[@id='recaptcha_challenge_image']"));
 
 			linkImagem.append(imgElement.getAttribute("src"));
 
 		} catch (Exception e) {
-			getLinkImagemCaptcha();
+			System.out.println("Erro ao obter link imagem captcha. " + e.getMessage());
 		}
 		return linkImagem.toString();
 	}
@@ -199,7 +199,6 @@ public class NavegadorMB {
 	private void processaCpfs(List<br.com.mjsolutions.dto.CsvDTO> list) {
 
 		finalizado = false;
-		cont = 0;
 		total = list.size();
 
 		percorreCpfs(list);
@@ -217,10 +216,11 @@ public class NavegadorMB {
 	private void percorreCpfs(List<br.com.mjsolutions.dto.CsvDTO> list) {
 
 		int qtdResultados = 0;
+		int contador = 0;
 
 		goTo(URL_HISTORICO);
 
-		for (int i = 0; i < total; i++) {
+		for (int i = 0; i < list.size(); i++) {
 
 			long start = System.currentTimeMillis();
 			qtdErros = 0;
@@ -237,7 +237,8 @@ public class NavegadorMB {
 					System.out.println("matrículas encontradas: " + qtdResultados);
 
 					setMapJsoup(cpf, qtdResultados);
-					cont++;
+					contador++;
+					cont = contador;
 				} catch (Exception e) {
 					if (qtdErros > 9) {
 						break;
@@ -254,7 +255,7 @@ public class NavegadorMB {
 			long end = System.currentTimeMillis();
 			long totalTempoCpfs = Util.calculaTempoExecucao(start, end);
 			System.out.println("tempo processamento cpfs: " + totalTempoCpfs);
-			System.out.println("Status: " + cont + "/" + total);
+			System.out.println("Status: " + contador + "/" + total);
 		}
 
 	}
